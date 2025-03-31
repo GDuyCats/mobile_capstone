@@ -19,7 +19,8 @@ export default function Login({ navigation }: any) {
       )
       const token = res.data?.token
       const role = res.data?.role
-      await login({ token, role })
+      const avatar = res.data?.avatar
+      await login({ token, role, avatar })
       setMessage(res.data?.message)
       setError('')
       setTimeout(() => {
