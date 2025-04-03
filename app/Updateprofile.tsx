@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../context/authContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Updateprofile({ navigation }: any) {
     const { user, updateUser } = useContext(AuthContext);
-
+    const [isUploading, setIsUploading] = useState(false);
     const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -37,6 +38,7 @@ export default function Updateprofile({ navigation }: any) {
     };
 
     const uploadAvatar = async () => {
+        setIsUploading(true)
         try {
             if (!avatarUri) {
                 Alert.alert('Vui lòng chọn ảnh!');
@@ -47,11 +49,12 @@ export default function Updateprofile({ navigation }: any) {
             const fileType = fileName.split('.').pop();
 
             const formData = new FormData();
-            formData.append('avatar', {
-                uri: avatarUri,
+            formData.append('file', {
+                uri: avatarUri.startsWith('file://') ? avatarUri : `file://${avatarUri}`,
                 name: fileName,
                 type: `image/${fileType === 'jpg' ? 'jpeg' : fileType}`,
             } as any);
+
 
             const res = await axios.put(
                 'https://marvelous-gentleness-production.up.railway.app/api/User/avatar',
@@ -59,7 +62,9 @@ export default function Updateprofile({ navigation }: any) {
                 {
                     headers: {
                         Authorization: `Bearer ${user.token}`,
+                        'Content-Type': 'multipart/form-data',
                     },
+
                 }
             );
 
@@ -69,8 +74,10 @@ export default function Updateprofile({ navigation }: any) {
 
             Alert.alert('✅ Đổi avatar thành công!');
         } catch (error: any) {
-            console.log('❌ Upload thất bại:', error?.response?.data || error.message);
-            Alert.alert('Lỗi upload avatar', error?.response?.data?.message || 'Upload thất bại');
+            console.log(error.message);
+            Alert.alert(error.message);
+        } finally {
+            setIsUploading(false)
         }
     };
 
@@ -111,7 +118,7 @@ export default function Updateprofile({ navigation }: any) {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.label}>Họ tên</Text>
             <TextInput value={fullname} onChangeText={setFullname} style={styles.input} />
 
@@ -131,19 +138,24 @@ export default function Updateprofile({ navigation }: any) {
             {avatarUri && (
                 <Image source={{ uri: avatarUri }} style={styles.avatar} />
             )}
+            {isUploading && (
+                <View style={{ marginVertical: 10 }}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text>Đang tải ảnh lên...</Text>
+                </View>
+            )}
             <Button title="Chọn ảnh" onPress={pickImage} />
             <Button title="Cập nhật Avatar" onPress={uploadAvatar} />
-
-            <View style={{ marginTop: 20 }}>
-                <Button title="Cập nhật thông tin" onPress={handleUpdate} />
-            </View>
-        </View>
+            <Button title="Cập nhật thông tin" onPress={handleUpdate} />
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        paddingHorizontal: 16,
+        paddingTop : 20,
+        paddingBottom: 100,
         backgroundColor: '#fff',
         flex: 1,
     },
