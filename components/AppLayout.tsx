@@ -35,7 +35,16 @@ export default function AppLayout({ children, navigation }: LayoutProps) {
 
       {showOptions && (
         user?.token ? (
+          <>
           <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
+          {user?.role === "STAFF" && (
+            <Button title="STAFF" onPress={() => navigation.navigate('Staff')} />
+          )}
+          {user?.role === "ADMIN" && (
+            <Button title="ADMIN" onPress={() => navigation.navigate('Admin')} />
+          )}
+          </>
+
         ) : (
           <Button title="Log in" onPress={handleNavigateLogin} />
         )
