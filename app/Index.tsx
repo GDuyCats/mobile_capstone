@@ -20,7 +20,6 @@ export default function Home({ navigation }: any) {
 
     fetchProjects();
   }, []);
-
   return (
     <AppLayout navigation={navigation}>
       <ScrollView contentContainerStyle={styles.container}>

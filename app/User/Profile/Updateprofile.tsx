@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../../../context/authContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ScrollView } from 'react-native-gesture-handler';

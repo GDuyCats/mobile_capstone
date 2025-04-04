@@ -6,21 +6,43 @@ import { AuthProvider } from './context/authContext';
 
 import Home from './app/Index';
 import Login from './app/Login';
-import Admin from './app/Admin';
 import Register from './app/Register';
-import Profile from './app/Profile';
-import Updateprofile from './app/Updateprofile';
-import ProjectDetail from './app/ProjectDetail';
+import Profile from './app/User/Profile/Profile';
+import Updateprofile from './app/User/Profile/Updateprofile';
+import ProjectDetail from './app/User/ProjectDetail';
 
-// 🧠 Khai báo kiểu params để điều hướng có type an toàn
+import Admin from './app/Admin/Admin';
+import AdminUser from './app/Admin/User/AdminUser';
+import AdminUserDetail from './app/Admin/User/AdminUserDetail';
+import AdminPledge from './app/Admin/Pledge/AdminPledge';
+import AdminPledgeDetail from './app/Admin/Pledge/AdminPledgeDetail';
+import AdminCreateStaff from './app/Admin/AdminCreateStaff';
+
+import Staff from './app/Staff/Staff';
+import StaffReport from './app/Staff/StaffReport';
+import StaffProject from './app/Staff/Project/StaffProject';
+import StaffProjectDetail from './app/Staff/Project/StaffProjectDetail'
+
+
 export type RootStackParamList = {
+  Admin: undefined;
+  AdminUser: undefined;
+  AdminPledge: undefined;
+  AdminUserDetail: undefined;
+  AdminPledgeDetail: undefined;
+  AdminCreateStaff: undefined
+
+  Staff: undefined;
+  StaffProject: undefined;
+  StaffReport: undefined;
+  StaffProjectDetail: undefined;
+
   Home: undefined;
   Login: undefined;
-  Admin: undefined;
   Register: undefined;
   Profile: undefined;
   Updateprofile: undefined;
-  ProjectDetail: { projectId: number }; // truyền projectId khi navigate
+  ProjectDetail: { projectId: number }; 
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,16 +52,29 @@ function MainNavigator() {
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
-        animation: 'slide_from_right', // 👈 hiệu ứng chuyển mượt
+        animation: 'slide_from_right',
       }}
     >
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Admin" component={Admin} />
+      <Stack.Screen name="AdminUser" component={AdminUser} />
+      <Stack.Screen name="AdminUserDetail" component={AdminUserDetail} />
+      <Stack.Screen name="AdminPledge" component={AdminPledge}/>
+      <Stack.Screen name="AdminPledgeDetail" component={AdminPledgeDetail}/>
+      <Stack.Screen name="AdminCreateStaff" component={AdminCreateStaff}/>
+
+
+      <Stack.Screen name="Staff" component={Staff} />
+      <Stack.Screen name="StaffProject" component={StaffProject}/>
+      <Stack.Screen name="StaffProjectDetail" component={StaffProjectDetail} options={{ headerShown: false }}/>
+      <Stack.Screen name="StaffReport" component={StaffReport} />
+
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Updateprofile" component={Updateprofile} />
       <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
+
     </Stack.Navigator>
   );
 }
