@@ -8,6 +8,7 @@ function Admin({ navigation }: any) {
         <View>
             <Button title='Project' onPress={() => { navigation.navigate('StaffProject') }} />
             <Button title='Report' onPress={() => { navigation.navigate('StaffReport') }} />
+            <Button title='Reward' onPress={() => { navigation.navigate('StaffReward') }} />
         </View>
     )
 }

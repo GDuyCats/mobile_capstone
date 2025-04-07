@@ -59,6 +59,14 @@ export default function ProjectDetail({ route, navigation }: any) {
         <Text style={styles.backText}>← Quay lại</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity 
+      style={styles.backButton} 
+      onPress={() => navigation.navigate('UserPayment', {
+        projectId: project['project-id'],
+      })}>
+        <Text style={styles.backText}>Pledge Project</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>{project.title}</Text>
 
       {project.thumbnail && (
