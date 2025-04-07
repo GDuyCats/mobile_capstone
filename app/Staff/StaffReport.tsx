@@ -18,17 +18,13 @@ function AdminReport({ navigation }: any) {
                             },
                         }
                     )
-                setReport(res.data.success)
+                setReport(res.data)
             } catch (error) {
                 console.log('Can not get report')
             }
         }
         getReport()
     }, [])
-
-    useEffect(() => {
-        console.log(report)
-    }, [report])
 
     return (
 
