@@ -1,33 +1,26 @@
-import React from 'react'
-import { View, Text, StyleSheet, Button } from 'react-native'
+import React from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-const PaymentFailed = ({ navigation }: any) => {
+export default function PaymentFailed({ navigation }: any) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>❌ Thanh toán thất bại</Text>
-      <Text style={styles.subText}>Đã có lỗi xảy ra hoặc bạn đã hủy giao dịch.</Text>
+      <Text style={styles.text}>❌ Thanh toán thất bại!</Text>
       <Button title="Thử lại" onPress={() => navigation.goBack()} />
     </View>
-  )
+  );
 }
-
-export default PaymentFailed
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#FFEBEE',
   },
-  title: {
-    fontSize: 24,
+  text: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: 'red',
-    marginBottom: 12,
-  },
-  subText: {
-    fontSize: 16,
     marginBottom: 20,
+    color: 'red',
   },
-})
+});

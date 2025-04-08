@@ -9,8 +9,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default function Updateprofile({ navigation }: any) {
     const { user, updateUser } = useContext(AuthContext);
     const [isUploading, setIsUploading] = useState(false);
-    const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
+    const [fullname, setFullname] = useState('');
+    const [paymentAccount, setPaymentAccount] = useState('')
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [bio, setBio] = useState('');
@@ -22,6 +23,7 @@ export default function Updateprofile({ navigation }: any) {
             setEmail(user.email || '');
             setPhone(user.phone || '');
             setBio(user.bio || '');
+            setPaymentAccount(user.paymentAccount || '')
         }
     }, [user]);
 
@@ -89,7 +91,7 @@ export default function Updateprofile({ navigation }: any) {
         if (password) formData.append('Password', password);
         if (phone) formData.append('Phone', phone);
         if (bio) formData.append('Bio', bio);
-
+        if (paymentAccount) formData.append('PaymentAccount', paymentAccount);
         try {
             await axios.post(
                 'https://marvelous-gentleness-production.up.railway.app/api/User/UpdateUser',
@@ -107,6 +109,7 @@ export default function Updateprofile({ navigation }: any) {
                 email,
                 phone,
                 bio,
+                paymentAccount, 
             });
 
             Alert.alert('✅ Cập nhật thành công');
@@ -130,6 +133,10 @@ export default function Updateprofile({ navigation }: any) {
 
             <Text style={styles.label}>Số điện thoại</Text>
             <TextInput value={phone} onChangeText={setPhone} style={styles.input} />
+
+            
+            <Text style={styles.label}>Tài khoản thanh toán</Text>
+            <TextInput value={paymentAccount} onChangeText={setPaymentAccount} style={styles.input} /> {/* <-- mới */}
 
             <Text style={styles.label}>Giới thiệu</Text>
             <TextInput value={bio} onChangeText={setBio} style={styles.input} />

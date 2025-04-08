@@ -18,6 +18,7 @@ function UserPayment({ route, navigation }: any) {
         Alert.alert('Bạn chưa đăng nhập', 'Vui lòng đăng nhập để tiếp tục.', [
           { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Login' }] }) },
         ])
+        return null
       } else if (user.role !== 'CUSTOMER') {
         Alert.alert(
           'Truy cập bị từ chối',
@@ -62,17 +63,64 @@ function UserPayment({ route, navigation }: any) {
     }
   }
 
+  const executePayment = async (paymentId: string, token: string, PayerID: string) => {
+    try {
+      setLoading(true)
+      const res = await axios.get(
+        'https://marvelous-gentleness-production.up.railway.app/api/PaypalPayment/execute',
+        {
+          params: { paymentId, token, PayerID },
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      )
+
+      if (res.data?.success) {
+        Alert.alert('✅ Thành công', res.data.message || 'Thanh toán thành công!')
+        navigation.navigate('PaymentSuccess') // hoặc navigation.goBack()
+      } else {
+        Alert.alert('❌ Thất bại', res.data.message || 'Thanh toán thất bại!')
+        navigation.navigate('PaymentFailed')
+      }
+    } catch (error: any) {
+      console.log('Lỗi khi xác thực:', error.response?.data || error.message)
+      Alert.alert('Lỗi', error.response?.data?.message || 'Không thể xác thực thanh toán.')
+      navigation.navigate('PaymentFailed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text>Đang tạo thanh toán...</Text>
+        <Text>Đang xử lý...</Text>
       </View>
     )
   }
 
   if (paymentUrl) {
-    return <WebView source={{ uri: paymentUrl }} />
+    return (
+      <WebView
+        source={{ uri: paymentUrl }}
+        onNavigationStateChange={(navState) => {
+          const { url } = navState
+          if (url.includes('/payment/result')) {
+            const params = new URLSearchParams(url.split('?')[1])
+            const paymentId = params.get('paymentId')
+            const token = params.get('token')
+            const PayerID = params.get('PayerID')
+
+            if (paymentId && token && PayerID) {
+              setPaymentUrl(null) // đóng WebView
+              executePayment(paymentId, token, PayerID)
+            }
+          }
+        }}
+      />
+    )
   }
 
   return (
@@ -96,16 +144,13 @@ const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 20,
   },
   input: {
-    width: '80%',
-    height: 40,
     borderWidth: 1,
     borderColor: '#ccc',
-    marginVertical: 12,
-    paddingHorizontal: 10,
+    padding: 10,
     borderRadius: 8,
+    marginVertical: 12,
   },
 })

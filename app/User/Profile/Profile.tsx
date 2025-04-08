@@ -76,7 +76,12 @@ export default function Profile({ navigation }: any) {
                     <Text>Create time: {profile['created-datetime']}</Text>
                 </>
             )}
-
+            <Button 
+            title='Create new Project' 
+            onPress={() => {
+                navigation.navigate('CreateProject')
+            }}
+            />
             <Button
                 title="Logout"
                 onPress={() => {
