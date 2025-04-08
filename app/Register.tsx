@@ -133,7 +133,21 @@ export default function Register({ navigation }: any) {
           </View>
         </View>
 
-        <Button title="Đăng ký" onPress={handleRegister} />
+        <TouchableOpacity onPress={handleRegister}>
+          <LinearGradient
+            colors={['#0af519', '#08bf13']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={style.loginButton}
+          >
+            <Text style={style.loginButtonText}>SIGN IN</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+        <View>
+          <Text style={{ color: 'black', marginRight: 0, marginLeft: 'auto', fontWeight: 400, fontSize: 15 }}> You already have an account ?</Text>
+          <Text style={{ fontWeight: 900, marginRight: 0, marginLeft: 'auto' }} onPress={() => navigation.navigate('Login')} > Sign in</Text>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -178,4 +192,20 @@ const style = StyleSheet.create({
     color: '#11D3AB',
     fontWeight: '800'
   },
+
+  loginButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 'auto',
+    width: 250,
+    height: 50,
+    borderRadius: 10,
+    marginVertical: 40
+  },
+
+  loginButtonText: {
+    color: 'white',
+    fontWeight: 800,
+    fontSize: 20
+  }
 });

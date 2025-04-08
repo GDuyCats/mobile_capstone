@@ -4,6 +4,8 @@ import React, { useContext, useState } from 'react';
 import { View, Text, Button, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext } from '../context/authContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 export default function Login({ navigation }: any) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -11,6 +13,7 @@ export default function Login({ navigation }: any) {
   const [error, setError] = useState('')
   const { login } = useContext(AuthContext)
   const [isUploading, setIsUploading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const handleLogin = async () => {
     setIsUploading(true)
     try {
@@ -44,14 +47,34 @@ export default function Login({ navigation }: any) {
       style={style.container}>
       <Text style={style.headerText}>WELCOME TO GAME MKT</Text>
       <View style={style.form}>
+
         <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
           <Text style={style.label}> Gmail </Text>
           <TextInput placeholder='anemone@gmail.com' value={username} onChangeText={setUsername} />
         </View>
+
         <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray' }}>
           <Text style={style.label}> Password </Text>
-          <TextInput placeholder='Abcd@123' value={password} onChangeText={setPassword} />
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+            <TextInput
+              placeholder='Abcd@123'
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              style = {{flex: 1}}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <MaterialIcons
+                name={showPassword ? 'visibility' : 'visibility-off'}
+                style = {{marginRight: 0 , marginLeft: 'auto'}}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+
         </View>
+
         <Text style={{ marginVertical: 20, fontWeight: 700, marginLeft: 'auto', marginRight: 0 }}>Forgot password ?</Text>
         {message && <Text style={{ marginBottom: 20, fontWeight: 800, color: 'green' }}>{message}</Text>}
         {error && <Text style={{ marginBottom: 20, fontWeight: 800, color: 'red' }}>{error}</Text>}

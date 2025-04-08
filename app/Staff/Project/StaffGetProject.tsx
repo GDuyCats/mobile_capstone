@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-function AdminProject({ navigation }: any) {
+function StaffGetProject({ navigation }: any) {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -92,7 +92,7 @@ function AdminProject({ navigation }: any) {
   );
 }
 
-export default AdminProject;
+export default StaffGetProject;
 
 const styles = StyleSheet.create({
   container: {

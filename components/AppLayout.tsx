@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Button, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 
 interface LayoutProps {
@@ -10,46 +11,32 @@ interface LayoutProps {
 
 export default function AppLayout({ children, navigation }: LayoutProps) {
   const { user, updateUser } = useContext(AuthContext);
-  const [showOptions, setShowOptions] = useState(false);
-
   useEffect(() => {
     if (!user?.token) {
       updateUser(null);
     }
   }, []);
 
-  const handleNavigateLogin = () => navigation.navigate('Login');
-
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.headerBox}>
-        <Text style={styles.title}>GameMKt</Text>
-        <TouchableOpacity onPress={() => setShowOptions(prev => !prev)}>
-          {user?.token && user?.avatar ? (
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          ) : (
-            <MaterialIcons name="account-circle" size={40} color="black" style={styles.avatar} />
-          )}
-        </TouchableOpacity>
-      </View>
-
-      {showOptions && (
-        user?.token ? (
-          <>
-          <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
-          {user?.role === "STAFF" && (
-            <Button title="STAFF" onPress={() => navigation.navigate('Staff')} />
-          )}
-          {user?.role === "ADMIN" && (
-            <Button title="ADMIN" onPress={() => navigation.navigate('Admin')} />
-          )}
-          </>
-
+        <Text style={styles.title}>Home</Text>
+        {user?.token ? (
+          <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+            {user?.avatar ? (
+              <Image source={{ uri: user.avatar }} style={styles.avatar} />
+            ) : (
+              <MaterialIcons name="account-circle" size={40} color="black" style={styles.avatar} />
+            )}
+          </TouchableOpacity>
         ) : (
-          <Button title="Log in" onPress={handleNavigateLogin} />
-        )
-      )}
+          <TouchableOpacity
+            onPress={() => { navigation.navigate('Login') }}>
+            <Text style={{ fontWeight: 700, fontSize: 15, marginTop: 10 }}>Sign in</Text>
+          </TouchableOpacity>
 
+        )}
+      </View>
       <View style={{ flex: 1 }}>
         {children}
       </View>
@@ -60,10 +47,7 @@ export default function AppLayout({ children, navigation }: LayoutProps) {
 const styles = StyleSheet.create({
   headerBox: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
     alignItems: 'center',
-    borderBottomColor: 'grey',
-    borderBottomWidth: 1,
     height: 80,
     paddingTop: 10,
     paddingLeft: 20,
@@ -71,8 +55,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    fontWeight: 'bold',
-    color: 'green',
+    fontWeight: '900',
+    color: 'black',
+    flex: 0.9,
   },
   avatar: {
     width: 40,
