@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AppLayout from '../components/AppLayout'; // hoặc đường dẫn bạn đặt
-
+import { useFocusEffect } from '@react-navigation/native';
 export default function Home({ navigation }: any) {
   const [projects, setProjects] = useState([]);
   const [isUploading, setIsUploading] = useState(true);
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
     const fetchProjects = async () => {
       try {
         const res = await axios.get('https://marvelous-gentleness-production.up.railway.app/api/Project/GetAllProject');
@@ -19,7 +20,7 @@ export default function Home({ navigation }: any) {
     };
 
     fetchProjects();
-  }, []);
+  }, [projects]));
   return (
     <AppLayout navigation={navigation}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -29,45 +30,75 @@ export default function Home({ navigation }: any) {
             <Text>Đang tải thông tin lên ...</Text>
           </View>
         )}
-        {projects.map((project: any) => (
-          <TouchableOpacity
-            key={project["project-id"]}
-            style={styles.card}
-            onPress={() => navigation.navigate('ProjectDetail', { projectId: project["project-id"] })}
-          >
-            <Text style={styles.projectTitle}>{project.title}</Text>
+        {projects.map((project: any) => {
+          const progress = (project["total-amount"] / project["minimum-amount"]) * 100;
+          const endDate = new Date(project["end-datetime"]);
+          const now = new Date();
+          const timeDiff = endDate.getTime() - now.getTime();
+          const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+          return (
+            <TouchableOpacity
+              key={project["project-id"]}
+              style={styles.card}
+              onPress={() => navigation.navigate('ProjectDetail', { projectId: project["project-id"] })}
+            >
+              <View style={{ marginBottom: 10 }}>
+                <Text style={styles.projectTitle}>{project.title}</Text>
+              </View>
 
-            <Text>
-              <Text style={{ color: '#00246B', fontWeight: 'bold' }}>Creator: </Text>
-              {project.creator}
-            </Text>
+              {project.thumbnail ? (
+                <Image source={{ uri: project.thumbnail }} style={styles.image} />
+              ) : (
+                <Text style={{ color: '#00246B', fontWeight: 'bold' }}>No thumbnail</Text>
+              )}
 
-            <Text>
-              <Text style={{ color: '#00246B', fontWeight: 'bold' }}>Description: </Text>
-              {project.description}
-            </Text>
+              <View style={{ marginVertical: 10 }}>
+                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Creator: </Text>{project.creator}</Text>
+              </View>
 
-            <Text>
-              <Text style={{ color: '#00246B', fontWeight: 'bold' }}>Status: </Text>
-              {project.status}
-            </Text>
+              <View>
+                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Description: </Text>{project.description}</Text>
+              </View>
 
-            <Text>
-              <Text style={{ color: '#00246B', fontWeight: 'bold' }}>Goal: </Text>
-              {project["minimum-amount"]} VND
-            </Text>
+              <View style={{ marginVertical: 10 }}>
+                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Status: </Text>{project.status}</Text>
+              </View>
+              <View style={{ marginTop: 8 }}>
+                <View style={{ height: 4, backgroundColor: '#ccc', borderRadius: 2, overflow: 'hidden' }}>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: `${Math.min(progress, 100)}%`,
+                      backgroundColor: '#028760',
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
-            {project.thumbnail ? (
-              <Image source={{ uri: project.thumbnail }} style={styles.image} />
-            ) : (
-              <Text>
-                <Text style={{ color: '#00246B', fontWeight: 'bold' }}>Thumbnail: </Text>
-                No thumbnail
-              </Text>
-            )}
-          </TouchableOpacity>
+                <View style={{ marginTop: 4 }}>
+                  <Text style={{ color: '#028760', fontWeight: '600' }}>
+                    {Math.floor(progress)}% {'\n'}funded
+                  </Text>
+                </View>
 
-        ))}
+                <View style={{ marginTop: 4, marginLeft: 10 }}>
+                  <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
+                    <Text>{project.backers}{'\n'}
+                    </Text>
+                    Backers
+                  </Text>
+                </View>
+                <View style={{ marginTop: 4, marginLeft: 10 }}>
+                  <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
+                    <Text style={{ color: '#00246B', fontWeight: 'bold' }}>{daysLeft} {'\n'}{daysLeft === 1 ? 'day' : 'days'} </Text>
+                    to go
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </AppLayout>
   );
@@ -80,9 +111,11 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '100%',
-    backgroundColor: '#cadcfc',
+    backgroundColor: 'white',
     borderRadius: 8,
     padding: 12,
+    borderWidth: 1,
+    borderColor: '#c9d1d4',
     marginBottom: 16,
   },
   projectTitle: {
