@@ -27,7 +27,6 @@ export default function CreateProject({ navigation }: any) {
   const [showPicker, setShowPicker] = useState<'start' | 'end' | null>(null);
   const [image, setImage] = useState<any>(null); // Optional
 
-  // 👉 Chọn ảnh thumbnail từ thư viện
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

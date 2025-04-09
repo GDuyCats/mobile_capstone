@@ -10,7 +10,6 @@ import Register from './app/Register';
 import Setting from './app/Setting';
 
 import UserPayment from './app/User/Payment/UserPayment';
-import MyReceivedPledge from './app/User/Pledge/MyReceivedPledge';
 import MyProject from './app/User/Project/MyProject';
 import MyProjectDetail from './app/User/Project/MyProjectDetail';
 import Profile from './app/User/Profile/Profile';
@@ -20,6 +19,7 @@ import MyPledge from './app/User/Pledge/MyPledge';
 import ProjectDetail from './app/ProjectDetail';
 import PaymentFailed from './app/User/Payment/PaymentFail';
 import PaymentSuccess from './app/User/Payment/PaymentSuccess';
+import MoneyHistory from './app/User/Project/MoneyHistory';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -37,6 +37,8 @@ import StaffGetProject from './app/Staff/Project/StaffGetProject';
 import StaffProjectDetail from './app/Staff/Project/StaffProjectDetail'
 import StaffRewardDetail from './app/Staff/Reward/StaffRewardDetail';
 import CreateProject from './app/User/Project/CreateProject';
+import StaffProjectApprove from './app/Staff/Project/StaffProjectApprove';
+import ApprovedProject from './app/Staff/Project/AprrovedProject';
 
 export type RootStackParamList = {
   Admin: undefined;
@@ -54,10 +56,13 @@ export type RootStackParamList = {
   StaffGetProject: undefined;
   StaffReport: undefined;
   StaffProjectDetail: undefined;
+  StaffProjectApprove: undefined;
+  ApprovedProject: undefined
 
   Home: undefined;
   Login: undefined;
   Register: undefined;
+  Setting: undefined;
 
   Profile: undefined;
   UserPayment: undefined;
@@ -71,7 +76,7 @@ export type RootStackParamList = {
   MyProject: undefined;
   MyUpdateProject: undefined;
   MyReceivedPledge: undefined;
-  Setting: undefined;
+  MoneyHistory: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -96,7 +101,8 @@ function MainNavigator() {
       <Stack.Screen name="StaffRewardDetail" component={StaffRewardDetail} />
       <Stack.Screen name="StaffGetPost" component={StaffGetPost} />
       <Stack.Screen name="StaffGetComment" component={StaffGetComment} />
-
+      <Stack.Screen name="StaffProjectApprove" component={StaffProjectApprove} />
+      <Stack.Screen name="ApprovedProject" component = {ApprovedProject}/>
 
       <Stack.Screen name="Updateprofile" component={Updateprofile} />
       <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
@@ -108,8 +114,8 @@ function MainNavigator() {
       <Stack.Screen name="MyPledge" component={MyPledge} />
       <Stack.Screen name="MyProject" component={MyProject} />
       <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} />
-      <Stack.Screen name="MyReceivedPledge" component={MyReceivedPledge} />
       <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} />
+      <Stack.Screen name="MoneyHistory" component={MoneyHistory} />
       <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>

@@ -61,11 +61,6 @@ function MyPersonal({ navigation }: any) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={style.option}
-                            onPress={() => { navigation.navigate('MyReceivedPledge') }} >
-                            <Text style={style.optionText}>View my recieved pledge</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={style.option}
                             onPress={() => {
                                 logout();
                                 navigation.navigate('Home');
@@ -94,7 +89,12 @@ function MyPersonal({ navigation }: any) {
                         <TouchableOpacity
                             style={[style.option, { marginBottom: 1 }]}
                             onPress={() => { navigation.navigate('StaffGetProject') }} >
-                            <Text style={style.optionText}>View all projects</Text>logout
+                            <Text style={style.optionText}>View all projects</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[style.option, { marginBottom: 1 }]}
+                            onPress={() => { navigation.navigate('StaffProjectApprove') }} >
+                            <Text style={style.optionText}>project need to approve</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[style.option, { marginBottom: 1 }]}
