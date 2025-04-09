@@ -7,11 +7,17 @@ import { AuthProvider } from './context/authContext';
 import Home from './app/Index';
 import Login from './app/Login';
 import Register from './app/Register';
+import Setting from './app/Setting';
 
 import UserPayment from './app/User/Payment/UserPayment';
+import MyReceivedPledge from './app/User/Pledge/MyReceivedPledge';
+import MyProject from './app/User/Project/MyProject';
+import MyProjectDetail from './app/User/Project/MyProjectDetail';
 import Profile from './app/User/Profile/Profile';
+import MyUpdateProject from './app/User/Project/UpdateProject'
 import Updateprofile from './app/User/Profile/Updateprofile';
-import ProjectDetail from './app/User/ProjectDetail';
+import MyPledge from './app/User/Pledge/MyPledge';
+import ProjectDetail from './app/ProjectDetail';
 import PaymentFailed from './app/User/Payment/PaymentFail';
 import PaymentSuccess from './app/User/Payment/PaymentSuccess';
 
@@ -31,10 +37,6 @@ import StaffGetProject from './app/Staff/Project/StaffGetProject';
 import StaffProjectDetail from './app/Staff/Project/StaffProjectDetail'
 import StaffRewardDetail from './app/Staff/Reward/StaffRewardDetail';
 import CreateProject from './app/User/Project/CreateProject';
-
-import MyPledge from './app/User/Pledge/MyPledge';
-import Setting from './app/Setting';
-import MyReceivedPledge from './app/User/Pledge/MyReceivedPledge';
 
 export type RootStackParamList = {
   Admin: undefined;
@@ -65,6 +67,9 @@ export type RootStackParamList = {
   PaymentSuccess: undefined;
   ProjectDetail: undefined;
   MyPledge: undefined;
+  MyProjectDetail: undefined;
+  MyProject: undefined;
+  MyUpdateProject: undefined;
   MyReceivedPledge: undefined;
   Setting: undefined;
 };
@@ -101,7 +106,10 @@ function MainNavigator() {
       <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} />
       <Stack.Screen name="PaymentFailed" component={PaymentFailed} />
       <Stack.Screen name="MyPledge" component={MyPledge} />
+      <Stack.Screen name="MyProject" component={MyProject} />
+      <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} />
       <Stack.Screen name="MyReceivedPledge" component={MyReceivedPledge} />
+      <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} />
       <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>

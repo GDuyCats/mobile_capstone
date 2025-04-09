@@ -46,6 +46,11 @@ function MyPersonal({ navigation }: any) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[style.option, { marginBottom: 1 }]}
+                            onPress={() => { navigation.navigate('MyProject') }} >
+                            <Text style={style.optionText}>My project</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[style.option, { marginBottom: 1 }]}
                             onPress={() => { navigation.navigate('CreateProject') }} >
                             <Text style={style.optionText}>Create new project</Text>
                         </TouchableOpacity>
@@ -73,7 +78,7 @@ function MyPersonal({ navigation }: any) {
                 </>
             )}
 
-            {user.role === "STAFF" && (
+            {user?.role === "STAFF" && (
                 <>
                     <View style={style.body}>
                         <TouchableOpacity
