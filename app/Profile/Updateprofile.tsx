@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-import { AuthContext } from '../../../context/authContext';
+import { AuthContext } from '../../context/authContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -74,7 +74,7 @@ export default function Updateprofile({ navigation }: any) {
             updateUser({ avatar: imageUrl });
             setAvatarUri(imageUrl);
 
-            Alert.alert('✅ Đổi avatar thành công!');
+            Alert.alert('Đổi avatar thành công!');
         } catch (error: any) {
             console.log(error.message);
             Alert.alert(error.message);
@@ -112,10 +112,10 @@ export default function Updateprofile({ navigation }: any) {
                 paymentAccount, 
             });
 
-            Alert.alert('✅ Cập nhật thành công');
+            Alert.alert('Cập nhật thành công');
             navigation.goBack();
         } catch (error: any) {
-            console.log('❌ Lỗi khi update:', error);
+            console.log('Lỗi khi update:', error);
             Alert.alert('Lỗi', error?.response?.data?.message || 'Có lỗi xảy ra');
         }
     };
@@ -134,9 +134,8 @@ export default function Updateprofile({ navigation }: any) {
             <Text style={styles.label}>Số điện thoại</Text>
             <TextInput value={phone} onChangeText={setPhone} style={styles.input} />
 
-            
             <Text style={styles.label}>Tài khoản thanh toán</Text>
-            <TextInput value={paymentAccount} onChangeText={setPaymentAccount} style={styles.input} /> {/* <-- mới */}
+            <TextInput value={paymentAccount} onChangeText={setPaymentAccount} style={styles.input} />
 
             <Text style={styles.label}>Giới thiệu</Text>
             <TextInput value={bio} onChangeText={setBio} style={styles.input} />

@@ -8,13 +8,15 @@ import Home from './app/Index';
 import Login from './app/Login';
 import Register from './app/Register';
 import Setting from './app/Setting';
+import ForgetPassword from './app/ForgetPassword';
+import ResetPassword from './app/ResetPassword';
 
 import UserPayment from './app/User/Payment/UserPayment';
 import MyProject from './app/User/Project/MyProject';
 import MyProjectDetail from './app/User/Project/MyProjectDetail';
-import Profile from './app/User/Profile/Profile';
+import Profile from './app/Profile/Profile';
 import MyUpdateProject from './app/User/Project/UpdateProject'
-import Updateprofile from './app/User/Profile/Updateprofile';
+import Updateprofile from './app/Profile/Updateprofile';
 import MyPledge from './app/User/Pledge/MyPledge';
 import ProjectDetail from './app/ProjectDetail';
 import PaymentFailed from './app/User/Payment/PaymentFail';
@@ -39,6 +41,8 @@ import StaffRewardDetail from './app/Staff/Reward/StaffRewardDetail';
 import CreateProject from './app/User/Project/CreateProject';
 import StaffProjectApprove from './app/Staff/Project/StaffProjectApprove';
 import ApprovedProject from './app/Staff/Project/AprrovedProject';
+import ResendGmailConfirm from './app/ResendGmailConfirm';
+
 
 export type RootStackParamList = {
   Admin: undefined;
@@ -63,6 +67,8 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Setting: undefined;
+  ForgotPassword: undefined;
+  ResendEmailConfirm: undefined
 
   Profile: undefined;
   UserPayment: undefined;
@@ -121,7 +127,9 @@ function MainNavigator() {
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-
+      <Stack.Screen name="ForgotPassword" component={ForgetPassword} options={{ headerShown: false }} />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
+      <Stack.Screen name="ResetGmailConfirm" component={ResendGmailConfirm} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

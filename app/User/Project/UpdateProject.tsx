@@ -18,7 +18,7 @@ import { AuthContext } from '../../../context/authContext';
 export default function UpdateProject({ route, navigation }: any) {
   const { projectId } = route.params;
   const { user } = useContext(AuthContext);
-
+  const [isDisabled, setIsDisabled] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [minimumAmount, setMinimumAmount] = useState('');
@@ -60,6 +60,7 @@ export default function UpdateProject({ route, navigation }: any) {
   }, []);
 
   const handleUpdate = async () => {
+    setIsDisabled(true)
     if (!name || !description || !minimumAmount) {
       return Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin');
     }
@@ -150,13 +151,13 @@ export default function UpdateProject({ route, navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Tên dự án:</Text>
+      <Text style={styles.label}>Project Title</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-      <Text style={styles.label}>Mô tả:</Text>
+      <Text style={styles.label}>Description</Text>
       <TextInput style={styles.input} value={description} onChangeText={setDescription} />
 
-      <Text style={styles.label}>Câu chuyện (Story):</Text>
+      <Text style={styles.label}>Story (Game's story)</Text>
       <TextInput
         style={[styles.input, { height: 80 }]}
         value={story}
@@ -164,7 +165,7 @@ export default function UpdateProject({ route, navigation }: any) {
         multiline
       />
 
-      <Text style={styles.label}>Số tiền cần (VND):</Text>
+      <Text style={styles.label}>Goal ($):</Text>
       <TextInput
         style={styles.input}
         value={minimumAmount}
@@ -172,12 +173,12 @@ export default function UpdateProject({ route, navigation }: any) {
         keyboardType="numeric"
       />
 
-      <Text style={styles.label}>Ngày bắt đầu:</Text>
+      <Text style={styles.label}>Time Start:</Text>
       <TouchableOpacity onPress={() => setShowPicker('start')} style={styles.dateBtn}>
         <Text>{startDate.toLocaleString()}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.label}>Ngày kết thúc:</Text>
+      <Text style={styles.label}>Time end:</Text>
       <TouchableOpacity onPress={() => setShowPicker('end')} style={styles.dateBtn}>
         <Text>{endDate.toLocaleString()}</Text>
       </TouchableOpacity>
@@ -191,10 +192,10 @@ export default function UpdateProject({ route, navigation }: any) {
       />
 
       <View style={{ marginTop: 10 }}>
-        <Text style={styles.label}>Ảnh Thumbnail (tuỳ chọn):</Text>
+        <Text style={styles.label}>Thumbnail (Optional):</Text>
         {!image ? (
           <TouchableOpacity onPress={pickImage} style={styles.dateBtn}>
-            <Text>Chọn ảnh từ thư viện</Text>
+            <Text>Choose thumnail from the library</Text>
           </TouchableOpacity>
         ) : (
           <View style={{ alignItems: 'center' }}>
@@ -230,7 +231,10 @@ export default function UpdateProject({ route, navigation }: any) {
         )}
       </View>
 
-      <Button title="Cập nhật dự án" onPress={handleUpdate} />
+      <Button 
+      title="Update Project" 
+      onPress={handleUpdate} 
+      disabled={isDisabled}/>
     </View>
   );
 }

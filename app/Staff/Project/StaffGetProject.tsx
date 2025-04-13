@@ -74,7 +74,7 @@ function StaffGetProject({ navigation }: any) {
 
             <Text>
               <Text style={styles.label}>Goal: </Text>
-              {project['minimum-amount']} VND
+              {project['minimum-amount']}$
             </Text>
 
             {project.thumbnail ? (

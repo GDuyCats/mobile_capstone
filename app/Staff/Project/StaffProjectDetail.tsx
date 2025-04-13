@@ -119,14 +119,14 @@ export default function ProjectDetail({ route, navigation }: any) {
       <Text style={styles.label}>
         Goal:{' '}
         <Text style={styles.value}>
-          {project['minimum-amount'].toLocaleString()} VND
+          {project['minimum-amount'].toLocaleString()}$
         </Text>
       </Text>
 
       <Text style={styles.label}>
         Total Raised:{' '}
         <Text style={styles.value}>
-          {project['total-amount'].toLocaleString()} VND
+          {project['total-amount'].toLocaleString()}$
         </Text>
       </Text>
 

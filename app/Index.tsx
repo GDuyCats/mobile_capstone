@@ -1,41 +1,86 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {
+  ScrollView, View, Text, Image, StyleSheet,
+  ActivityIndicator, TouchableOpacity, TextInput, Keyboard
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import AppLayout from '../components/AppLayout'; // hoặc đường dẫn bạn đặt
+import AppLayout from '../components/AppLayout';
 import { useFocusEffect } from '@react-navigation/native';
+
 export default function Home({ navigation }: any) {
   const [projects, setProjects] = useState([]);
   const [isUploading, setIsUploading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [status, setStatus] = useState('');
+
+  const fetchProjects = async (title: string = '', selectedStatus: string = '') => {
+    setIsUploading(true);
+    try {
+      const res = await axios.get('https://marvelous-gentleness-production.up.railway.app/api/Project/GetAllProject', {
+        params: {
+          title: title || undefined,
+          status: selectedStatus || undefined,
+        },
+      });
+      setProjects(res.data.data);
+    } catch (error) {
+      console.log('Lỗi fetch project:', error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await axios.get('https://marvelous-gentleness-production.up.railway.app/api/Project/GetAllProject');
-        setProjects(res.data.data);
-      } catch (error) {
-        console.log('Lỗi fetch project:', error);
-      } finally {
-        setIsUploading(false)
-      }
-    };
+      fetchProjects();
+    }, [])
+  );
 
-    fetchProjects();
-  }, [projects]));
   return (
     <AppLayout navigation={navigation}>
       <ScrollView contentContainerStyle={styles.container}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by project title..."
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={() => {
+            fetchProjects(searchText, status);
+            Keyboard.dismiss();
+          }}
+          returnKeyType="search"
+        />
+
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={status}
+            onValueChange={(itemValue) => {
+              setStatus(itemValue);
+              fetchProjects(searchText, itemValue);
+            }}
+            style={styles.picker}
+          >
+            <Picker.Item label="-- Status --" value="" />
+            <Picker.Item label="ONGOING" value="ONGOING" />
+            <Picker.Item label="HALTED" value="HALTED" />
+          </Picker>
+        </View>
+
         {isUploading && (
           <View style={{ marginVertical: 10 }}>
             <ActivityIndicator size="large" color="#0000ff" />
             <Text>Đang tải thông tin lên ...</Text>
           </View>
         )}
+
         {projects.map((project: any) => {
           const progress = (project["total-amount"] / project["minimum-amount"]) * 100;
           const endDate = new Date(project["end-datetime"]);
           const now = new Date();
           const timeDiff = endDate.getTime() - now.getTime();
           const daysLeft = Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+
           return (
             <TouchableOpacity
               key={project["project-id"]}
@@ -63,6 +108,7 @@ export default function Home({ navigation }: any) {
               <View style={{ marginVertical: 10 }}>
                 <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Status: </Text>{project.status}</Text>
               </View>
+
               <View style={{ marginTop: 8 }}>
                 <View style={{ height: 4, backgroundColor: '#ccc', borderRadius: 2, overflow: 'hidden' }}>
                   <View
@@ -74,8 +120,8 @@ export default function Home({ navigation }: any) {
                   />
                 </View>
               </View>
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ marginTop: 4 }}>
                   <Text style={{ color: '#028760', fontWeight: '600' }}>
                     {Math.floor(progress)}% {'\n'}funded
@@ -84,15 +130,27 @@ export default function Home({ navigation }: any) {
 
                 <View style={{ marginTop: 4, marginLeft: 10 }}>
                   <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
-                    <Text>{project.backers}{'\n'}
-                    </Text>
-                    Backers
+                    <Text>{project.backers || 0}{'\n'}</Text>
+                    {(project.backers || 0) <= 1  ? 'Backer' : 'Backers'}
                   </Text>
                 </View>
+
                 <View style={{ marginTop: 4, marginLeft: 10 }}>
                   <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
-                    <Text style={{ color: '#00246B', fontWeight: 'bold' }}>{daysLeft} {'\n'}{daysLeft === 1 ? 'day' : 'days'} </Text>
-                    to go
+                    <Text>{project['minimum-amount']} ${'\n'}</Text>Goal
+                  </Text>
+                </View>
+
+                <View style={{ marginTop: 4, marginLeft: 10 }}>
+                  <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
+                    <Text>{project['total-amount']} ${'\n'}</Text>Gain
+                  </Text>
+                </View>
+
+                <View style={{ marginTop: 4, marginLeft: 10 }}>
+                  <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
+                    <Text>{daysLeft} {'\n'}</Text>
+                    {daysLeft === 1 ? 'day' : 'days'} to go
                   </Text>
                 </View>
               </View>
@@ -108,6 +166,28 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     alignItems: 'center',
+  },
+  searchInput: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    marginRight: 0,
+    marginLeft: 'auto',
+    width: '50%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  picker: {
+    height: 'auto',
+    width: '100%',
   },
   card: {
     width: '100%',

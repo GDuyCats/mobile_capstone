@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import { AuthContext } from '../context/authContext'
-import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
@@ -16,11 +15,11 @@ function MyPersonal({ navigation }: any) {
                             source={{ uri: user?.avatar }}
                             style={style.avatar} />
                     ) : (
-                        <MaterialIcons name="account-circle" size={40} color="black" />
+                        <MaterialIcons style={style.avatar} name="account-circle" size={60} color="black" />
                     )}
                     <View style={{ marginLeft: 20, marginTop: 15 }}>
                         <Text style={{ color: '#464F64', fontSize: 20, fontWeight: 600 }}>Hello</Text>
-                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 700 }}>Lương Duy Cát</Text>
+                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 700 }}>{user?.fullName ?? ''}</Text>
                     </View>
                     <Feather
                         name="edit"

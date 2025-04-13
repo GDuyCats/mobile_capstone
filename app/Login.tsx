@@ -26,7 +26,8 @@ export default function Login({ navigation }: any) {
       const token = res.data?.token
       const role = res.data?.role
       const avatar = res.data?.avatar
-      await login({ token, role, avatar })
+      const fullName = res.data["full-name"]
+      await login({ token, role, avatar, fullName })
       setMessage(res.data?.message)
       setError('')
       setTimeout(() => {
@@ -55,18 +56,18 @@ export default function Login({ navigation }: any) {
 
         <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray' }}>
           <Text style={style.label}> Password </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TextInput
               placeholder='Abcd@123'
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              style = {{flex: 1}}
+              style={{ flex: 1 }}
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <MaterialIcons
                 name={showPassword ? 'visibility' : 'visibility-off'}
-                style = {{marginRight: 0 , marginLeft: 'auto'}}
+                style={{ marginRight: 0, marginLeft: 'auto' }}
                 size={24}
                 color="gray"
               />
@@ -75,7 +76,18 @@ export default function Login({ navigation }: any) {
 
         </View>
 
-        <Text style={{ marginVertical: 20, fontWeight: 700, marginLeft: 'auto', marginRight: 0 }}>Forgot password ?</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ForgotPassword')
+          }}>
+          <Text style={{ marginVertical: 20, fontWeight: 700, marginLeft: 'auto', marginRight: 0 }}>Forget Password ?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ResetGmailConfirm')
+          }}>
+          <Text style={{ marginBottom: 20, fontWeight: 700, marginLeft: 'auto', marginRight: 0 }}>Resend the Email confirm ?</Text>
+        </TouchableOpacity>
         {message && <Text style={{ marginBottom: 20, fontWeight: 800, color: 'green' }}>{message}</Text>}
         {error && <Text style={{ marginBottom: 20, fontWeight: 800, color: 'red' }}>{error}</Text>}
         {isUploading && (

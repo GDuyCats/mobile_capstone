@@ -10,15 +10,18 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Image,
+  ScrollView,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../../../context/authContext';
+import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 
 export default function CreateProject({ navigation }: any) {
   const { user } = useContext(AuthContext);
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [disable, setDisable] = useState(false)
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [minimumAmount, setMinimumAmount] = useState('');
@@ -39,15 +42,20 @@ export default function CreateProject({ navigation }: any) {
     }
   };
 
-  // 👉 Xử lý khi nhấn "Tạo dự án"
   const handleCreate = async () => {
+
+    setIsLoading(true)
+    setDisable(true)
+
     if (!title || !description || !minimumAmount) {
       Alert.alert('Thông báo', 'Vui lòng điền đầy đủ thông tin!');
+      setIsLoading(false)
       return;
     }
 
     if (startDate >= endDate) {
       Alert.alert('Lỗi', 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc.');
+      setIsLoading(false)
       return;
     }
 
@@ -59,7 +67,6 @@ export default function CreateProject({ navigation }: any) {
       formData.append('startDatetime', startDate.toISOString());
       formData.append('endDatetime', endDate.toISOString());
 
-      // Gửi API tạo project
       const res = await axios.post(
         'https://marvelous-gentleness-production.up.railway.app/api/Project/CreateProject',
         formData,
@@ -73,8 +80,6 @@ export default function CreateProject({ navigation }: any) {
 
       if (res.data.success) {
         const projectId = res.data.data['project-id'];
-
-        // ✅ Nếu có ảnh thì upload thêm thumbnail
         if (image) {
           const imgForm = new FormData();
           imgForm.append('file', {
@@ -95,14 +100,16 @@ export default function CreateProject({ navigation }: any) {
           );
         }
 
-        Alert.alert('Thành công', 'Tạo dự án thành công!');
+        Alert.alert('Success', 'Create project successfully !');
         navigation.navigate('Home');
       } else {
-        Alert.alert('Lỗi', res.data.message || 'Không tạo được dự án');
+        Alert.alert('Error', res.data.message || 'Không tạo được dự án');
       }
     } catch (err) {
       console.log(err);
-      Alert.alert('Lỗi', 'Đã có lỗi xảy ra khi tạo dự án.');
+      Alert.alert('Error', `You need to update your phone number and your payment account`);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -117,14 +124,16 @@ export default function CreateProject({ navigation }: any) {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <Text style={styles.label}>Tiêu đề:</Text>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 100 }}>
+        <Text style={styles.label}>Title:</Text>
         <TextInput style={styles.input} value={title} onChangeText={setTitle} />
 
-        <Text style={styles.label}>Mô tả:</Text>
+        <Text style={styles.label}>Description:</Text>
         <TextInput style={styles.input} value={description} onChangeText={setDescription} />
 
-        <Text style={styles.label}>Số tiền cần (VND):</Text>
+        <Text style={styles.label}>Goal ($):</Text>
         <TextInput
           style={styles.input}
           value={minimumAmount}
@@ -132,18 +141,18 @@ export default function CreateProject({ navigation }: any) {
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Ngày bắt đầu:</Text>
+        <Text style={styles.label}>Time start:</Text>
         <TouchableOpacity onPress={() => setShowPicker('start')} style={styles.dateButton}>
           <Text>{startDate.toLocaleString()}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.label}>Ngày kết thúc:</Text>
+        <Text style={styles.label}>Time end:</Text>
         <TouchableOpacity onPress={() => setShowPicker('end')} style={styles.dateButton}>
           <Text>{endDate.toLocaleString()}</Text>
         </TouchableOpacity>
 
         <View style={{ marginTop: 10 }}>
-          <Text style={styles.label}>Ảnh Thumbnail (tuỳ chọn):</Text>
+          <Text style={styles.label}>Thumbnail (Optional):</Text>
 
           {!image ? (
             <TouchableOpacity onPress={pickImage} style={styles.dateButton}>
@@ -159,10 +168,11 @@ export default function CreateProject({ navigation }: any) {
                 <TouchableOpacity
                   onPress={pickImage}
                   style={{
-                    backgroundColor: '#4E9F3D',
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 6,
+                    flex: 0.4,
+                    backgroundColor: '#4089ff',
+                    alignItems: 'center',
+                    padding: 10,
+                    borderRadius: 20,
                   }}
                 >
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đổi ảnh</Text>
@@ -170,10 +180,11 @@ export default function CreateProject({ navigation }: any) {
                 <TouchableOpacity
                   onPress={() => setImage(null)}
                   style={{
+                    flex: 0.6,
+                    alignItems: 'center',
                     backgroundColor: '#FF6B6B',
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 6,
+                    padding: 10,
+                    borderRadius: 20,
                   }}
                 >
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>Huỷ chọn ảnh</Text>
@@ -191,9 +202,22 @@ export default function CreateProject({ navigation }: any) {
           onConfirm={handleConfirm}
           onCancel={() => setShowPicker(null)}
         />
+        <TouchableOpacity
+          style={[styles.createProjectButton, disable && {opacity: 0.5}]}
+          disabled = {disable}
+          onPress={handleCreate} >
+          <Text
+            style={{ color: 'white', fontWeight: 'bold' }}>Create Project</Text>
+        </TouchableOpacity>
 
-        <Button title="Tạo dự án" onPress={handleCreate} />
-      </View>
+        {isLoading && (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+
+      )}
+      </ScrollView>
+   
     </TouchableWithoutFeedback>
   );
 }
@@ -206,7 +230,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    marginTop: 10,
+    marginVertical: 10,
   },
   input: {
     borderWidth: 1,
@@ -223,4 +247,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#f0f0f0',
   },
+  createProjectButton: {
+    alignItems: 'center',
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 20,
+    backgroundColor: '#1b7533'
+  }
 });

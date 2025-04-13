@@ -8,7 +8,7 @@ function MyProjectDetail({ route, navigation }: any) {
   const { projectId } = route.params;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+  const [isDisabled, setIsDisabled] = useState(false);
   useFocusEffect(
     React.useCallback(() => {
       const fetchProject = async () => {
@@ -57,6 +57,7 @@ function MyProjectDetail({ route, navigation }: any) {
           text: 'Xoá',
           style: 'destructive',
           onPress: async () => {
+            setIsDisabled(true)
             try {
               const res = await axios.delete(
                 `https://marvelous-gentleness-production.up.railway.app/api/Project/DeleteProject?id=${project["project-id"]}`,
@@ -85,10 +86,10 @@ function MyProjectDetail({ route, navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>📌 Tên dự án:</Text>
+      <Text style={styles.label}>📌 Project's title:</Text>
       <Text>{project.title}</Text>
 
-      <Text style={styles.label}>🧑‍💼 Người tạo:</Text>
+      <Text style={styles.label}>🧑‍💼 Creator:</Text>
       <Text>{project.creator}</Text>
       {project.thumbnail ? (
         <Image
@@ -99,41 +100,47 @@ function MyProjectDetail({ route, navigation }: any) {
       ) : (
         <Text>Không có ảnh</Text>
       )}
-      <Text style={styles.label}>📖 Mô tả:</Text>
+      <Text style={styles.label}>📖 Description</Text>
       <Text>{project.description}</Text>
 
-      <Text style={styles.label}>STORY:</Text>
+      <Text style={styles.label}>Game Story</Text>
       <Text>{project.story}</Text>
 
-      <Text style={styles.label}>📅 Bắt đầu:</Text>
+      <Text style={styles.label}>📅 Start time</Text>
       <Text>{new Date(project['start-datetime']).toLocaleString()}</Text>
 
-      <Text style={styles.label}>📅 Kết thúc:</Text>
+      <Text style={styles.label}>📅 End time</Text>
       <Text>{new Date(project['end-datetime']).toLocaleString()}</Text>
 
-      <Text style={styles.label}>💰 Mức cần:</Text>
-      <Text>{project['minimum-amount']} VND</Text>
+      <Text style={styles.label}>💰 Goal</Text>
+      <Text>{project['minimum-amount']} $</Text>
 
-      <Text style={styles.label}>💵 Đã nhận:</Text>
+      <Text style={styles.label}>💵 Received</Text>
       <Text>{project['total-amount']} $</Text>
 
-      <Text style={styles.label}>🔒 Trạng thái:</Text>
+      <Text style={styles.label}>🔒 Status</Text>
       <Text>{project.status}</Text>
       <TouchableOpacity
+        
+        style={styles.updateButton}
         onPress={() => {
+          setIsDisabled(true)
           navigation.navigate('MyUpdateProject', { projectId: project["project-id"] })
         }}>
-        <Text>Update Project</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteProject}>
-        <Text style={styles.deleteText}>❌ Delete Project</Text>
+        <Text style={{ color: 'white', fontWeight: 'bold' }}>Update Project</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => { 
-          navigation.navigate('MoneyHistory', {projectId: project["project-id"]})
+        disabled={isDisabled}
+        onPress={handleDeleteProject}>
+        <Text style={styles.deleteText}>Delete Project</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.backerButton}
+        onPress={() => {
+          navigation.navigate('MoneyHistory', { projectId: project["project-id"] })
         }}>
-        <Text style={styles.deleteText}>❌ Backer History</Text>
+        <Text style={styles.deleteText}>Backer History</Text>
       </TouchableOpacity>
     </View>
   );
@@ -161,8 +168,26 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: 'center',
   },
+  backerButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+
+  updateButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+
   deleteText: {
     color: 'white',
     fontWeight: 'bold',
   },
+
+
 });

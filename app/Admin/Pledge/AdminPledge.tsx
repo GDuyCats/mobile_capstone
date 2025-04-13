@@ -53,7 +53,7 @@ function AdminPledge({ navigation }: any) {
             <Text style={styles.label}>Pledge ID: <Text style={styles.value}>{p['pledge-id']}</Text></Text>
             <Text style={styles.label}>User ID: <Text style={styles.value}>{p['user-id']}</Text></Text>
             <Text style={styles.label}>Project ID: <Text style={styles.value}>{p['project-id']}</Text></Text>
-            <Text style={styles.label}>Amount: <Text style={styles.value}>{p.amount} VND</Text></Text>
+            <Text style={styles.label}>Amount: <Text style={styles.value}>{p.amount}$</Text></Text>
 
             <Text style={[styles.label, { marginTop: 8 }]}>Pledge Details:</Text>
             {p['pledge-detail']?.map((d: any, i: number) => (
