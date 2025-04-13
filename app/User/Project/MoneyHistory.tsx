@@ -38,20 +38,20 @@ function MoneyHistory({ navigation, route }: any) {
       {money.length > 0 ? (
         money.map((item: any, index: number) => (
           <View key={index} style={styles.card}>
-            <Text style={styles.name}>🙋 Người ủng hộ: {item.backer_name}</Text>
+            <Text style={styles.name}>🙋Backer: {item.backer_name}</Text>
 
             {item.backer_avatar ? (
               <Image source={{ uri: item.backer_avatar }} style={styles.avatar} />
             ) : (
-              <Text style={styles.noAvatar}>Không có avatar</Text>
+              <Text style={styles.noAvatar}>No avatar</Text>
             )}
 
-            <Text style={styles.text}>💵 Số tiền: {item.pledge.amount} VND</Text>
+            <Text style={styles.text}>💵 Money: {item.pledge.amount} $</Text>
 
             {item.pledge['pledge-detail']?.map((detail: any, i: number) => (
               <View key={i} style={{ marginTop: 6 }}>
-                <Text style={styles.text}>🧾 Mã thanh toán: {detail['payment-id']}</Text>
-                <Text style={styles.text}>📌 Trạng thái: {detail.status}</Text>
+                <Text style={styles.text}>🧾 Payment code: {detail['payment-id']}</Text>
+                <Text style={styles.text}>📌 Status: {detail.status}</Text>
               </View>
             ))}
           </View>

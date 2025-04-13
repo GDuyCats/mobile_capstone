@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, Alert, ActivityIndicator, StyleSheet, TextInput, Button } from 'react-native'
+import { View, Text, Alert, ActivityIndicator, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { WebView } from 'react-native-webview'
 import axios from 'axios'
@@ -8,7 +8,7 @@ import { AuthContext } from '../../../context/authContext'
 function UserPayment({ route, navigation }: any) {
   const { user } = useContext(AuthContext)
   const { projectId } = route.params
-  const [amount, setAmount] = useState('') 
+  const [amount, setAmount] = useState('')
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -77,15 +77,14 @@ function UserPayment({ route, navigation }: any) {
       )
 
       if (res.data?.success) {
-        Alert.alert('✅ Thành công', res.data.message || 'Thanh toán thành công!')
-        navigation.navigate('PaymentSuccess') // hoặc navigation.goBack()
+        Alert.alert('✅ Success', res.data.message || 'Payment Success !')
+        navigation.navigate('PaymentSuccess')
       } else {
-        Alert.alert('❌ Thất bại', res.data.message || 'Thanh toán thất bại!')
+        Alert.alert('❌ Fail', res.data.message || 'Payment Fail !')
         navigation.navigate('PaymentFailed')
       }
     } catch (error: any) {
-      console.log('Lỗi khi xác thực:', error.response?.data || error.message)
-      Alert.alert('Lỗi', error.response?.data?.message || 'Không thể xác thực thanh toán.')
+      Alert.alert('Error', `${error}`)
       navigation.navigate('PaymentFailed')
     } finally {
       setLoading(false)
@@ -114,7 +113,7 @@ function UserPayment({ route, navigation }: any) {
             const PayerID = params.get('PayerID')
 
             if (paymentId && token && PayerID) {
-              setPaymentUrl(null) // đóng WebView
+              setPaymentUrl(null)
               executePayment(paymentId, token, PayerID)
             }
           }
@@ -125,15 +124,27 @@ function UserPayment({ route, navigation }: any) {
 
   return (
     <View style={styles.center}>
-      <Text>Nhập số tiền thanh toán:</Text>
+      <Text>Enter the amount you want to contribute.
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
-        placeholder="VD: 2000"
+        placeholder="For example : 2000 $"
       />
-      <Button title="Tiến hành thanh toán" onPress={createPayment} />
+      <Button title="Process payment" onPress={createPayment} />
+      <TouchableOpacity
+        style={
+          {
+            marginTop: 10,
+            backgroundColor: 'green',
+            alignItems: 'center',
+            padding: 10
+          }}
+        onPress={() => navigation.goBack()} >
+        <Text style={{ color: 'white', fontSize: 15 }}>GO BACK</Text>
+      </TouchableOpacity>
     </View>
   )
 }

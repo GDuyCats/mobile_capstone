@@ -60,7 +60,7 @@ function AdminPledgeDetail({ route, navigation }: any) {
       <Text style={styles.label}>Pledge ID: <Text style={styles.value}>{pledge['pledge-id']}</Text></Text>
       <Text style={styles.label}>User ID: <Text style={styles.value}>{pledge['user-id']}</Text></Text>
       <Text style={styles.label}>Project ID: <Text style={styles.value}>{pledge['project-id']}</Text></Text>
-      <Text style={styles.label}>Amount: <Text style={styles.value}>{pledge.amount} VND</Text></Text>
+      <Text style={styles.label}>Amount: <Text style={styles.value}>{pledge.amount} $</Text></Text>
 
       <Text style={[styles.label, { marginTop: 12 }]}>Pledge Details:</Text>
       {pledge['pledge-detail']?.map((d: any, index: number) => (

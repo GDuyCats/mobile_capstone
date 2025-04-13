@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// ✅ Định nghĩa kiểu User
 interface User {
   token: string;
   role: string;
@@ -9,16 +8,15 @@ interface User {
   fullName?: string;
   email?: string;
   phone?: string;
-  [key: string]: any; // Cho phép mở rộng thêm nếu cần
+  [key: string]: any; 
 }
 
-// ✅ Kiểu cho context
 interface AuthContextType {
   user: User | null;
   login: (userData: User) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (newData: Partial<User>) => Promise<void>;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>; // optional
+  setUser: React.Dispatch<React.SetStateAction<User | null>>; 
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
