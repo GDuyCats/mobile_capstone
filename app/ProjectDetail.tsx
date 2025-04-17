@@ -6,17 +6,16 @@ import {
   ScrollView,
   ActivityIndicator,
   Image,
-  useWindowDimensions,
   TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import RenderHTML from 'react-native-render-html';
+import HeaderLayout from '../components/HeaderLayout';
+import ProjectTabs from '../components/TabView';
 
 export default function ProjectDetail({ route, navigation }: any) {
   const { projectId } = route.params;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { width } = useWindowDimensions();
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -39,7 +38,8 @@ export default function ProjectDetail({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Đang tải thông tin...</Text>
+        <Text style={{ fontSize: 10 }}>Please wait</Text>
+        <Text style={{ fontSize: 20 }}>Loading...</Text>
       </View>
     );
   }
@@ -53,90 +53,38 @@ export default function ProjectDetail({ route, navigation }: any) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Nút Quay Lại */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backText}>← Quay lại</Text>
-      </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <HeaderLayout title="Project" onBackPress={() => navigation.goBack()} />
+        {project.thumbnail && (
+          <Image source={{ uri: project.thumbnail }} style={styles.image} />
+        )}
+        <ProjectTabs
+          route={route}
+          navigation={navigation}
+          project={project}
+          projectId={projectId}
+        />
+      </ScrollView>
 
-      <TouchableOpacity 
-      style={styles.backButton} 
-      onPress={() => navigation.navigate('UserPayment', {
-        projectId: project['project-id'],
-      })}>
-        <Text style={styles.backText}>Pledge Project</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.title}>{project.title}</Text>
-
-      {project.thumbnail && (
-        <Image source={{ uri: project.thumbnail }} style={styles.image} />
-      )}
-
-      <Text style={styles.label}>
-        Creator: <Text style={styles.value}>{project.creator}</Text>
-      </Text>
-
-      <Text style={styles.label}>
-        Description: <Text style={styles.value}>{project.description}</Text>
-      </Text>
-
-      <Text style={styles.label}>
-        Status: <Text style={styles.value}>{project.status}</Text>
-      </Text>
-
-      <Text style={styles.label}>
-        Goal:{' '}
-        <Text style={styles.value}>
-          {project['minimum-amount'].toLocaleString()}$
-        </Text>
-      </Text>
-
-      <Text style={styles.label}>
-        Total Raised:{' '}
-        <Text style={styles.value}>
-          {project['total-amount'].toLocaleString()} $
-        </Text>
-      </Text>
-
-      <Text style={styles.label}>
-        Start:{' '}
-        <Text style={styles.value}>
-          {new Date(project['start-datetime']).toLocaleString()}
-        </Text>
-      </Text>
-
-      <Text style={styles.label}>
-        End:{' '}
-        <Text style={styles.value}>
-          {new Date(project['end-datetime']).toLocaleString()}
-        </Text>
-      </Text>
-
-      <Text style={styles.storyLabel}>Story:</Text>
-
-      <RenderHTML
-        contentWidth={width}
-        source={{ html: project.story }}
-        renderersProps={{
-          img: {
-            enableExperimentalPercentWidth: true,
-          },
-        }}
-        tagsStyles={{
-          img: {
-            maxWidth: '100%',
-            height: 'auto',
-          },
-        }}
-      />
-    </ScrollView>
+      <View style={styles.donateContainer}>
+        <TouchableOpacity
+          style={styles.donateButton}
+          onPress={() =>
+            navigation.navigate('UserPayment', {
+              projectId: project['project-id'],
+            })
+          }
+        >
+          <Text style={styles.donateText}>Back this Project</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     backgroundColor: '#fff',
   },
   center: {
@@ -144,43 +92,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#00246B',
-    marginBottom: 16,
-  },
-  label: {
-    fontWeight: 'bold',
-    color: '#00246B',
-    marginTop: 8,
-  },
-  value: {
-    fontWeight: 'normal',
-    color: '#000',
-  },
   image: {
     width: '100%',
     height: 200,
     marginBottom: 12,
-    borderRadius: 8,
   },
-  storyLabel: {
-    marginTop: 16,
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00246B',
+  donateContainer: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 15,
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
-  backButton: {
-    marginBottom: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#cadcfc',
-    borderRadius: 6,
-    alignSelf: 'flex-start',
+  donateButton: {
+    backgroundColor: '#0ba35a',
+    borderRadius: 50,
+    paddingVertical: 15,
+    alignItems: 'center',
   },
-  backText: {
-    color: '#00246B',
-    fontWeight: 'bold',
+  donateText: {
+    fontWeight: '600',
+    fontSize: 15,
+    color: 'white',
+    paddingHorizontal: 40,
   },
 });

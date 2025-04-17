@@ -51,14 +51,14 @@ export default function Login({ navigation }: any) {
 
         <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
           <Text style={style.label}> Gmail </Text>
-          <TextInput placeholder='anemone@gmail.com' value={username} onChangeText={setUsername} />
+          <TextInput placeholder='example@gmail.com' value={username} onChangeText={setUsername} />
         </View>
 
         <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray' }}>
           <Text style={style.label}> Password </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TextInput
-              placeholder='Abcd@123'
+              placeholder='Ex@mple123'
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}

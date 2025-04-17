@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  Button,
+  ScrollView,
   StyleSheet,
   Alert,
   TouchableOpacity,
@@ -65,91 +65,93 @@ export default function Register({ navigation }: any) {
 
 
   return (
-    <LinearGradient
-      colors={['#0af519', '#08bf13']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={style.container}>
-      <Text style={style.title}>Create your account</Text>
-      <View style={style.form}>
-        <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
-          <Text style={style.label}> Fullname </Text>
-          <TextInput
-            placeholder="Fullname"
-            value={fullname}
-            onChangeText={setFullname}
-          />
-        </View>
-
-        <View>
-          <Text style={style.label}> Email</Text>
-          <TextInput
-            placeholder="Email@gmail.com"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}
-          />
-        </View>
-
-        <View>
-          <Text style={style.label}> Password </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
+    <ScrollView>
+      <LinearGradient
+        colors={['#0af519', '#08bf13']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={style.container}>
+        <Text style={style.title}>Create your account</Text>
+        <View style={style.form}>
+          <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
+            <Text style={style.label}> Fullname </Text>
             <TextInput
-              placeholder="123@Abc"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              style={{ flex: 1 }}
+              placeholder="Fullname"
+              value={fullname}
+              onChangeText={setFullname}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <MaterialIcons
-                name={showPassword ? 'visibility' : 'visibility-off'}
-                size={24}
-                color="gray"
+          </View>
+
+          <View>
+            <Text style={style.label}> Email</Text>
+            <TextInput
+              placeholder="Email@gmail.com"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}
+            />
+          </View>
+
+          <View>
+            <Text style={style.label}> Password </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
+              <TextInput
+                placeholder="123@Abc"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                style={{ flex: 1 }}
               />
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <MaterialIcons
+                  name={showPassword ? 'visibility' : 'visibility-off'}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View>
+            <Text style={style.label}>Confirm Password </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
+              <TextInput
+                placeholder="123@Abc"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                style={{ flex: 1 }}
+              />
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <MaterialIcons
+                  name={showConfirmPassword ? 'visibility' : 'visibility-off'}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity onPress={handleRegister}>
+            <LinearGradient
+              colors={['#0af519', '#08bf13']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={style.loginButton}
+            >
+              <Text style={style.loginButtonText}>SIGN UP</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <View style={{marginHorizontal: 'auto'}}>
+            <Text style={{ color: 'black', marginRight: 0, marginLeft: 'auto', fontWeight: 400, fontSize: 15, padding: 10 }}> You already have an account ?</Text>
+            <Text style={{ fontWeight: 900, marginHorizontal: 'auto', padding: 10 }} onPress={() => navigation.navigate('Login')} > Sign in</Text>
           </View>
         </View>
-
-        <View>
-          <Text style={style.label}>Confirm Password </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
-            <TextInput
-              placeholder="123@Abc"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              style={{ flex: 1 }}
-            />
-            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-              <MaterialIcons
-                name={showConfirmPassword ? 'visibility' : 'visibility-off'}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <TouchableOpacity onPress={handleRegister}>
-          <LinearGradient
-            colors={['#0af519', '#08bf13']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={style.loginButton}
-          >
-            <Text style={style.loginButtonText}>SIGN IN</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        <View>
-          <Text style={{ color: 'black', marginRight: 0, marginLeft: 'auto', fontWeight: 400, fontSize: 15 }}> You already have an account ?</Text>
-          <Text style={{ fontWeight: 900, marginRight: 0, marginLeft: 'auto' }} onPress={() => navigation.navigate('Login')} > Sign in</Text>
-        </View>
-      </View>
-    </LinearGradient>
+      </LinearGradient>
+    </ScrollView>
   );
 }
 
@@ -200,7 +202,7 @@ const style = StyleSheet.create({
     width: 250,
     height: 50,
     borderRadius: 10,
-    marginVertical: 40
+    marginVertical: 10
   },
 
   loginButtonText: {

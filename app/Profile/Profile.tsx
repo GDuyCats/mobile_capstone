@@ -1,9 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import Zocial from '@expo/vector-icons/Zocial';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../../context/authContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
+import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import HeaderLayout from '../../components/HeaderLayout';
 interface ProfileData {
   avatar: string;
   email: string;
@@ -57,6 +61,7 @@ export default function Profile({ navigation }: any) {
 
   return (
     <View style={styles.container}>
+      <HeaderLayout title='Profile' onBackPress={() => navigation.goBack()} background="#0C1C33" fontColor="#fff" />
       {isUploading ? (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#8e44ad" />
@@ -64,20 +69,46 @@ export default function Profile({ navigation }: any) {
         </View>
       ) : (
         profile && (
-          <View style={styles.card}>
-            {user?.avatar ? (
-              <Image
-                source={{ uri: user?.avatar }}
-                style={styles.avatar} />
-            ) : (
-              <MaterialIcons name="account-circle" size={120} color="black" />
-            )}
-            <Text style={styles.name}>{profile['full-name']}</Text>
-            <Text style={[styles.info, { fontWeight: 900 }]}>Gmail: <Text style={{ fontWeight: 400 }}>{profile.email}</Text></Text>
-            <Text style={[styles.info, { fontWeight: 900 }]}>Phone: <Text style={{ fontWeight: 400 }}>{profile.phone}</Text></Text>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 0.1, backgroundColor: '#0C1C33' }}>
+            </View>
+            <View style={{ flex: 0.9, backgroundColor: 'white' }}>
+              <View style={{ marginTop: 100, paddingHorizontal: 20 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Zocial name="persona" size={24} color="black" />
+                  <Text style={styles.name}>{profile['full-name']}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <MaterialCommunityIcons name="gmail" size={28} color="black" />
+                  <Text style={{ fontWeight: 300, fontSize: 20 }}>{profile.email}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Feather name="phone" size={24} color="black" />
+                  <Text style={{ fontWeight: 300, fontSize: 20 }}>{profile.phone}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <FontAwesome name="sticky-note" size={24} color="black" />
+                  <Text style={{ fontWeight: 300, fontSize: 20 }}>{profile.bio}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.avatarWrapper}>
+              {user?.avatar ? (
+                <Image
+                  source={{ uri: user?.avatar }}
+                  style={styles.avatar} />
+              ) : (
+                <MaterialIcons name="account-circle" size={120} color="black" />
+              )}
+            </View>
+
+            {/*
+          
+      
+            
             <Text style={[styles.info, { fontWeight: 900 }]}>Role: <Text style={{ fontWeight: 400 }}>{profile.role}</Text></Text>
-            <Text style={[styles.info, { fontWeight: 900 }]}>Bio: <Text style={{ fontWeight: 400 }}>{profile.bio}</Text></Text>
-            <Text style={[styles.info, { fontWeight: 900 }]}>Created: <Text style={{ fontWeight: 400 }}>{profile['created-datetime']}</Text></Text>
+
+            <Text style={[styles.info, { fontWeight: 900 }]}>Created: <Text style={{ fontWeight: 400 }}>{profile['created-datetime']}</Text></Text> */}
           </View>
         )
       )}
@@ -89,37 +120,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f4f4f8',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
   },
   loading: {
     alignItems: 'center',
   },
   card: {
     backgroundColor: 'white',
-    padding: 24,
-    borderRadius: 16,
-    width: '100%',
-    alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+  },
+  avatarWrapper: {
+    position: 'absolute',
+    top: 0,
+    alignSelf: 'center',
+    padding: 6,
+    borderRadius: 100,
+    backgroundColor: '#fff',
   },
   avatar: {
     width: 120,
     height: 120,
-    borderRadius: 60,
-    marginBottom: 16,
-    borderWidth: 3,
-    borderColor: '#8e44ad',
+    borderRadius: 100,
   },
   name: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 400,
     color: '#2c3e50',
-    marginBottom: 12,
   },
   info: {
     fontSize: 16,

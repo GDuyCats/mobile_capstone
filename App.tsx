@@ -110,16 +110,16 @@ function MainNavigator() {
       <Stack.Screen name="StaffProjectApprove" component={StaffProjectApprove} />
       <Stack.Screen name="ApprovedProject" component = {ApprovedProject}/>
 
-      <Stack.Screen name="Updateprofile" component={Updateprofile} />
-      <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Updateprofile" component={Updateprofile} options={{ headerShown: false }}/>
+      <Stack.Screen name="ProjectDetail" component={ProjectDetail} options={{ headerShown: false }}/>
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }}/>
       <Stack.Screen name="CreateProject" component={CreateProject} />
       <Stack.Screen name="UserPayment" component={UserPayment} options={{ headerShown: false }} />
-      <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} />
+      <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} options={{ headerShown: false }}/>
       <Stack.Screen name="PaymentFailed" component={PaymentFailed} />
       <Stack.Screen name="MyPledge" component={MyPledge} />
       <Stack.Screen name="MyProject" component={MyProject} />
-      <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} />
+      <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} options={{ headerShown: false }}/>
       <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} />
       <Stack.Screen name="MoneyHistory" component={MoneyHistory} />
       <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
