@@ -49,7 +49,8 @@ export default function CreateProject({ navigation }: any) {
 
     if (!title || !description || !minimumAmount) {
       Alert.alert('Thông báo', 'Vui lòng điền đầy đủ thông tin!');
-      setIsLoading(false)
+      setIsLoading(false);
+      setDisable(false)
       return;
     }
 
@@ -203,21 +204,21 @@ export default function CreateProject({ navigation }: any) {
           onCancel={() => setShowPicker(null)}
         />
         <TouchableOpacity
-          style={[styles.createProjectButton, disable && {opacity: 0.5}]}
-          disabled = {disable}
+          style={[styles.createProjectButton, disable && { opacity: 0.5 }]}
+          disabled={disable}
           onPress={handleCreate} >
           <Text
             style={{ color: 'white', fontWeight: 'bold' }}>Create Project</Text>
         </TouchableOpacity>
 
         {isLoading && (
-        <View>
-          <Text>Loading...</Text>
-        </View>
+          <View>
+            <Text>Loading...</Text>
+          </View>
 
-      )}
+        )}
       </ScrollView>
-   
+
     </TouchableWithoutFeedback>
   );
 }

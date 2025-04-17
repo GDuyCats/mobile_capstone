@@ -14,18 +14,22 @@ export default function Home({ navigation }: any) {
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
 
-  const fetchProjects = async (title: string = '', selectedStatus: string = '') => {
+  const fetchProjects = async (title = '', selectedStatus = '') => {
     setIsUploading(true);
+
+    // tạo object rỗng rồi thêm từng cái nếu có
+    const params: any = {};
+    if (title.trim() !== '') params.title = title;
+    if (selectedStatus !== '') params.status = selectedStatus;
+
     try {
-      const res = await axios.get('https://marvelous-gentleness-production.up.railway.app/api/Project/GetAllProject', {
-        params: {
-          title: title || undefined,
-          status: selectedStatus || undefined,
-        },
-      });
+      const res = await axios.get(
+        'https://marvelous-gentleness-production.up.railway.app/api/Project/GetAllProject',
+        { params }
+      );
       setProjects(res.data.data);
     } catch (error) {
-      console.log('Lỗi fetch project:', error);
+      console.log('❌ Lỗi fetch project:', error.response?.data || error.message);
     } finally {
       setIsUploading(false);
     }
@@ -52,25 +56,26 @@ export default function Home({ navigation }: any) {
           returnKeyType="search"
         />
 
-        <View style={styles.pickerContainer}>
+        {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={status}
             onValueChange={(itemValue) => {
               setStatus(itemValue);
-              fetchProjects(searchText, itemValue);
+              fetchProjects(searchText, itemValue); // vẫn dùng searchText hiện tại
             }}
             style={styles.picker}
           >
             <Picker.Item label="-- Status --" value="" />
-            <Picker.Item label="ONGOING" value="ONGOING" />
-            <Picker.Item label="HALTED" value="HALTED" />
+            <Picker.Item label="VISIBLE" value="VISIBLE" />
+            <Picker.Item label="DELETED" value="DELETED" />
           </Picker>
-        </View>
+        </View> */}
 
         {isUploading && (
-          <View style={{ marginVertical: 10 }}>
+          <View style={{ marginVertical: 10, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text>Đang tải thông tin lên ...</Text>
+            <Text style={{ fontSize: 10 }}>Please wait</Text>
+            <Text style={{ fontSize: 15 }}>Loading...</Text>
           </View>
         )}
 
@@ -98,17 +103,19 @@ export default function Home({ navigation }: any) {
               )}
 
               <View style={{ marginVertical: 10 }}>
-                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Creator: </Text>{project.creator}</Text>
+                <Text style={{ fontWeight: 900, fontSize: 18 }}>
+                  <Text style={{ fontWeight: 400, fontSize: 15 }}>
+                    Created by {'\n'}
+                  </Text >
+                  {project.creator}
+                </Text>
               </View>
 
               <View>
-                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Description: </Text>{project.description}</Text>
+                <Text style={{ fontWeight: 300 }}>
+                  {project.description}
+                </Text>
               </View>
-
-              <View style={{ marginVertical: 10 }}>
-                <Text><Text style={{ color: '#00246B', fontWeight: 'bold' }}>Status: </Text>{project.status}</Text>
-              </View>
-
               <View style={{ marginTop: 8 }}>
                 <View style={{ height: 4, backgroundColor: '#ccc', borderRadius: 2, overflow: 'hidden' }}>
                   <View
@@ -131,7 +138,7 @@ export default function Home({ navigation }: any) {
                 <View style={{ marginTop: 4, marginLeft: 10 }}>
                   <Text style={{ color: '#00246B', fontWeight: 'bold' }}>
                     <Text>{project.backers || 0}{'\n'}</Text>
-                    {(project.backers || 0) <= 1  ? 'Backer' : 'Backers'}
+                    {(project.backers || 0) <= 1 ? 'Backer' : 'Backers'}
                   </Text>
                 </View>
 
@@ -153,6 +160,7 @@ export default function Home({ navigation }: any) {
                     {daysLeft === 1 ? 'day' : 'days'} to go
                   </Text>
                 </View>
+
               </View>
             </TouchableOpacity>
           );
@@ -170,6 +178,7 @@ const styles = StyleSheet.create({
   searchInput: {
     width: '100%',
     height: 40,
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
