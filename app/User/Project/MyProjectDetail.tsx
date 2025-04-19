@@ -84,16 +84,11 @@ function MyProjectDetail({ route, navigation }: any) {
       ]
     );
   };
-
   return (
     <ScrollView>
       <HeaderLayout title={'My Project Detail'} onBackPress={() => navigation.goBack()} />
-      <View>
-        <Text style={styles.label}>📌 Project's title:</Text>
-        <Text>{project.title}</Text>
-
-        <Text style={styles.label}>🧑‍💼 Creator:</Text>
-        <Text>{project.creator}</Text>
+      <View style={{ padding: 20, backgroundColor: 'white' }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#00246B' }}>{project.title}</Text>
         {project.thumbnail ? (
           <Image
             source={{ uri: project.thumbnail }}
@@ -103,26 +98,73 @@ function MyProjectDetail({ route, navigation }: any) {
         ) : (
           <Text>Không có ảnh</Text>
         )}
-        <Text style={styles.label}>📖 Description</Text>
-        <Text>{project.description}</Text>
+        <View>
+          <Text style={styles.label}>Created by</Text>
+          <Text style={{ fontWeight: 900, fontSize: 18 }}>{project.creator}</Text>
+        </View>
+        <View style={{ backgroundColor: '#F2F2F2', padding: 10, borderRadius: 10, marginTop: 10 }}>
+          <Text style={{ fontWeight: '900', fontSize: 18 }}>Description</Text>
+          <Text>{project.description}</Text>
+        </View>
 
-        <Text style={styles.label}>Game Story</Text>
-        <Text>{project.story}</Text>
+        <View style={{ backgroundColor: '#F2F2F2', padding: 10, borderRadius: 10, marginTop: 10 }}>
+          <Text style={{ fontWeight: '900', fontSize: 18 }}>Story</Text>
+          <Text>{project.story}</Text>
+        </View>
+        <View style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 10 }}>
+          {/* Thanh tiến trình màu xanh */}
+          <View style={{ height: 5, backgroundColor: '#ddd', borderRadius: 5, marginBottom: 8 }}>
+            <View
+              style={{
+                width: `${Math.min(Math.round((project['total-amount'] / project['minimum-amount']) * 100), 100)}%`,
+                backgroundColor: 'green',
+                height: '100%',
+                borderRadius: 5,
+              }}
+            />
+          </View>
 
-        <Text style={styles.label}>📅 Start time</Text>
-        <Text>{new Date(project['start-datetime']).toLocaleString()}</Text>
+          {/* Thông tin chi tiết */}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ color: '#028760', fontWeight: 'bold' }}>
+                {Math.round((project['total-amount'] / project['minimum-amount']) * 100)}%
+              </Text>
+              <Text style={{ fontWeight: 900, color: '#028760' }}>funded</Text>
+            </View>
 
-        <Text style={styles.label}>📅 End time</Text>
-        <Text>{new Date(project['end-datetime']).toLocaleString()}</Text>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project.backers}</Text>
+              <Text style={{ fontWeight: 900 }}>Backers</Text>
+            </View>
 
-        <Text style={styles.label}>💰 Goal</Text>
-        <Text>{project['minimum-amount']} $</Text>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project['minimum-amount']} $</Text>
+              <Text style={{ fontWeight: 900 }}>Goal</Text>
+            </View>
 
-        <Text style={styles.label}>💵 Received</Text>
-        <Text>{project['total-amount']} $</Text>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project['total-amount']} $</Text>
+              <Text style={{ fontWeight: 900 }}>Gain</Text>
+            </View>
 
-        <Text style={styles.label}>🔒 Status</Text>
-        <Text>{project.status}</Text>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {
+                  Math.max(
+                    0,
+                    Math.ceil(
+                      (new Date(project['end-datetime']).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                    )
+                  )
+                }{' '}
+                days
+              </Text>
+              <Text style={{ fontWeight: 900 }}> to go</Text>
+            </View>
+          </View>
+        </View>
+
         <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
           <TouchableOpacity
             style={{
@@ -200,7 +242,8 @@ export default MyProjectDetail;
 const styles = StyleSheet.create({
   label: {
     marginTop: 10,
-    fontWeight: 'bold',
+    fontWeight: '400',
+    fontSize: 15,
     color: '#333',
   },
   error: {

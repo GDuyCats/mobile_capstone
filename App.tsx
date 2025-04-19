@@ -123,7 +123,7 @@ function MainNavigator() {
       <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} options={{ headerShown: false }}/>
       <Stack.Screen name="PaymentFailed" component={PaymentFailed} />
       <Stack.Screen name="MyPledge" component={MyPledge} />
-      <Stack.Screen name="MyProject" component={MyProject} />
+      <Stack.Screen name="MyProject" component={MyProject} options={{ headerShown: false }}/>
       <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} options={{ headerShown: false }}/>
       <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} />
       <Stack.Screen name="MoneyHistory" component={MoneyHistory} />
