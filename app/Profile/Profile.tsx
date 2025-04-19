@@ -12,10 +12,8 @@ interface ProfileData {
   avatar: string;
   email: string;
   ['full-name']: string;
-  role: string;
   phone: string;
   bio: string;
-  ['created-datetime']: string;
 }
 
 export default function Profile({ navigation }: any) {
@@ -86,7 +84,7 @@ export default function Profile({ navigation }: any) {
                   <Feather name="phone" size={24} color="black" />
                   <Text style={{ fontWeight: 300, fontSize: 20 }}>{profile.phone}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+                <View style={{ marginVertical: 10 }}>
                   <FontAwesome name="sticky-note" size={24} color="black" />
                   <Text style={{ fontWeight: 300, fontSize: 20 }}>{profile.bio}</Text>
                 </View>
@@ -101,14 +99,6 @@ export default function Profile({ navigation }: any) {
                 <MaterialIcons name="account-circle" size={120} color="black" />
               )}
             </View>
-
-            {/*
-          
-      
-            
-            <Text style={[styles.info, { fontWeight: 900 }]}>Role: <Text style={{ fontWeight: 400 }}>{profile.role}</Text></Text>
-
-            <Text style={[styles.info, { fontWeight: 900 }]}>Created: <Text style={{ fontWeight: 400 }}>{profile['created-datetime']}</Text></Text> */}
           </View>
         )
       )}

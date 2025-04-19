@@ -3,7 +3,7 @@ import {
   ScrollView, View, Text, Image, StyleSheet,
   ActivityIndicator, TouchableOpacity, TextInput, Keyboard
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+// import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AppLayout from '../components/AppLayout';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,8 +16,6 @@ export default function Home({ navigation }: any) {
 
   const fetchProjects = async (title = '', selectedStatus = '') => {
     setIsUploading(true);
-
-    // tạo object rỗng rồi thêm từng cái nếu có
     const params: any = {};
     if (title.trim() !== '') params.title = title;
     if (selectedStatus !== '') params.status = selectedStatus;
@@ -61,7 +59,7 @@ export default function Home({ navigation }: any) {
             selectedValue={status}
             onValueChange={(itemValue) => {
               setStatus(itemValue);
-              fetchProjects(searchText, itemValue); // vẫn dùng searchText hiện tại
+              fetchProjects(searchText, itemValue);
             }}
             style={styles.picker}
           >

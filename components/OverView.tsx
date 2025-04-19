@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
 import {
     View,
     Text,
     StyleSheet,
     ScrollView,
     useWindowDimensions,
+    TouchableOpacity,
 } from 'react-native';
 
 export default function OverView({ project }: any) {
     const { width } = useWindowDimensions();
-
+    const navigation = useNavigation();
     if (!project) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -17,6 +20,9 @@ export default function OverView({ project }: any) {
             </View>
         );
     }
+    useEffect(() => {
+        console.log(`HI ${project['project-id']}`)
+    }, [project])
 
     const progress = (project["total-amount"] / project["minimum-amount"]) * 100;
     const endDate = new Date(project["end-datetime"]);
@@ -80,6 +86,32 @@ export default function OverView({ project }: any) {
                         </View>
                     </View>
                 </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('GetProjectComment', { projectId: project['project-id'] })}
+                    style={{
+                        marginVertical: 15,
+                        borderBottomWidth: 1,
+                        borderBlockColor: '#AAAAAB',
+                        paddingVertical: 10
+                    }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{ fontSize: 15 }}>Comments</Text>
+                        <AntDesign name="right" size={15} color="black" />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('GetProjectComment', { projectId: project['project-id'] })}
+                    style={{
+                        marginBottom: 15,
+                        borderBottomWidth: 1,
+                        borderBlockColor: '#AAAAAB',
+                        paddingVertical: 10
+                    }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{ fontSize: 15 }}>Report this project to GAMEMKT</Text>
+                        <AntDesign name="right" size={15} color="black" />
+                    </View>
+                </TouchableOpacity>
             </ScrollView>
         </View>
     );
