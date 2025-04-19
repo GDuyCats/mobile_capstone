@@ -8,6 +8,7 @@ export default function ForgetPassword({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+
   const handleForgetPassword = async () => {
     if (!email) {
       Alert.alert('Error', 'Please insert your email !');
@@ -16,24 +17,34 @@ export default function ForgetPassword({ navigation }: any) {
 
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append('email', email);
+
       const response = await axios.post(
-        `https://marvelous-gentleness-production.up.railway.app/api/Authentication/ForgetPassword?email=${email}`
+        `https://marvelous-gentleness-production.up.railway.app/api/ForgotPassword/Send-Code`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
-      if (response.data.success) {
-        console.log(response.data.message)
-        Alert.alert('Success', `${response.data.message}`);
-        navigation.navigate('ResetPassword')
+      console.log(response.data);
+      if (response.status === 200) {
+        Alert.alert('Success', 'Code sent successfully!');
+        navigation.navigate('VerifyCode', { email });
       } else {
         Alert.alert('Fail', 'Can not send the email !');
       }
     } catch (error) {
       console.log(error);
-      Alert.alert('Error', 'Please try again letter !');
+      Alert.alert('Error', 'Please try again later !');
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -67,7 +78,7 @@ export default function ForgetPassword({ navigation }: any) {
                 fontSize: 15
               }}>
             {loading ? 'Sending...' : 'Send'}
-            </Text>
+          </Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>

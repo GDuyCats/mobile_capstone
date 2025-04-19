@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { View, TextInput, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { MaterialIcons } from '@expo/vector-icons';
+import HeaderLayout from '../components/HeaderLayout';
 
-export default function ResetPasswordWebView({ navigation }: any) {
-  const [token, setToken] = useState<string | null>(null);
+export default function ResetPasswordWebView({ navigation, route }: any) {
+  const { email } = route.params
   const [newPassword, setNewPassword] = useState('');
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleReset = async () => {
-    if (!token || !newPassword) return Alert.alert('Thiếu token hoặc mật khẩu');
-
     try {
       await axios.post(
-        'https://marvelous-gentleness-production.up.railway.app/api/Authentication/ResetPassword',
+        `https://marvelous-gentleness-production.up.railway.app/api/ForgotPassword/Reset-Password`,
         null,
         {
           params: {
-            token: token,
-            newPassword: newPassword,
+            email,
+            newPassword
           },
         }
       );
@@ -31,33 +30,30 @@ export default function ResetPasswordWebView({ navigation }: any) {
 
   return (
     <View style={{ flex: 1 }}>
-      {!token && (
-        <WebView
-          source={{ uri: 'https://marvelous-gentleness-production.up.railway.app/swagger/confirm?token=abc123' }}
-          onNavigationStateChange={(navState) => {
-            const { url } = navState;
-            if (url.includes('token=')) {
-              const params = new URLSearchParams(url.split('?')[1]);
-              const foundToken = params.get('token');
-              if (foundToken) {
-                setToken(foundToken);
-              }
-            }
-          }}
-        />
-      )}
-      {token && (
-        <View style={styles.container}>
+      <HeaderLayout title={'Reset Password'} onBackPress={() => { navigation.goBack() }} />
+      <View style={styles.container}>
+        <View style={styles.inputWrapper}>
           <TextInput
             placeholder="Nhập mật khẩu mới"
-            secureTextEntry
+            secureTextEntry={!showPassword}
             value={newPassword}
             onChangeText={setNewPassword}
             style={styles.input}
           />
-          <Button title="Đặt lại mật khẩu" onPress={handleReset} />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.icon}
+          >
+            <MaterialIcons
+              name={showPassword ? 'visibility' : 'visibility-off'}
+              size={24}
+              color="gray"
+            />
+          </TouchableOpacity>
         </View>
-      )}
+
+        <Button title="Đặt lại mật khẩu" onPress={handleReset} />
+      </View>
     </View>
   );
 }
@@ -70,5 +66,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
     marginBottom: 20,
+  },
+  inputWrapper: {
+    position: 'relative',
+    marginBottom: 20,
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    top: 12,
   },
 });

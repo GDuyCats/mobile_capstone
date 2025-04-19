@@ -66,7 +66,6 @@ export default function ProjectDetail({ route, navigation }: any) {
           projectId={projectId}
         />
       </ScrollView>
-
       <View style={styles.donateContainer}>
         <TouchableOpacity
           style={styles.donateButton}

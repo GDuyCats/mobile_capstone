@@ -10,6 +10,7 @@ import Register from './app/Register';
 import Setting from './app/Setting';
 import ForgetPassword from './app/ForgetPassword';
 import ResetPassword from './app/ResetPassword';
+import GetProjectComment from './app/Comment/GetProjectComment';
 
 import UserPayment from './app/User/Payment/UserPayment';
 import MyProject from './app/User/Project/MyProject';
@@ -22,6 +23,7 @@ import ProjectDetail from './app/ProjectDetail';
 import PaymentFailed from './app/User/Payment/PaymentFail';
 import PaymentSuccess from './app/User/Payment/PaymentSuccess';
 import MoneyHistory from './app/User/Project/MoneyHistory';
+import VerifyCode from './app/VerifyCode';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -42,7 +44,7 @@ import CreateProject from './app/User/Project/CreateProject';
 import StaffProjectApprove from './app/Staff/Project/StaffProjectApprove';
 import ApprovedProject from './app/Staff/Project/AprrovedProject';
 import ResendGmailConfirm from './app/ResendGmailConfirm';
-
+import OtherUserProfile from './app/Profile/OtherUserProfile/Profile'
 
 export type RootStackParamList = {
   Admin: undefined;
@@ -68,7 +70,10 @@ export type RootStackParamList = {
   Register: undefined;
   Setting: undefined;
   ForgotPassword: undefined;
-  ResendEmailConfirm: undefined
+  ResendEmailConfirm: undefined;
+  GetProjectComment: undefined;
+  OtherUserProfile: undefined;
+  VerifyCode: undefined;
 
   Profile: undefined;
   UserPayment: undefined;
@@ -130,6 +135,9 @@ function MainNavigator() {
       <Stack.Screen name="ForgotPassword" component={ForgetPassword} options={{ headerShown: false }} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
       <Stack.Screen name="ResetGmailConfirm" component={ResendGmailConfirm} options={{ headerShown: false }} />
+      <Stack.Screen name="GetProjectComment" component={GetProjectComment} options={{ headerShown: false }} />
+      <Stack.Screen name="OtherUserProfile" component={OtherUserProfile} options={{ headerShown: false }} />
+      <Stack.Screen name="VerifyCode" component={VerifyCode} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

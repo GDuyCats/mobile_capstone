@@ -23,14 +23,15 @@ export default function Reward() {
             },
           }
         );
-        setRewards(res.data.data || []);
+        const sortedRewards = (res.data.data || []).sort((a, b) => a.amount - b.amount);; // 👈 Sắp xếp giảm dần
+        setRewards(sortedRewards);
       } catch (err) {
         console.log('Lỗi khi lấy reward:', err);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchRewards();
   }, [projectId]);
 
@@ -59,9 +60,8 @@ export default function Reward() {
         keyExtractor={(item) => item['reward-id'].toString()}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.amount}>🎁 {item.amount}$</Text>
+            <Text style={styles.amount}>{item.amount}$</Text>
             <Text style={styles.details}>{item.details}</Text>
-            <Text style={styles.date}>🕒 {new Date(item['created-datetime']).toLocaleString()}</Text>
           </View>
         )}
       />
@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     marginBottom: 12,
-    backgroundColor: '#f9f9f9',
+    elevation: 2,
+    backgroundColor: 'white',
   },
   amount: {
     fontWeight: 'bold',
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
   details: {
     fontSize: 15,
     color: '#333',
+    fontWeight: 500,
     marginBottom: 4,
   },
   date: {
