@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/authContext';
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
+import HeaderLayout from '../../../components/HeaderLayout';
 
 function MyPledge({ navigation }: any) {
     const [pledge, setPledge] = useState([]);
@@ -52,7 +53,7 @@ function MyPledge({ navigation }: any) {
 
                     setPledge(updatedPledges);
                 } catch (error) {
-                    console.log('Lỗi khi fetch pledge:', error);
+                    console.log('Error while get pledge', error);
                 } finally {
                     setIsLoading(false);
                 }
@@ -63,37 +64,52 @@ function MyPledge({ navigation }: any) {
     );
 
     return (
-        <ScrollView contentContainerStyle={{ padding: 10 }}>
+        <ScrollView>
+            <HeaderLayout title={'My pledge'} onBackPress={() => { navigation.goBack() }} />
             {loading ? (
                 <View style={{ marginVertical: 10 }}>
                     <ActivityIndicator size="large" color="#0000ff" />
-                    <Text>Đang tải thông tin lên ...</Text>
+                    <Text>Loading ...</Text>
                 </View>
             ) : (
-                <>
+                <View style={{ padding: 20 }}>
                     {pledge.length > 0 ? (
                         pledge.map((item, index) => (
                             <TouchableOpacity
                                 key={index}
                                 style={style.card}
                                 onPress={() => {
-                                    navigation.navigate('ProjectDetail', {projectId : item["project-id"]})
+                                    navigation.navigate('ProjectDetail', { projectId: item["project-id"] })
                                 }}>
                                 <Text style={style.title}>Project : <Text>{item.projectTitle}</Text></Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={style.amount}>Amount:</Text>
-                                    <Text style={{ color: 'red', fontWeight: '700' }}>- {item.amount}$</Text>
+                                    <Text style={{ color: 'red', fontWeight: '700' }}>- {item['total-amount']}$</Text>
                                 </View>
                                 <Text style={{ fontSize: 15 }}>Detail:</Text>
-                                {item["pledge-detail"]?.map((detail: any, i: any) => (
-                                    <Text key={i}>• {detail["payment-id"]} - {detail.status}</Text>
+                                {item["pledge-details"]?.map((detail: any, i: any) => (
+                                    <View style={{ margin: 10 }} key={i}>
+                                        <Text>• {detail["payment-id"]} - {detail.status}</Text>
+                                        <Text>• {detail["invoice-id"]}</Text>
+                                        <Text
+                                            style={{ color: detail["invoice-url"] ? 'blue' : 'gray', textDecorationLine: detail["invoice-url"] ? 'underline' : 'none' }}
+                                            onPress={() => {
+                                                if (detail["invoice-url"]) {
+                                                    Linking.openURL(detail["invoice-url"]);
+                                                }
+                                            }}
+                                        >
+                                            • {detail["invoice-url"] ? detail["invoice-url"] : 'N/A'}
+                                        </Text>
+                                    </View>
+
                                 ))}
                             </TouchableOpacity>
                         ))
                     ) : (
                         <Text>Không có pledge nào.</Text>
                     )}
-                </>
+                </View>
             )}
         </ScrollView>
     );

@@ -15,7 +15,6 @@ export default function AppLayout({ children, navigation }: LayoutProps) {
       updateUser(null);
     }
   }, []);
-
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.headerBox}>

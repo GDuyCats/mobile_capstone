@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import {
   View,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -14,6 +15,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { AuthContext } from '../../../context/authContext';
+import HeaderLayout from '../../../components/HeaderLayout';
 
 export default function UpdateProject({ route, navigation }: any) {
   const { projectId } = route.params;
@@ -73,7 +75,6 @@ export default function UpdateProject({ route, navigation }: any) {
     formData.append('EndDatetime', endDate.toISOString());
 
     try {
-      // Update project
       const res = await axios.put(
         `https://marvelous-gentleness-production.up.railway.app/api/Project/UpdateProject?projectId=${projectId}`,
         formData,
@@ -84,8 +85,6 @@ export default function UpdateProject({ route, navigation }: any) {
           },
         }
       );
-
-      // Update thumbnail nếu có ảnh
       if (image) {
         const imageForm = new FormData();
         imageForm.append('file', {
@@ -105,8 +104,6 @@ export default function UpdateProject({ route, navigation }: any) {
           }
         );
       }
-
-      // Update story nếu có
       if (story) {
         await axios.put(
           `https://marvelous-gentleness-production.up.railway.app/api/Project/UpdateProjectStory?projectId=${projectId}&story=${encodeURIComponent(story)}`,
@@ -119,11 +116,11 @@ export default function UpdateProject({ route, navigation }: any) {
         );
       }
 
-      Alert.alert('Thành công', 'Cập nhật dự án thành công!');
+      Alert.alert('Success', 'Project update successfully');
       navigation.goBack();
     } catch (err) {
       console.error(err);
-      Alert.alert('Lỗi', 'Có lỗi khi gửi dữ liệu cập nhật.');
+      Alert.alert('Error', 'There is something wrong while update the project');
     }
   };
 
@@ -147,95 +144,121 @@ export default function UpdateProject({ route, navigation }: any) {
     }
   };
 
-  if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, marginBottom: 12 }}>Loading ...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Project Title</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} />
+    <ScrollView contentContainerStyle={{flex: 1}}>
+      <HeaderLayout title={'Update Project'} onBackPress={() => navigation.goBack()} />
+      <View style={styles.container}>
+        <Text style={styles.label}>Project Title</Text>
+        <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-      <Text style={styles.label}>Description</Text>
-      <TextInput style={styles.input} value={description} onChangeText={setDescription} />
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={styles.input}
+          value={description}
+          onChangeText={setDescription}
+          multiline={true}
+          textAlignVertical="top" />
 
-      <Text style={styles.label}>Story (Game's story)</Text>
-      <TextInput
-        style={[styles.input, { height: 80 }]}
-        value={story}
-        onChangeText={setStory}
-        multiline
-      />
+        <Text style={styles.label}>Story (Game's story)</Text>
+        <TextInput
+          style={[styles.input, { height: 80 }]}
+          value={story}
+          onChangeText={setStory}
+          multiline
+        />
 
-      <Text style={styles.label}>Goal ($):</Text>
-      <TextInput
-        style={styles.input}
-        value={minimumAmount}
-        onChangeText={setMinimumAmount}
-        keyboardType="numeric"
-      />
+        <Text style={styles.label}>Goal ($):</Text>
+        <TextInput
+          style={styles.input}
+          value={minimumAmount}
+          onChangeText={setMinimumAmount}
+          keyboardType="numeric"
+        />
 
-      <Text style={styles.label}>Time Start:</Text>
-      <TouchableOpacity onPress={() => setShowPicker('start')} style={styles.dateBtn}>
-        <Text>{startDate.toLocaleString()}</Text>
-      </TouchableOpacity>
+        <Text style={styles.label}>Time Start:</Text>
+        <TouchableOpacity onPress={() => setShowPicker('start')} style={styles.dateBtn}>
+          <Text>{startDate.toLocaleString()}</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.label}>Time end:</Text>
-      <TouchableOpacity onPress={() => setShowPicker('end')} style={styles.dateBtn}>
-        <Text>{endDate.toLocaleString()}</Text>
-      </TouchableOpacity>
+        <Text style={styles.label}>Time end:</Text>
+        <TouchableOpacity onPress={() => setShowPicker('end')} style={styles.dateBtn}>
+          <Text>{endDate.toLocaleString()}</Text>
+        </TouchableOpacity>
 
-      <DateTimePickerModal
-        isVisible={!!showPicker}
-        mode="datetime"
-        date={showPicker === 'start' ? startDate : endDate}
-        onConfirm={handleConfirm}
-        onCancel={() => setShowPicker(null)}
-      />
+        <DateTimePickerModal
+          isVisible={!!showPicker}
+          mode="datetime"
+          date={showPicker === 'start' ? startDate : endDate}
+          onConfirm={handleConfirm}
+          onCancel={() => setShowPicker(null)}
+        />
 
-      <View style={{ marginTop: 10 }}>
-        <Text style={styles.label}>Thumbnail (Optional):</Text>
-        {!image ? (
-          <TouchableOpacity onPress={pickImage} style={styles.dateBtn}>
-            <Text>Choose thumnail from the library</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={{ alignItems: 'center' }}>
-            <Image
-              source={{ uri: image.uri }}
-              style={{ width: '100%', height: 200, borderRadius: 10 }}
-            />
-            <View style={{ flexDirection: 'row', marginTop: 10, gap: 10 }}>
-              <TouchableOpacity
-                onPress={pickImage}
-                style={{
-                  backgroundColor: '#4E9F3D',
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  borderRadius: 6,
-                }}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đổi ảnh</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setImage(null)}
-                style={{
-                  backgroundColor: '#FF6B6B',
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  borderRadius: 6,
-                }}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Huỷ chọn ảnh</Text>
-              </TouchableOpacity>
+        <View style={{ marginTop: 10 }}>
+          <Text style={styles.label}>Thumbnail (Optional):</Text>
+          {!image ? (
+            <TouchableOpacity onPress={pickImage} style={styles.dateBtn}>
+              <Text>Choose thumnail from the library</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={{ uri: image.uri }}
+                style={{ width: '100%', height: 200, borderRadius: 10 }}
+              />
+              <View style={{ flexDirection: 'row', marginTop: 10, gap: 10 }}>
+                <TouchableOpacity
+                  onPress={pickImage}
+                  style={{
+                    backgroundColor: '#4E9F3D',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 6,
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đổi ảnh</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setImage(null)}
+                  style={{
+                    backgroundColor: '#FF6B6B',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 6,
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Huỷ chọn ảnh</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
+          )}
+        </View>
+
+        <TouchableOpacity
+          style={{
+            padding: 20,
+            backgroundColor: '#036ba3',
+            margin: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 50,
+            opacity: isDisabled ? 0.5 : 1
+          }}
+          onPress={handleUpdate}
+          disabled={isDisabled}>
+          <Text style={{ fontWeight: '900', color: 'white' }}>Update Project</Text>
+        </TouchableOpacity>
       </View>
 
-      <Button 
-      title="Update Project" 
-      onPress={handleUpdate} 
-      disabled={isDisabled}/>
-    </View>
+    </ScrollView>
   );
 }
 

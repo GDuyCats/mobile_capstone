@@ -1,17 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Alert, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image, ScrollView } from 'react-native';
 import axios from 'axios';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { AuthContext } from '../../../context/authContext';
 import { useFocusEffect } from '@react-navigation/native';
 import HeaderLayout from '../../../components/HeaderLayout';
+import FooterLayout from '../../../components/NavbarLayout';
 function MyProjectDetail({ route, navigation }: any) {
   const { user } = useContext(AuthContext);
   const { projectId } = route.params;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDisabledUpDate, setIsDisabledUpdate] = useState(false);
+  const [isDisabledDelete, setIsDisabledDelete] = useState(false);
+  const [isDisabledBacker, setIsDisabledBacker] = useState(false);
+  const [isDisabledReward, setIsDisabledReward] = useState(false);
   useFocusEffect(
     React.useCallback(() => {
+      setIsDisabledUpdate(false);
       const fetchProject = async () => {
         try {
           const res = await axios.get(
@@ -34,31 +40,37 @@ function MyProjectDetail({ route, navigation }: any) {
     }, [projectId, user.token]));
 
   if (loading) {
-    return <ActivityIndicator size="large" style={{ marginTop: 40 }} />;
+    return (
+      <View >
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   if (!project) {
     return (
       <View>
-        <Text style={styles.error}>Không tìm thấy dự án.</Text>
+        <Text style={styles.error}>Don't have any project</Text>
       </View>
     );
   }
 
   const handleDeleteProject = () => {
+    setIsDisabledDelete(true)
     Alert.alert(
-      'Xác nhận xoá',
-      'Bạn có chắc chắn muốn xoá dự án này không?',
+      'Are you sure ?',
+      'Do you really want to delete this Project ?',
       [
         {
-          text: 'Hủy',
+          text: 'Cancel',
           style: 'cancel',
+          onPress: (() => setIsDisabledDelete(false))
         },
         {
-          text: 'Xoá',
+          text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            setIsDisabled(true)
             try {
               const res = await axios.delete(
                 `https://marvelous-gentleness-production.up.railway.app/api/Project/DeleteProject?id=${project["project-id"]}`,
@@ -70,30 +82,25 @@ function MyProjectDetail({ route, navigation }: any) {
               );
 
               if (res.status === 200) {
-                Alert.alert('Thành công', 'Dự án đã được xoá');
+                Alert.alert('Success', 'The project have been deleted !');
                 navigation.goBack();
               } else {
-                Alert.alert('Lỗi', 'Không thể xoá dự án');
+                Alert.alert('Error', 'Can not delete the project !');
               }
             } catch (err) {
               console.error(err);
-              Alert.alert('Lỗi', 'Đã có lỗi xảy ra khi xoá dự án');
+              Alert.alert('Error', 'There is something wrong white delete the project !');
             }
           },
         },
       ]
     );
   };
-
   return (
     <ScrollView>
       <HeaderLayout title={'My Project Detail'} onBackPress={() => navigation.goBack()} />
-      <View>
-        <Text style={styles.label}>📌 Project's title:</Text>
-        <Text>{project.title}</Text>
-
-        <Text style={styles.label}>🧑‍💼 Creator:</Text>
-        <Text>{project.creator}</Text>
+      <View style={{ padding: 20, backgroundColor: 'white' }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#00246B' }}>{project.title}</Text>
         {project.thumbnail ? (
           <Image
             source={{ uri: project.thumbnail }}
@@ -103,92 +110,155 @@ function MyProjectDetail({ route, navigation }: any) {
         ) : (
           <Text>Không có ảnh</Text>
         )}
-        <Text style={styles.label}>📖 Description</Text>
-        <Text>{project.description}</Text>
-
-        <Text style={styles.label}>Game Story</Text>
-        <Text>{project.story}</Text>
-
-        <Text style={styles.label}>📅 Start time</Text>
-        <Text>{new Date(project['start-datetime']).toLocaleString()}</Text>
-
-        <Text style={styles.label}>📅 End time</Text>
-        <Text>{new Date(project['end-datetime']).toLocaleString()}</Text>
-
-        <Text style={styles.label}>💰 Goal</Text>
-        <Text>{project['minimum-amount']} $</Text>
-
-        <Text style={styles.label}>💵 Received</Text>
-        <Text>{project['total-amount']} $</Text>
-
-        <Text style={styles.label}>🔒 Status</Text>
-        <Text>{project.status}</Text>
-        <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#1A73E8',
-              paddingVertical: 10,
-              flex: 0.48,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50
-            }}
-            onPress={() => {
-              setIsDisabled(true)
-              navigation.navigate('MyUpdateProject', { projectId: project["project-id"] })
-            }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Update Project</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#951128',
-              flex: 0.48,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50
-            }}
-            disabled={isDisabled}
-            onPress={handleDeleteProject}>
-            <Text style={styles.deleteText}>Delete Project</Text>
-          </TouchableOpacity>
+        <View>
+          <Text style={styles.label}>Created by</Text>
+          <Text style={{ fontWeight: 900, fontSize: 18 }}>{project.creator}</Text>
+        </View>
+        <View style={{ backgroundColor: '#F2F2F2', padding: 10, borderRadius: 10, marginTop: 10 }}>
+          <Text style={{ fontWeight: '900', fontSize: 18 }}>Description</Text>
+          <Text>{project.description}</Text>
         </View>
 
-        <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between', marginTop: 5 }}>
+        <View style={{ backgroundColor: '#F2F2F2', padding: 10, borderRadius: 10, marginTop: 10 }}>
+          <Text style={{ fontWeight: '900', fontSize: 18 }}>Story</Text>
+          <Text>{project.story}</Text>
+        </View>
+        <View style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 10 }}>
+          <View style={{ height: 5, backgroundColor: '#ddd', borderRadius: 5, marginBottom: 8 }}>
+            <View
+              style={{
+                width: `${Math.min(Math.round((project['total-amount'] / project['minimum-amount']) * 100), 100)}%`,
+                backgroundColor: 'green',
+                height: '100%',
+                borderRadius: 5,
+              }}
+            />
+          </View>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ color: '#028760', fontWeight: 'bold' }}>
+                {Math.round((project['total-amount'] / project['minimum-amount']) * 100)}%
+              </Text>
+              <Text style={{ fontWeight: 900, color: '#028760' }}>funded</Text>
+            </View>
+
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project.backers}</Text>
+              <Text style={{ fontWeight: 900 }}>Backers</Text>
+            </View>
+
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project['minimum-amount']} $</Text>
+              <Text style={{ fontWeight: 900 }}>Goal</Text>
+            </View>
+
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>{project['total-amount']} $</Text>
+              <Text style={{ fontWeight: 900 }}>Gain</Text>
+            </View>
+
+            <View style={{ alignItems: 'center', flex: 1 }}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {
+                  Math.max(
+                    0,
+                    Math.ceil(
+                      (new Date(project['end-datetime']).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                    )
+                  )
+                }{' '}
+                days
+              </Text>
+              <Text style={{ fontWeight: 900 }}> to go</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={{flex: 1}}>
           <TouchableOpacity
             style={{
-              backgroundColor: '#1A73E8',
               paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems:'center',
+              justifyContent:'space-between',
               flex: 0.48,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
             }}
+            disabled={isDisabledUpDate}
             onPress={() => {
-              setIsDisabled(true)
+              setIsDisabledUpdate(true)
               navigation.navigate('MyUpdateProject', { projectId: project["project-id"] })
             }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Add reward</Text>
+            <Text style={{ color: 'black', fontSize: 15 }}>Update Project</Text>
+            <AntDesign name="right" style={{opacity: 0.5}} size={24} color="black" />
           </TouchableOpacity>
+
           <TouchableOpacity
             style={{
-              backgroundColor: '#951128',
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems:'center',
+              justifyContent:'space-between',
               flex: 0.48,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
             }}
-            disabled={isDisabled}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledReward(true)
+              navigation.navigate('ViewProjectReward', { projectId: project["project-id"] })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>View Reward</Text>
+            <AntDesign name="right" style={{opacity: 0.5}}  size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledBacker(true)
+              navigation.navigate('MoneyHistory', { projectId: project["project-id"] })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>Backer History</Text>
+            <AntDesign name="right" style={{opacity: 0.5}}  size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledDelete}
             onPress={handleDeleteProject}>
-            <Text style={styles.deleteText}>Add FAQ</Text>
+            <Text style={{ color: 'black', fontSize: 15 }}>Delete Project</Text>
+            <AntDesign style={{opacity: 0.5}} name="right" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.backerButton}
-          onPress={() => {
-            navigation.navigate('MoneyHistory', { projectId: project["project-id"] })
-          }}>
-          <Text style={styles.deleteText}>Backer History</Text>
-        </TouchableOpacity>
+        {/* <FooterLayout
+          navigation={navigation}
+          onUpdate={() => navigation.navigate('UpdateProject', { projectId })}
+          onAddReward={() => navigation.navigate('AddReward', { projectId })}
+          onAddFAQ={() => navigation.navigate('AddFAQ', { projectId })}
+          onViewReward={() => navigation.navigate('ViewReward', { projectId })}
+        /> */}
       </View>
 
     </ScrollView>
@@ -200,7 +270,8 @@ export default MyProjectDetail;
 const styles = StyleSheet.create({
   label: {
     marginTop: 10,
-    fontWeight: 'bold',
+    fontWeight: '400',
+    fontSize: 15,
     color: '#333',
   },
   error: {
