@@ -6,7 +6,7 @@ export default function PaymentSuccess({ navigation }: any) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigation.navigate('Home')
-    }, 3000)
+    }, 8000)
   })
   
   return (

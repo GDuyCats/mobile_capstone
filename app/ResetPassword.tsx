@@ -21,11 +21,11 @@ export default function ResetPasswordWebView({ navigation, route }: any) {
           },
         }
       );
-      Alert.alert('Thành công', 'Đặt lại mật khẩu thành công!');
+      Alert.alert('Success', 'Password reset successfully');
       navigation.navigate('Login');
     } catch (err) {
       console.log(err);
-      Alert.alert('Lỗi', 'Không đặt lại được mật khẩu');
+      Alert.alert('Error', 'Can not reset password');
     }
   };
 

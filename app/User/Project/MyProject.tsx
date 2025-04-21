@@ -3,13 +3,14 @@ import axios from 'axios'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AuthContext } from '../../../context/authContext'
-import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 
 import HeaderLayout from '../../../components/HeaderLayout'
 function MyProject({ navigation }: any) {
     const { user } = useContext(AuthContext)
     const [project, setProject] = useState([])
+    const [loading, setLoading] = useState(true);
     useFocusEffect(
         React.useCallback(() => {
             const getMyProject = async () => {
@@ -25,11 +26,21 @@ function MyProject({ navigation }: any) {
                     console.log(res.data?.data)
                 } catch (error) {
                     console.log(error)
+                } finally {
+                    setLoading(false)
                 }
             }
             getMyProject()
         }, []))
 
+    if (loading) {
+        return (
+            <View>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
     return (
         <ScrollView style={style.container}>
             <HeaderLayout title={'My projects'} onBackPress={() => navigation.goBack()} />
@@ -41,13 +52,13 @@ function MyProject({ navigation }: any) {
                         onPress={() => {
                             navigation.navigate('MyProjectDetail', { projectId: project["project-id"] })
                         }}>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Text style={{ color: 'black', fontWeight: '900', fontSize:25 }}>You received</Text>
-                            <Text style={{ color: 'green', fontWeight: '900', fontSize:25 }}> {project['total-amount']}$</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ color: 'black', fontWeight: '900', fontSize: 25 }}>You received</Text>
+                            <Text style={{ color: 'green', fontWeight: '900', fontSize: 25 }}> {project['total-amount']}$</Text>
                         </View>
 
                         <View>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{project.title}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 20, marginVertical: 10 }}>{project.title}</Text>
                         </View>
                         {project.thumbnail ? (
                             <Image
@@ -102,6 +113,6 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#c9d1d4',
         borderRadius: 20,
-        marginBottom: 5
+        marginBottom: 20
     }
 })

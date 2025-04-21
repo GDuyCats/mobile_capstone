@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
-  ScrollView, View, Text, Image, StyleSheet,
+  ScrollView, View, Text, Image, StyleSheet, Animated,
   ActivityIndicator, TouchableOpacity, TextInput, Keyboard
 } from 'react-native';
+import NavbarLayout from '../components/NavbarLayout';
 // import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AppLayout from '../components/AppLayout';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function Home({ navigation }: any) {
+export default function Home({ navigation, route }: any) {
   const [projects, setProjects] = useState([]);
   const [isUploading, setIsUploading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
+  const [isSearching, setIsSearching] = useState(false)
 
+  const inputOpacity = useRef(new Animated.Value(0)).current;
+  const inputTranslateY = useRef(new Animated.Value(-20)).current;
   const fetchProjects = async (title = '', selectedStatus = '') => {
     setIsUploading(true);
     const params: any = {};
@@ -27,7 +31,7 @@ export default function Home({ navigation }: any) {
       );
       setProjects(res.data.data);
     } catch (error) {
-      console.log('❌ Lỗi fetch project:', error.response?.data || error.message);
+      console.log('Error while getting project', error.response?.data || error.message);
     } finally {
       setIsUploading(false);
     }
@@ -39,35 +43,74 @@ export default function Home({ navigation }: any) {
     }, [])
   );
 
+  useEffect(() => {
+    if (route.params?.startSearch) {
+      setIsSearching(true);
+      navigation.setParams({ startSearch: false });
+    }
+  
+    if (route.params?.toggleSearch) {
+      setIsSearching(prev => !prev);
+      navigation.setParams({ toggleSearch: false }); // reset để có thể toggle tiếp lần sau
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    if (isSearching) {
+      Animated.parallel([
+        Animated.timing(inputOpacity, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(inputTranslateY, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(inputOpacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(inputTranslateY, {
+          toValue: -20,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isSearching]);
+
   return (
     <AppLayout navigation={navigation}>
       <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search by project title..."
-          value={searchText}
-          onChangeText={setSearchText}
-          onSubmitEditing={() => {
-            fetchProjects(searchText, status);
-            Keyboard.dismiss();
-          }}
-          returnKeyType="search"
-        />
-
-        {/* <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={status}
-            onValueChange={(itemValue) => {
-              setStatus(itemValue);
-              fetchProjects(searchText, itemValue);
-            }}
-            style={styles.picker}
-          >
-            <Picker.Item label="-- Status --" value="" />
-            <Picker.Item label="VISIBLE" value="VISIBLE" />
-            <Picker.Item label="DELETED" value="DELETED" />
-          </Picker>
-        </View> */}
+        {isSearching && (
+          <View style={{ alignItems: 'center', paddingHorizontal: 10 }}>
+            <Animated.View
+              style={{
+                opacity: inputOpacity,
+                transform: [{ translateY: inputTranslateY }],
+                width: '100%',
+              }}
+            >
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search by project title..."
+                value={searchText}
+                onChangeText={setSearchText}
+                onSubmitEditing={() => {
+                  fetchProjects(searchText, status);
+                  Keyboard.dismiss();
+                }}
+                returnKeyType="search"
+              />
+            </Animated.View>
+          </View>
+        )}
 
         {isUploading && (
           <View style={{ marginVertical: 10, alignItems: 'center' }}>
@@ -164,17 +207,25 @@ export default function Home({ navigation }: any) {
           );
         })}
       </ScrollView>
+      <NavbarLayout
+        currentScreen="Home"
+        searchToggle={isSearching}
+        onSearchPress={() => setIsSearching(prev => !prev)} />
     </AppLayout>
   );
 }
 
 const styles = StyleSheet.create({
+  animatedInput: {
+    overflow: 'hidden',
+    marginHorizontal: 10,
+  },
   container: {
     padding: 16,
     alignItems: 'center',
   },
   searchInput: {
-    width: '100%',
+    width: 328,
     height: 40,
     backgroundColor: 'white',
     borderWidth: 1,
@@ -217,3 +268,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+{/* <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={status}
+            onValueChange={(itemValue) => {
+              setStatus(itemValue);
+              fetchProjects(searchText, itemValue);
+            }}
+            style={styles.picker}
+          >
+            <Picker.Item label="-- Status --" value="" />
+            <Picker.Item label="VISIBLE" value="VISIBLE" />
+            <Picker.Item label="DELETED" value="DELETED" />
+          </Picker>
+        </View> */}

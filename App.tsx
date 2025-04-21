@@ -24,6 +24,8 @@ import PaymentFailed from './app/User/Payment/PaymentFail';
 import PaymentSuccess from './app/User/Payment/PaymentSuccess';
 import MoneyHistory from './app/User/Project/MoneyHistory';
 import VerifyCode from './app/VerifyCode';
+import AddReward from './app/User/Project/AddReward';
+import ViewProjectReward from './app/User/Project/ViewProjectReward';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -70,10 +72,13 @@ export type RootStackParamList = {
   Register: undefined;
   Setting: undefined;
   ForgotPassword: undefined;
-  ResendEmailConfirm: undefined;
+  ResendGmailConfirm: undefined;
   GetProjectComment: undefined;
   OtherUserProfile: undefined;
   VerifyCode: undefined;
+  AddReward: undefined;
+  ViewProjectReward: undefined;
+  ResetPassword: undefined
 
   Profile: undefined;
   UserPayment: undefined;
@@ -94,16 +99,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Home" screenOptions={{animation: 'slide_from_right',}}>
-
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Admin" component={Admin} />
       <Stack.Screen name="AdminUser" component={AdminUser} />
       <Stack.Screen name="AdminUserDetail" component={AdminUserDetail} />
       <Stack.Screen name="AdminPledge" component={AdminPledge} />
       <Stack.Screen name="AdminPledgeDetail" component={AdminPledgeDetail} />
       <Stack.Screen name="AdminCreateStaff" component={AdminCreateStaff} />
-
-
+      
       <Stack.Screen name="Staff" component={Staff} />
       <Stack.Screen name="StaffGetProject" component={StaffGetProject} />
       <Stack.Screen name="StaffProjectDetail" component={StaffProjectDetail} options={{ headerShown: false }} />
@@ -118,23 +121,26 @@ function MainNavigator() {
       <Stack.Screen name="Updateprofile" component={Updateprofile} options={{ headerShown: false }}/>
       <Stack.Screen name="ProjectDetail" component={ProjectDetail} options={{ headerShown: false }}/>
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }}/>
-      <Stack.Screen name="CreateProject" component={CreateProject} />
+      <Stack.Screen name="CreateProject" component={CreateProject} options={{ headerShown: false }}/>
       <Stack.Screen name="UserPayment" component={UserPayment} options={{ headerShown: false }} />
       <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} options={{ headerShown: false }}/>
       <Stack.Screen name="PaymentFailed" component={PaymentFailed} />
-      <Stack.Screen name="MyPledge" component={MyPledge} />
+      <Stack.Screen name="MyPledge" component={MyPledge} options={{ headerShown: false }}/>
       <Stack.Screen name="MyProject" component={MyProject} options={{ headerShown: false }}/>
       <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} options={{ headerShown: false }}/>
-      <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} />
-      <Stack.Screen name="MoneyHistory" component={MoneyHistory} />
+      <Stack.Screen name="MyUpdateProject" component={MyUpdateProject} options={{ headerShown: false }}/>
+      <Stack.Screen name="MoneyHistory" component={MoneyHistory} options={{ headerShown: false }}/>
       <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
+      <Stack.Screen name="AddReward" component={AddReward} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewProjectReward" component={ViewProjectReward} options={{ headerShown: false }} />
+      
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
       <Stack.Screen name="ForgotPassword" component={ForgetPassword} options={{ headerShown: false }} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
-      <Stack.Screen name="ResetGmailConfirm" component={ResendGmailConfirm} options={{ headerShown: false }} />
+      <Stack.Screen name="ResendGmailConfirm" component={ResendGmailConfirm} options={{ headerShown: false }} />
       <Stack.Screen name="GetProjectComment" component={GetProjectComment} options={{ headerShown: false }} />
       <Stack.Screen name="OtherUserProfile" component={OtherUserProfile} options={{ headerShown: false }} />
       <Stack.Screen name="VerifyCode" component={VerifyCode} options={{ headerShown: false }} />

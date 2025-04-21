@@ -15,25 +15,48 @@ function UserPayment({ route, navigation }: any) {
   useFocusEffect(
     React.useCallback(() => {
       if (!user?.token) {
-        Alert.alert('Bạn chưa đăng nhập', 'Vui lòng đăng nhập để tiếp tục.', [
-          { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Login' }] }) },
-        ])
-        return null
-      } else if (user.role !== 'CUSTOMER') {
         Alert.alert(
-          'Truy cập bị từ chối',
-          'Tài khoản của bạn không có quyền truy cập trang thanh toán.',
-          [{ text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Home' }] }) }]
-        )
+          'You are not log in!',
+          'Please sign in to continue!',
+          [
+            {
+              text: 'OK',
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                }),
+            },
+          ]
+        );
+        return;
+      }
+
+      if (user.role !== 'CUSTOMER') {
+        Alert.alert(
+          'Access denied!',
+          'Your account does not have access to Payment!',
+          [
+            {
+              text: 'OK',
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Home' }],
+                }),
+            },
+          ]
+        );
       }
     }, [user])
-  )
+  );
+
 
   const createPayment = async () => {
     const parsedAmount = parseFloat(amount)
 
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      Alert.alert('Lỗi', 'Vui lòng nhập số tiền hợp lệ.')
+      Alert.alert('Error', 'Please inser right value !')
       return
     }
 
@@ -53,11 +76,11 @@ function UserPayment({ route, navigation }: any) {
       if (url) {
         setPaymentUrl(url)
       } else {
-        Alert.alert('Lỗi', 'Không lấy được URL thanh toán.')
+        Alert.alert('Error', 'Can not get the payment url !')
       }
     } catch (error: any) {
       console.log('Payment error:', error.response?.data || error.message)
-      Alert.alert('Lỗi', error.response?.data?.message || 'Không thể tạo thanh toán.')
+      Alert.alert('Error', error.response?.data?.message || 'Can not make a payment')
     } finally {
       setLoading(false)
     }
@@ -95,7 +118,7 @@ function UserPayment({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text>Đang xử lý...</Text>
+        <Text>Loading ...</Text>
       </View>
     )
   }
@@ -124,26 +147,26 @@ function UserPayment({ route, navigation }: any) {
 
   return (
     <View style={styles.center}>
-      <Text>Enter the amount you want to contribute.
-      </Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-        placeholder="For example : 2000 $"
-      />
-      <Button title="Process payment" onPress={createPayment} />
-      <TouchableOpacity
-        style={
-          {
-            marginTop: 10,
-            backgroundColor: 'green',
-            alignItems: 'center',
-            padding: 10
-          }}
-        onPress={() => navigation.goBack()} >
-        <Text style={{ color: 'white', fontSize: 15 }}>GO BACK</Text>
+      <Text style={styles.label}>Enter Amount</Text>
+
+      <View style={styles.amountInputContainer}>
+        <Text style={styles.dollar}>$</Text>
+        <TextInput
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          placeholder="0.00"
+          placeholderTextColor="#ccc"
+          style={styles.amountInput}
+        />
+      </View>
+
+      <TouchableOpacity style={styles.sendButton} onPress={createPayment}>
+        <Text style={styles.sendButtonText}>Send Money</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.backText}>Go back</Text>
       </TouchableOpacity>
     </View>
   )
@@ -155,13 +178,47 @@ const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    backgroundColor: '#fff',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 8,
-    marginVertical: 12,
+  label: {
+    fontSize: 16,
+    color: '#aaa',
+    marginBottom: 8,
   },
-})
+  amountInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  dollar: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  amountInput: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: 'black',
+    textAlign: 'left',
+    paddingLeft: 10,
+    minWidth: 150,
+  },
+  sendButton: {
+    backgroundColor: '#6323AF',
+    paddingVertical: 20,
+    paddingHorizontal: 100,
+    borderRadius: 50,
+  },
+  sendButtonText: {
+    color: 'white',
+    fontWeight: '900',
+    fontSize: 16,
+  },
+  backText: {
+    fontSize: 15,
+    marginTop: 20,
+    color: '#444',
+  },
+});
