@@ -24,8 +24,10 @@ import PaymentFailed from './app/User/Payment/PaymentFail';
 import PaymentSuccess from './app/User/Payment/PaymentSuccess';
 import MoneyHistory from './app/User/Project/MoneyHistory';
 import VerifyCode from './app/VerifyCode';
-import AddReward from './app/User/Project/AddReward';
-import ViewProjectReward from './app/User/Project/ViewProjectReward';
+import AddReward from './app/User/Project/Reward/AddReward';
+import ViewProjectReward from './app/User/Project/Reward/ViewProjectReward';
+import Rewardetail from './app/User/Project/Reward/Rewardetail';
+import RewardUpdate from './app/User/Project/Reward/UpdateReward'
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -78,7 +80,9 @@ export type RootStackParamList = {
   VerifyCode: undefined;
   AddReward: undefined;
   ViewProjectReward: undefined;
-  ResetPassword: undefined
+  ResetPassword: undefined;
+  RewardDetail: undefined;
+  RewardUpdate: undefined;
 
   Profile: undefined;
   UserPayment: undefined;
@@ -132,8 +136,9 @@ function MainNavigator() {
       <Stack.Screen name="MoneyHistory" component={MoneyHistory} options={{ headerShown: false }}/>
       <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
       <Stack.Screen name="AddReward" component={AddReward} options={{ headerShown: false }} />
+      <Stack.Screen name="RewardDetail" component={Rewardetail} options={{ headerShown: false }} />
       <Stack.Screen name="ViewProjectReward" component={ViewProjectReward} options={{ headerShown: false }} />
-      
+      <Stack.Screen name="RewardUpdate" component={RewardUpdate} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
