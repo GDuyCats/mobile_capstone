@@ -248,7 +248,7 @@ function MyProjectDetail({ route, navigation }: any) {
             }}
             disabled={isDisabledDelete}
             onPress={handleDeleteProject}>
-            <Text style={{ color: 'black', fontSize: 15 }}>Delete Project</Text>
+            <Text style={{ color: 'red', fontSize: 15, fontWeight: 900}}>Delete Project</Text>
             <AntDesign style={{opacity: 0.5}} name="right" size={24} color="black" />
           </TouchableOpacity>
         </View>

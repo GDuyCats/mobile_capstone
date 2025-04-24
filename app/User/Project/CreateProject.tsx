@@ -33,6 +33,7 @@ export default function CreateProject({ navigation }: any) {
   const [showPicker, setShowPicker] = useState<'start' | 'end' | null>(null);
   const [image, setImage] = useState<any>(null);
 
+  
   useFocusEffect(
       React.useCallback(() => {
         if (!user?.token) {
@@ -56,7 +57,7 @@ export default function CreateProject({ navigation }: any) {
         if (user.role !== 'CUSTOMER') {
           Alert.alert(
             'Access denied!',
-            'Your account does not have access to Payment!',
+            'Your account does not have access to create project!',
             [
               {
                 text: 'OK',
@@ -146,7 +147,7 @@ export default function CreateProject({ navigation }: any) {
         Alert.alert('Success', 'Create project successfully !');
         navigation.navigate('Home');
       } else {
-        Alert.alert('Error', res.data.message || 'Không tạo được dự án');
+        Alert.alert('Error', res.data.message || 'Can not create project');
       }
     } catch (err) {
       console.log(err);

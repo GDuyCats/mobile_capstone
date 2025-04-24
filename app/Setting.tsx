@@ -1,13 +1,36 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { AuthContext } from '../context/authContext'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Alert, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import NavbarLayout from '../components/NavbarLayout';
+import { useFocusEffect } from '@react-navigation/native'
 function MyPersonal({ navigation }: any) {
     const { user, logout } = useContext(AuthContext)
+    useEffect(() => {
+        if (!user?.token) {
+            Alert.alert(
+                'You are not log in!',
+                'Please sign in to continue!',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () =>
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Home' }],
+                            }),
+                    },
+                ]
+            );
+        }
+    }, [user?.token, navigation]);
+
+    if (!user?.token) {
+        return null;
+    }
     return (
-        <ScrollView contentContainerStyle={{flex: 1}}>
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
             <View style={style.container}>
                 <View style={style.header}>
                     <Text style={style.title}>Setting</Text>
@@ -173,7 +196,7 @@ function MyPersonal({ navigation }: any) {
                     </>
                 )}
             </View>
-            <NavbarLayout currentScreen="Setting"/>
+            <NavbarLayout currentScreen="Setting" />
         </ScrollView>
     )
 }

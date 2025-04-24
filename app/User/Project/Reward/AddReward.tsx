@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import axios from 'axios'
 import { useFocusEffect } from '@react-navigation/native'
-import HeaderLayout from '../../../components/HeaderLayout'
+import HeaderLayout from '../../../../components/HeaderLayout'
 function AddReward({ navigation, route }: any) {
     const [amount, setAmount] = useState('');
     const [details, setDetails] = useState('');

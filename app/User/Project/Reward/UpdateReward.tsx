@@ -1,0 +1,93 @@
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from 'react-native';
+import axios from 'axios';
+import { AuthContext } from '../../../../context/authContext';
+import HeaderLayout from '../../../../components/HeaderLayout';
+
+export default function UpdateReward({ navigation, route }: any) {
+  const { rewardId, currentAmount, currentDetails } = route.params;
+  const { user } = useContext(AuthContext);
+
+  const [amount, setAmount] = useState(currentAmount?.toString() || '');
+  const [details, setDetails] = useState(currentDetails || '');
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdate = async () => {
+    if (!amount || !details) {
+      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin!');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append('rewardId', rewardId.toString());
+      formData.append('amount', parseFloat(amount).toString());
+      formData.append('details', details);
+
+      await axios.put(
+        'https://marvelous-gentleness-production.up.railway.app/api/Reward/UpdateReward',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      Alert.alert('Thành công', 'Cập nhật reward thành công!');
+      navigation.goBack();
+    } catch (error) {
+      console.log('Lỗi khi cập nhật reward:', error);
+      Alert.alert('Lỗi', 'Không thể cập nhật reward!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <HeaderLayout title="Update Reward" onBackPress={() => navigation.goBack()} />
+      <View style={styles.container}>
+        <Text style={styles.label}>Amount ($)</Text>
+        <TextInput
+          style={styles.input}
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+        />
+        <Text style={styles.label}>Details</Text>
+        <TextInput
+          style={[styles.input, { height: 100 }]}
+          multiline
+          value={details}
+          onChangeText={setDetails}
+        />
+        <Button
+          title={loading ? 'Đang cập nhật...' : 'Cập nhật reward'}
+          onPress={handleUpdate}
+          disabled={loading}
+        />
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  label: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    marginTop: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+  },
+});
