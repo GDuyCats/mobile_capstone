@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import axios from 'axios';
+import HeaderLayout from '../components/HeaderLayout';
 
 export default function ResendGmailConfirm({ navigation }: any) {
   const [email, setEmail] = useState('');
@@ -8,7 +19,7 @@ export default function ResendGmailConfirm({ navigation }: any) {
 
   const handleResend = async () => {
     if (!email) {
-      Alert.alert('Lỗi', 'Vui lòng nhập email');
+      Alert.alert('Error', 'Please fill your email');
       return;
     }
 
@@ -19,69 +30,96 @@ export default function ResendGmailConfirm({ navigation }: any) {
       );
 
       if (res.data.success) {
-        Alert.alert('Success', 'A confirm mail have been send !');
+        Alert.alert('Success', 'A confirm mail has been sent!');
       } else {
-        Alert.alert('Fail ', res.data.message || 'There is an error ');
+        Alert.alert('Failed', res.data.message || 'There is an error');
       }
     } catch (err: any) {
       console.log(err);
-      Alert.alert('Error', err?.response?.data?.message || 'Send Fail ');
+      Alert.alert('Error', err?.response?.data?.message || 'Send failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Please fill your email</Text>
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        style={styles.input}
-        autoCapitalize="none"
-      />
-      {loading ? (
-        <ActivityIndicator size="small" color="#000" />
-      ) : (
-        <>
-          <Button title="Send" onPress={handleResend} />
-          <TouchableOpacity
-            style={
-              { backgroundColor: '#32a852', 
-                alignItems: 'center',
-                padding: 10,
-                marginVertical: 10 }}
-            onPress={() => { navigation.goBack() }}>
-            <Text style={
-              { color: 'white', 
-                fontWeight: 900
-              }}>
-              GO BACK
-            </Text>
-          </TouchableOpacity>
-        </>
+    <View style={styles.wrapper}>
+      <HeaderLayout title={'Resend Confirm Email'} onBackPress={() => navigation.goBack()} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.label}>Enter your email</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          style={styles.input}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        {loading ? (
+          <ActivityIndicator size="small" color="#3366FF" />
+        ) : (
+          <>
+            <TouchableOpacity style={styles.sendButton} onPress={handleResend}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
 
-
-      )}
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+              <Text style={styles.backButtonText}>Go Back</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fefefe',
+  },
   container: {
     padding: 20,
-    marginTop: 40
+    paddingTop: 40,
+    flexGrow: 1,
   },
   label: {
+    fontSize: 16,
+    fontWeight: '500',
     marginBottom: 10,
-    fontSize: 16
+    color: '#00246B',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 6,
-    padding: 10,
-    marginBottom: 20
-  }
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+  },
+  sendButton: {
+    backgroundColor: '#3366FF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  backButton: {
+    backgroundColor: '#32a852',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
