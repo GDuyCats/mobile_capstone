@@ -62,7 +62,7 @@ export default function GetComments({ navigation, route }: any) {
 
   const handleReplySubmit = async () => {
     if (!user || !user.token) {
-      Alert.alert('Thông báo', 'Bạn phải đăng nhập để bình luận.');
+      Alert.alert('Warning', 'You have to login to comment');
       navigation.navigate('Login');
       return;
     }
@@ -97,7 +97,7 @@ export default function GetComments({ navigation, route }: any) {
 
   const handleRootCommentSubmit = async () => {
     if (!user || !user.token) {
-      Alert.alert('Thông báo', 'Bạn phải đăng nhập để bình luận.');
+      Alert.alert('Warning', 'You have to login to comment');
       navigation.navigate('Login');
       return;
     }
@@ -160,7 +160,7 @@ export default function GetComments({ navigation, route }: any) {
           <TouchableOpacity
             onPress={() => {
               if (!user || !user.token) {
-                Alert.alert('Thông báo', 'Bạn phải đăng nhập để bình luận.');
+                Alert.alert('Warning', 'You have to login to comment');
                 navigation.navigate('Login');
                 return;
               }

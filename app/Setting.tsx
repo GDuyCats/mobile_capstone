@@ -79,9 +79,14 @@ function MyPersonal({ navigation }: any) {
                                 <Text style={style.optionText}>Create new project</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[style.option, { marginBottom: 1 }]}
+                                style={style.option}
                                 onPress={() => { navigation.navigate('MyPledge') }} >
                                 <Text style={style.optionText}>View my pledge</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[style.option, { marginBottom: 1 }]}
+                                onPress={() => { navigation.navigate('CreateReport') }} >
+                                <Text style={style.optionText}>Create Report</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={style.option}
@@ -178,10 +183,11 @@ function MyPersonal({ navigation }: any) {
                                 <Text style={style.optionText}>Create new staff</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[style.option, { marginBottom: 1 }]}
+                                style={style.option}
                                 onPress={() => { navigation.navigate('AdminPledge') }} >
                                 <Text style={style.optionText}>View all pledges</Text>
                             </TouchableOpacity>
+
                             <TouchableOpacity
                                 style={style.option}
                                 onPress={() => {

@@ -202,7 +202,7 @@ export default function CreateProject({ navigation }: any) {
 
               {!image ? (
                 <TouchableOpacity onPress={pickImage} style={styles.dateButton}>
-                  <Text>Chọn ảnh từ thư viện</Text>
+                  <Text>Choose a picture from a library</Text>
                 </TouchableOpacity>
               ) : (
                 <View style={{ alignItems: 'center' }}>
@@ -221,7 +221,7 @@ export default function CreateProject({ navigation }: any) {
                         borderRadius: 20,
                       }}
                     >
-                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đổi ảnh</Text>
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>Change</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => setImage(null)}
@@ -233,7 +233,7 @@ export default function CreateProject({ navigation }: any) {
                         borderRadius: 20,
                       }}
                     >
-                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>Huỷ chọn ảnh</Text>
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

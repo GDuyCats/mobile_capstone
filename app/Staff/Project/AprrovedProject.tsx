@@ -35,10 +35,10 @@ export default function ApproveProject({ route, navigation }: any) {
           }
         );
         setProject(res.data.data);
-        setStatus(res.data.data.status); // default chọn trạng thái hiện tại
+        setStatus(res.data.data.status);
       } catch (error) {
-        console.log('Lỗi load project:', error);
-        Alert.alert('Lỗi', 'Không thể lấy dữ liệu dự án.');
+        console.log('Error', error);
+        Alert.alert('Error', 'Can not get the projects');
       }
     };
     fetchProject();
@@ -46,7 +46,7 @@ export default function ApproveProject({ route, navigation }: any) {
 
   const handleApprove = async () => {
     if (!status) {
-      Alert.alert('Lỗi', 'Vui lòng chọn trạng thái mới');
+      Alert.alert('Error', 'Please choose a new status');
       return;
     }
 
@@ -68,14 +68,14 @@ export default function ApproveProject({ route, navigation }: any) {
       );
 
       if (res.data.success) {
-        Alert.alert('✅ Thành công', 'Dự án đã được cập nhật!');
+        Alert.alert('Success', 'The project have been updated');
         navigation.goBack();
       } else {
-        Alert.alert('❌ Thất bại', res.data.message || 'Có lỗi xảy ra.');
+        Alert.alert('Error', res.data.message || 'Error happened');
       }
     } catch (err: any) {
-      console.log('❌ Lỗi gọi API:', err?.response?.data || err.message);
-      Alert.alert('Lỗi', err?.response?.data?.message || 'Không thể cập nhật dự án.');
+      console.log('Error', err?.response?.data || err.message);
+      Alert.alert('Error', err?.response?.data?.message || 'Can not update the project');
     } finally {
       setLoading(false);
     }

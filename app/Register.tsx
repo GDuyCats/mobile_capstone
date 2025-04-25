@@ -46,7 +46,7 @@ export default function Register({ navigation }: any) {
       );
     } catch (error: any) {
       const resData = error.response?.data;
-      console.log('Đăng ký thất bại:', resData);
+      console.log('Register Fail !', resData);
 
       const errors = resData?.errors;
       const message = resData?.message;
@@ -54,11 +54,11 @@ export default function Register({ navigation }: any) {
       if (errors) {
         const messages = Object.values(errors).flat();
         const messageString = messages.join('\n');
-        Alert.alert('❌ Đăng ký thất bại', messageString);
+        Alert.alert('Register Fail !', messageString);
       } else if (message) {
-        Alert.alert('❌ Đăng ký thất bại', message);
+        Alert.alert('Register Fail !', message);
       } else {
-        Alert.alert('❌ Đăng ký thất bại', 'Có lỗi xảy ra. Vui lòng thử lại.');
+        Alert.alert('Register Fail !', 'Error happen. Please try again later !');
       }
     }
   };

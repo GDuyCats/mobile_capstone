@@ -55,7 +55,7 @@ export default function RewardDetail({ navigation, route }: any) {
             Alert.alert('Success', 'Reward have been deleted !');
             navigation.goBack();
           } catch (error) {
-            console.log('Lỗi khi xoá reward:', error);
+            console.log('Error while delete Reward:', error);
             Alert.alert('Error', 'Can not delete the reward !');
           } finally {
             setDeleting(false);

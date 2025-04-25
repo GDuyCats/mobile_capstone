@@ -29,17 +29,17 @@ export default function CreateStaff({navigation }: any) {
 
   const handleCreateStaff = async () => {
     if (!email || !password || !confirmPassword || !fullname) {
-      Alert.alert('Thiếu thông tin', 'Vui lòng điền đầy đủ các trường.');
+      Alert.alert('Missing Information', 'Please fill all information');
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert('Email không hợp lệ', 'Vui lòng nhập đúng định dạng email.');
+      Alert.alert('Email is invalid', 'Please fill correct email validation');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Mật khẩu không khớp', 'Vui lòng kiểm tra lại mật khẩu.');
+      Alert.alert('Password is not match ', 'Please check the password again');
       return;
     }
 
@@ -60,15 +60,15 @@ export default function CreateStaff({navigation }: any) {
         }
       );
 
-      Alert.alert('Thành công', 'Tạo staff thành công!');
+      Alert.alert('Success', 'Create Staff successful !');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setFullname('');
       navigation.goBack()
     } catch (error: any) {
-      console.log('Lỗi tạo staff:', error?.response?.data || error.message);
-      Alert.alert('Lỗi: ', error?.response?.data.message);
+      console.log('Error while making a staff : ', error?.response?.data || error.message);
+      Alert.alert('Error ', error?.response?.data.message);
     }
   };
 

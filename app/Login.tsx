@@ -84,7 +84,7 @@ export default function Login({ navigation }: any) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('ResetGmailConfirm')
+            navigation.navigate('ResendGmailConfirm')
           }}>
           <Text style={{ marginBottom: 20, fontWeight: 700, marginLeft: 'auto', marginRight: 0 }}>Resend the Email confirm ?</Text>
         </TouchableOpacity>

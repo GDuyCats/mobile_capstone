@@ -29,7 +29,6 @@ function StaffGetProject({ navigation }: any) {
     }
   };
 
-  // ✅ Load lại mỗi khi quay lại màn hình
   useFocusEffect(
     useCallback(() => {
       getProjects();
@@ -41,10 +40,9 @@ function StaffGetProject({ navigation }: any) {
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#0000ff" />
-          <Text>Đang tải thông tin lên...</Text>
         </View>
       ) : projects.length === 0 ? (
-        <Text style={styles.projectTitle}>Không có project nào.</Text>
+        <Text style={styles.projectTitle}>There is no project</Text>
       ) : (
         projects.map((project: any) => (
           <TouchableOpacity

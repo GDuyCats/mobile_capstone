@@ -38,12 +38,12 @@ function AdminPledge({ navigation }: any) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Danh sách Pledges</Text>
+      <Text style={styles.header}>Pledge</Text>
 
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : pledge.length === 0 ? (
-        <Text>Không có pledge nào.</Text>
+        <Text>There is no pledge</Text>
       ) : (
         pledge.map((p: any, index: number) => (
           <TouchableOpacity 

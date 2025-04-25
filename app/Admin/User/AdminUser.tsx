@@ -36,7 +36,7 @@ function AdminUser({ navigation }: any) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backText}>← Quay lại</Text>
+        <Text style={styles.backText}>← Go Back</Text>
       </TouchableOpacity>
 
       {getAllUser.map((u: any, index: number) => (

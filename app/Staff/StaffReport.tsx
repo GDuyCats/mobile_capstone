@@ -29,7 +29,7 @@ function AdminReport({ navigation }: any) {
     return (
 
         <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text >← Quay lại</Text>
+            <Text >Go back</Text>
         </TouchableOpacity>
 
     )

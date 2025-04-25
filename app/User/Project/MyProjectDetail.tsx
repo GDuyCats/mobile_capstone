@@ -30,7 +30,7 @@ function MyProjectDetail({ route, navigation }: any) {
           );
           setProject(res.data.data);
         } catch (err) {
-          console.error('Lỗi khi lấy chi tiết project:', err);
+          console.error('Error while getting project', err);
         } finally {
           setLoading(false);
         }
@@ -108,7 +108,7 @@ function MyProjectDetail({ route, navigation }: any) {
             resizeMode="cover"
           />
         ) : (
-          <Text>Không có ảnh</Text>
+          null
         )}
         <View>
           <Text style={styles.label}>Created by</Text>
@@ -172,15 +172,57 @@ function MyProjectDetail({ route, navigation }: any) {
               <Text style={{ fontWeight: 900 }}> to go</Text>
             </View>
           </View>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+            {project.platforms?.length > 0 ? (
+              project.platforms.map((item: any) => (
+                <View
+                  key={item['platform-id']}
+                  style={{
+                    backgroundColor: '#256eff',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 20,
+                    marginRight: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  <Text style={{ color: 'white', fontSize: 14 }}>{item.name}</Text>
+                </View>
+              ))
+            ) : (
+              <Text>No platforms available.</Text>
+            )}
+          </View>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+            {project.categories?.length > 0 ? (
+              project.categories.map((item: any, index: number) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: '#00246B',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 20,
+                    marginRight: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  <Text style={{ color: 'white', fontSize: 14 }}>{item.name}</Text>
+                </View>
+              ))
+            ) : (
+              <Text>No categories available.</Text>
+            )}
+          </View>
         </View>
 
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <TouchableOpacity
             style={{
               paddingVertical: 10,
               flexDirection: 'row',
-              alignItems:'center',
-              justifyContent:'space-between',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               flex: 0.48,
               borderBottomWidth: 1,
               borderBottomColor: '#AAAAAB',
@@ -192,15 +234,52 @@ function MyProjectDetail({ route, navigation }: any) {
               navigation.navigate('MyUpdateProject', { projectId: project["project-id"] })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>Update Project</Text>
-            <AntDesign name="right" style={{opacity: 0.5}} size={24} color="black" />
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
-
           <TouchableOpacity
             style={{
               paddingVertical: 10,
               flexDirection: 'row',
-              alignItems:'center',
-              justifyContent:'space-between',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledUpdate(true)
+              navigation.navigate('AddPlatform', { projectId: project["project-id"] , projectPlatforms: project.platforms,})
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>Add Platform</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledUpdate(true)
+              navigation.navigate('AddCategory', { projectId: project["project-id"], projectCategories: project.categories, })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>Add Category</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               flex: 0.48,
               borderBottomWidth: 1,
               borderBottomColor: '#AAAAAB',
@@ -212,15 +291,15 @@ function MyProjectDetail({ route, navigation }: any) {
               navigation.navigate('ViewProjectReward', { projectId: project["project-id"] })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>View Reward</Text>
-            <AntDesign name="right" style={{opacity: 0.5}}  size={24} color="black" />
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{
               paddingVertical: 10,
               flexDirection: 'row',
-              alignItems:'center',
-              justifyContent:'space-between',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               flex: 0.48,
               borderBottomWidth: 1,
               borderBottomColor: '#AAAAAB',
@@ -232,15 +311,15 @@ function MyProjectDetail({ route, navigation }: any) {
               navigation.navigate('MoneyHistory', { projectId: project["project-id"] })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>Backer History</Text>
-            <AntDesign name="right" style={{opacity: 0.5}}  size={24} color="black" />
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{
               paddingVertical: 10,
               flexDirection: 'row',
-              alignItems:'center',
-              justifyContent:'space-between',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               flex: 0.48,
               borderBottomWidth: 1,
               borderBottomColor: '#AAAAAB',
@@ -248,17 +327,11 @@ function MyProjectDetail({ route, navigation }: any) {
             }}
             disabled={isDisabledDelete}
             onPress={handleDeleteProject}>
-            <Text style={{ color: 'red', fontSize: 15, fontWeight: 900}}>Delete Project</Text>
-            <AntDesign style={{opacity: 0.5}} name="right" size={24} color="black" />
+            <Text style={{ color: 'red', fontSize: 15, fontWeight: 900 }}>Delete Project</Text>
+            <AntDesign style={{ opacity: 0.5 }} name="right" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        {/* <FooterLayout
-          navigation={navigation}
-          onUpdate={() => navigation.navigate('UpdateProject', { projectId })}
-          onAddReward={() => navigation.navigate('AddReward', { projectId })}
-          onAddFAQ={() => navigation.navigate('AddFAQ', { projectId })}
-          onViewReward={() => navigation.navigate('ViewReward', { projectId })}
-        /> */}
+
       </View>
 
     </ScrollView>

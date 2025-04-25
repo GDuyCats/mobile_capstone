@@ -28,7 +28,7 @@ function AdminPledgeDetail({ route, navigation }: any) {
         );
         setPledge(res.data?.data);
       } catch (error) {
-        console.log('Lỗi khi fetch pledge detail:', error);
+        console.log('Error while getting pledge', error);
       } finally {
         setLoading(false);
       }
@@ -40,7 +40,7 @@ function AdminPledgeDetail({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Đang tải thông tin pledge...</Text>
+        <Text>Loading....</Text>
       </View>
     );
   }
@@ -48,14 +48,14 @@ function AdminPledgeDetail({ route, navigation }: any) {
   if (!pledge) {
     return (
       <View style={styles.center}>
-        <Text>Không tìm thấy pledge.</Text>
+        <Text>There is no pledge</Text>
       </View>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Chi tiết Pledge</Text>
+      <Text style={styles.title}>Detail Pledge</Text>
 
       <Text style={styles.label}>Pledge ID: <Text style={styles.value}>{pledge['pledge-id']}</Text></Text>
       <Text style={styles.label}>User ID: <Text style={styles.value}>{pledge['user-id']}</Text></Text>
