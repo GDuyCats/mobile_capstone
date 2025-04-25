@@ -56,7 +56,7 @@ export default function Updateprofile({ navigation }: any) {
     setIsUploading(true);
     try {
       if (!avatarUri) {
-        Alert.alert('Vui lòng chọn ảnh!');
+        Alert.alert('Please choose an Avatar');
         return;
       }
 
@@ -87,7 +87,7 @@ export default function Updateprofile({ navigation }: any) {
       const imageUrl = res.data['image-url'];
       updateUser({ avatar: imageUrl });
       setAvatarUri(imageUrl);
-      Alert.alert('Đổi avatar thành công!');
+      Alert.alert('Avatar change successful !');
     } catch (error: any) {
       console.log(error.message);
       Alert.alert(error.message);
@@ -126,11 +126,11 @@ export default function Updateprofile({ navigation }: any) {
         paymentAccount,
       });
 
-      Alert.alert('Cập nhật thành công');
+      Alert.alert('Update successfully');
       navigation.goBack();
     } catch (error: any) {
-      console.log('Lỗi khi update:', error);
-      Alert.alert('Lỗi', error?.response?.data?.message || 'Có lỗi xảy ra');
+      console.log('Error while update', error);
+      Alert.alert('Error', error?.response?.data?.message || 'Error');
     }
   };
 
@@ -173,7 +173,7 @@ export default function Updateprofile({ navigation }: any) {
             {isUploading && (
               <View style={{ marginVertical: 10 }}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Đang tải ảnh lên...</Text>
+                <Text>Loading...</Text>
               </View>
             )}
             <View>

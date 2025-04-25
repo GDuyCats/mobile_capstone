@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   ScrollView, View, Text, Image, StyleSheet, Animated,
-  ActivityIndicator, TouchableOpacity, TextInput, Keyboard
+  ActivityIndicator, TouchableOpacity, TextInput, Keyboard,
+  FlatList
 } from 'react-native';
 import NavbarLayout from '../components/NavbarLayout';
 // import { Picker } from '@react-native-picker/picker';
@@ -15,6 +16,8 @@ export default function Home({ navigation, route }: any) {
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
   const [isSearching, setIsSearching] = useState(false)
+  const [platforms, setPlatforms] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const inputOpacity = useRef(new Animated.Value(0)).current;
   const inputTranslateY = useRef(new Animated.Value(-20)).current;
@@ -30,6 +33,7 @@ export default function Home({ navigation, route }: any) {
         { params }
       );
       setProjects(res.data.data);
+      console.log(res.data.data)
     } catch (error) {
       console.log('Error while getting project', error.response?.data || error.message);
     } finally {
@@ -48,10 +52,10 @@ export default function Home({ navigation, route }: any) {
       setIsSearching(true);
       navigation.setParams({ startSearch: false });
     }
-  
+
     if (route.params?.toggleSearch) {
       setIsSearching(prev => !prev);
-      navigation.setParams({ toggleSearch: false }); // reset để có thể toggle tiếp lần sau
+      navigation.setParams({ toggleSearch: false });
     }
   }, [route.params]);
 
@@ -89,28 +93,27 @@ export default function Home({ navigation, route }: any) {
     <AppLayout navigation={navigation}>
       <ScrollView contentContainerStyle={styles.container}>
         {isSearching && (
-          <View style={{ alignItems: 'center', paddingHorizontal: 10 }}>
-            <Animated.View
-              style={{
-                opacity: inputOpacity,
-                transform: [{ translateY: inputTranslateY }],
-                width: '100%',
+          <Animated.View
+            style={{
+              opacity: inputOpacity,
+              transform: [{ translateY: inputTranslateY }],
+              width: '100%',
+            }}
+          >
+            <TextInput
+              style={[styles.searchInput, { width: '100%' }]}
+              placeholder="Search by project title..."
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={() => {
+                fetchProjects(searchText, status);
+                Keyboard.dismiss();
               }}
-            >
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search by project title..."
-                value={searchText}
-                onChangeText={setSearchText}
-                onSubmitEditing={() => {
-                  fetchProjects(searchText, status);
-                  Keyboard.dismiss();
-                }}
-                returnKeyType="search"
-              />
-            </Animated.View>
-          </View>
+              returnKeyType="search"
+            />
+          </Animated.View>
         )}
+
 
         {isUploading && (
           <View style={{ marginVertical: 10, alignItems: 'center' }}>
@@ -201,7 +204,46 @@ export default function Home({ navigation, route }: any) {
                     {daysLeft === 1 ? 'day' : 'days'} to go
                   </Text>
                 </View>
+              </View>
 
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+                {project.platforms.map((item: any) => (
+                  <View
+                    key={item['platform-id']}
+                    style={{
+                      backgroundColor: '#256eff',
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 20,
+                      marginRight: 8,
+                      marginBottom: 8,
+                    }}
+                  >
+                    <Text style={{ color: 'white', fontSize: 14, fontWeight: 900 }}>{item.name}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+                {project.categories?.length > 0 ? (
+                  project.categories.map((item: any, index: number) => (
+                    <View
+                      key={index}
+                      style={{
+                        backgroundColor: '#00246B',
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
+                        borderRadius: 20,
+                        marginRight: 8,
+                        marginBottom: 8,
+                      }}
+                    >
+                      <Text style={{ color: 'white', fontSize: 14, fontWeight: 900 }}>{item.name}</Text>
+                    </View>
+                  ))
+                ) : (
+                  null
+                )}
               </View>
             </TouchableOpacity>
           );
@@ -225,7 +267,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchInput: {
-    width: 328,
+    width: '100%',
     height: 40,
     backgroundColor: 'white',
     borderWidth: 1,

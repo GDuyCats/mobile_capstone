@@ -25,7 +25,7 @@ export default function ProjectDetail({ route, navigation }: any) {
         );
         setProject(res.data.data);
       } catch (error) {
-        console.log('Lỗi khi fetch chi tiết project:', error);
+        console.log('Error while get the project', error);
       } finally {
         setLoading(false);
       }

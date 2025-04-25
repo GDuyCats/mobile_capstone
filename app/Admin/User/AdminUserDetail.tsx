@@ -20,15 +20,15 @@ export default function AdminUserDetail({ route, navigation }: any) {
 
     const handleDelete = () => {
         Alert.alert(
-            "Xác nhận xóa",
-            "Bạn có chắc muốn xóa người dùng này ko ",
+            "Confirm delete",
+            "Are you sure to delete user !",
             [
                 {
-                    text: "Hủy",
+                    text: "Cancel",
                     style: "cancel"
                 },
                 {
-                    text: "Xóa",
+                    text: "Delete",
                     style: 'destructive',
                     onPress: async () => {
                         try {
@@ -39,7 +39,7 @@ export default function AdminUserDetail({ route, navigation }: any) {
                                     }
                                 }
                             )
-                            alert('Xoá User thành công!');
+                            alert('Delete user successful!');
                             navigation.goBack()
                         } catch (error) {
                             console.log(error)
@@ -76,7 +76,7 @@ export default function AdminUserDetail({ route, navigation }: any) {
         return (
             <View style={styles.center}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Đang tải dữ liệu...</Text>
+                <Text>Loading...</Text>
             </View>
         );
     }
@@ -84,7 +84,7 @@ export default function AdminUserDetail({ route, navigation }: any) {
     if (!userDetail) {
         return (
             <View style={styles.center}>
-                <Text>Không tìm thấy user.</Text>
+                <Text>There is no users.</Text>
             </View>
         );
     }
@@ -92,7 +92,7 @@ export default function AdminUserDetail({ route, navigation }: any) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Text style={styles.backText}>← Quay lại</Text>
+                <Text style={styles.backText}>← Go Back</Text>
             </TouchableOpacity>
 
             {userDetail.avatar && (

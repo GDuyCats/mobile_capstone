@@ -67,7 +67,7 @@ function MyProject({ navigation }: any) {
                                 resizeMode="cover"
                             />
                         ) : (
-                            <Text>Không có ảnh</Text>
+                            null
                         )}
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20 }}>
@@ -91,7 +91,9 @@ function MyProject({ navigation }: any) {
                                 <MaterialIcons name="pending" size={24} color="black" />
                             }
                         </View>
-                        <View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <Text style={{fontSize: 20}}>Transaction status</Text>
+                            <Text style={{fontSize: 20, fontWeight: 900}}>{project['transaction-status']}</Text>
                         </View>
                     </TouchableOpacity>
                 ))}

@@ -19,13 +19,13 @@ export default function ResendGmailConfirm({ navigation }: any) {
       );
 
       if (res.data.success) {
-        Alert.alert('Thành công', 'Email xác nhận đã được gửi lại');
+        Alert.alert('Success', 'A confirm mail have been send !');
       } else {
-        Alert.alert('Thất bại', res.data.message || 'Có lỗi xảy ra');
+        Alert.alert('Fail ', res.data.message || 'There is an error ');
       }
     } catch (err: any) {
       console.log(err);
-      Alert.alert('Lỗi', err?.response?.data?.message || 'Gửi thất bại');
+      Alert.alert('Error', err?.response?.data?.message || 'Send Fail ');
     } finally {
       setLoading(false);
     }
@@ -33,7 +33,7 @@ export default function ResendGmailConfirm({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Nhập email để gửi lại xác nhận:</Text>
+      <Text style={styles.label}>Please fill your email</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
@@ -45,7 +45,7 @@ export default function ResendGmailConfirm({ navigation }: any) {
         <ActivityIndicator size="small" color="#000" />
       ) : (
         <>
-          <Button title="Gửi lại xác nhận" onPress={handleResend} />
+          <Button title="Send" onPress={handleResend} />
           <TouchableOpacity
             style={
               { backgroundColor: '#32a852', 
