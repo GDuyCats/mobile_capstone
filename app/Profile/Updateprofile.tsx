@@ -62,8 +62,6 @@ export default function Updateprofile({ navigation }: any) {
     setIsUploading(true);
 
     try {
-      setIsAvatarChanged(false);
-
       const fileName = avatarUri.split('/').pop() || 'avatar.jpg';
       const fileType = fileName.split('.').pop();
 
@@ -85,22 +83,26 @@ export default function Updateprofile({ navigation }: any) {
         }
       );
 
-      if (res.data && res.data['image-url']) {
-        const imageUrl = res.data['image-url'];
+      console.log('Upload avatar response:', res.data);
+
+      const imageUrlRaw = res.data['image-url'];
+      const imageUrl = imageUrlRaw ? imageUrlRaw.replace('http://', 'https://') : null;
+
+      if (imageUrl) {
         setAvatarUri(imageUrl);
         updateUser({ avatar: imageUrl });
-
         Alert.alert('Avatar change successful!');
       } else {
         throw new Error('Upload failed: no image URL returned.');
       }
     } catch (error: any) {
-      console.error('Upload Avatar Error:', error);
+      console.error('Upload Avatar Error:', error.message);
       Alert.alert('Failed to upload avatar', error.message || 'Unknown error');
     } finally {
       setIsUploading(false);
     }
   };
+
 
   const handleUpdate = async () => {
     const formData = new FormData();
