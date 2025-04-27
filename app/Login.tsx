@@ -93,7 +93,6 @@ export default function Login({ navigation }: any) {
         {isUploading && (
           <View style={{ marginVertical: 10 }}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text>Loading ...</Text>
           </View>
         )}
 

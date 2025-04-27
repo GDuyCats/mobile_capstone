@@ -100,6 +100,7 @@ export default function CreateProject({ navigation }: any) {
     if (startDate >= endDate) {
       Alert.alert('Error', 'Created date must smaller than end date.');
       setIsLoading(false)
+      setDisable(false)
       return;
     }
 
@@ -151,6 +152,7 @@ export default function CreateProject({ navigation }: any) {
       }
     } catch (err) {
       console.log(err);
+      setDisable(false)
       Alert.alert('Error', `You need to update your phone number and your payment account`);
     } finally {
       setIsLoading(false)
