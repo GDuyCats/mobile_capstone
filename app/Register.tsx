@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,8 +20,12 @@ export default function Register({ navigation }: any) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const handleRegister = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       const res = await axios.post(
         'https://marvelous-gentleness-production.up.railway.app/api/Authentication/register',
@@ -32,18 +37,14 @@ export default function Register({ navigation }: any) {
         }
       );
 
-      const message = res.data?.message || 'Đăng ký thành công!';
+      const message = res.data?.message || 'Sign up successfully!';
 
-      Alert.alert(
-        '✅ Đăng ký thành công',
-        message,
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]
-      );
+      Alert.alert('✅ Sign up successfully', message, [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Login'),
+        },
+      ]);
     } catch (error: any) {
       const resData = error.response?.data;
       console.log('Register Fail !', resData);
@@ -60,9 +61,10 @@ export default function Register({ navigation }: any) {
       } else {
         Alert.alert('Register Fail !', 'Error happen. Please try again later !');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
 
   return (
     <ScrollView>
@@ -70,7 +72,8 @@ export default function Register({ navigation }: any) {
         colors={['#0af519', '#08bf13']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={style.container}>
+        style={style.container}
+      >
         <Text style={style.title}>Create your account</Text>
         <View style={style.form}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
@@ -134,20 +137,27 @@ export default function Register({ navigation }: any) {
             </View>
           </View>
 
-          <TouchableOpacity onPress={handleRegister}>
+          <TouchableOpacity onPress={handleRegister} disabled={isSubmitting}>
             <LinearGradient
               colors={['#0af519', '#08bf13']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={style.loginButton}
+              style={[
+                style.loginButton,
+                { backgroundColor: isSubmitting ? 'gray' : undefined },
+              ]}
             >
-              <Text style={style.loginButtonText}>SIGN UP</Text>
+              {isSubmitting ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={style.loginButtonText}>SIGN UP</Text>
+              )}
             </LinearGradient>
           </TouchableOpacity>
 
-          <View style={{marginHorizontal: 'auto'}}>
-            <Text style={{ color: 'black', marginRight: 0, marginLeft: 'auto', fontWeight: 400, fontSize: 15, padding: 10 }}> You already have an account ?</Text>
-            <Text style={{ fontWeight: 900, marginHorizontal: 'auto', padding: 10 }} onPress={() => navigation.navigate('Login')} > Sign in</Text>
+          <View style={{ marginHorizontal: 'auto' }}>
+            <Text style={{ color: 'black', marginRight: 0, marginLeft: 'auto', fontWeight: '400', fontSize: 15, padding: 10 }}> You already have an account ?</Text>
+            <Text style={{ fontWeight: '900', marginHorizontal: 'auto', padding: 10 }} onPress={() => navigation.navigate('Login')}> Sign in</Text>
           </View>
         </View>
       </LinearGradient>
@@ -178,23 +188,10 @@ const style = StyleSheet.create({
     paddingHorizontal: 40,
     backgroundColor: 'white'
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 6,
-    marginBottom: 16,
-  },
-  passwordInput: {
-    flex: 1,
-    paddingVertical: 10,
-  },
-
   label: {
     color: '#11D3AB',
     fontWeight: '800'
   },
-
   loginButton: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -204,10 +201,9 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 10
   },
-
   loginButtonText: {
     color: 'white',
-    fontWeight: 800,
+    fontWeight: '800',
     fontSize: 20
   }
 });

@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {
   View,
   Text,
@@ -53,14 +54,14 @@ export default function Updateprofile({ navigation }: any) {
   };
 
   const uploadAvatar = async () => {
-    setIsUploading(true);
-    try {
-      if (!avatarUri) {
-        Alert.alert('Please choose an Avatar');
-        return;
-      }
+    if (!avatarUri) {
+      Alert.alert('Please choose an Avatar');
+      return;
+    }
 
-      // Ẩn nút sau khi bấm
+    setIsUploading(true);
+
+    try {
       setIsAvatarChanged(false);
 
       const fileName = avatarUri.split('/').pop() || 'avatar.jpg';
@@ -84,13 +85,18 @@ export default function Updateprofile({ navigation }: any) {
         }
       );
 
-      const imageUrl = res.data['image-url'];
-      updateUser({ avatar: imageUrl });
-      setAvatarUri(imageUrl);
-      Alert.alert('Avatar change successful !');
+      if (res.data && res.data['image-url']) {
+        const imageUrl = res.data['image-url'];
+        setAvatarUri(imageUrl);
+        updateUser({ avatar: imageUrl });
+
+        Alert.alert('Avatar change successful!');
+      } else {
+        throw new Error('Upload failed: no image URL returned.');
+      }
     } catch (error: any) {
-      console.log(error.message);
-      Alert.alert(error.message);
+      console.error('Upload Avatar Error:', error);
+      Alert.alert('Failed to upload avatar', error.message || 'Unknown error');
     } finally {
       setIsUploading(false);
     }
@@ -141,20 +147,31 @@ export default function Updateprofile({ navigation }: any) {
     >
       <ScrollView style={styles.container}>
         <View style={{ height: 120, backgroundColor: '#0C1C33' }} />
-
+        {/* IMPORTANT*/}
         <View style={styles.avatarWrapper}>
-          {avatarUri && <Image source={{ uri: avatarUri }} style={styles.avatar} />}
+          {avatarUri && avatarUri.startsWith('http') ? (
+            <Image
+              source={{ uri: avatarUri }}
+              style={styles.avatar}
+              onError={(e) => {
+                console.log('Error loading avatar:', e.nativeEvent.error);
+                setAvatarUri(null);
+              }}
+            />
+          ) : (
+            <MaterialIcons name="account-circle" size={120} color="black" />
+          )}
         </View>
-
+        {/* IMPORTANT*/}
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={{ paddingHorizontal: 20, paddingTop: 80 }}>
-          <TouchableOpacity onPress={pickImage} style={{ alignSelf: 'center' }}>
-              <Text style={{fontWeight: 900}}>Choose Avatar</Text>
+            <TouchableOpacity onPress={pickImage} style={{ alignSelf: 'center' }}>
+              <Text style={{ fontWeight: 900 }}>Choose Avatar</Text>
             </TouchableOpacity>
 
             {isAvatarChanged && (
               <TouchableOpacity onPress={uploadAvatar} style={{ alignSelf: 'center', marginTop: 6 }}>
-                <Text style={{fontWeight: 900}}>Update Avatar</Text>
+                <Text style={{ fontWeight: 900 }}>Update Avatar</Text>
               </TouchableOpacity>
             )}
             <Text style={styles.label}>Your full name</Text>
@@ -177,12 +194,12 @@ export default function Updateprofile({ navigation }: any) {
               </View>
             )}
             <View>
-            
+
             </View>
-            <TouchableOpacity 
-            onPress={handleUpdate} 
-            style={{ marginTop: 12, backgroundColor: '#5998f0', padding: 15, borderRadius: 50}}>
-              <Text style={{marginHorizontal: 'auto', fontWeight: '900', color: 'white', borderRadius: 30}}>Update information</Text>
+            <TouchableOpacity
+              onPress={handleUpdate}
+              style={{ marginTop: 12, backgroundColor: '#5998f0', padding: 15, borderRadius: 50 }}>
+              <Text style={{ marginHorizontal: 'auto', fontWeight: '900', color: 'white', borderRadius: 30 }}>Update information</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

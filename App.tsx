@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from './context/authContext';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import Home from './app/Index';
 import Login from './app/Login';
@@ -166,11 +167,15 @@ function MainNavigator() {
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <NavigationContainer>
-          <MainNavigator />
-        </NavigationContainer>
-      </AuthProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <AuthProvider>
+          <NavigationContainer>
+            <MainNavigator />
+          </NavigationContainer>
+        </AuthProvider>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  </GestureHandlerRootView>
   );
 }
