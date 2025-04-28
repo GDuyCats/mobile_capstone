@@ -66,16 +66,16 @@ export default function GetComments({ navigation, route }: any) {
       navigation.navigate('Login');
       return;
     }
-
+  
     if (!replyContent.trim()) return;
-
+  
     const formData = new FormData();
     formData.append('projectId', projectId.toString());
     formData.append('parentCommentId', replyingTo?.toString() || '');
     formData.append('content', replyContent);
-
+  
     try {
-      await axios.post(
+      const res = await axios.post(
         'https://marvelous-gentleness-production.up.railway.app/api/Comment/project',
         formData,
         {
@@ -85,13 +85,19 @@ export default function GetComments({ navigation, route }: any) {
           },
         }
       );
-
+  
+      if (res.data['status-code'] === 403) {
+        Alert.alert('Warning', res.data?.message || 'You are not allowed to comment.');
+        return;
+      }
+  
       setReplyContent('');
       setReplyingTo(null);
       Keyboard.dismiss();
       await fetchComments();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error submitting reply:', err);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
 
@@ -101,15 +107,15 @@ export default function GetComments({ navigation, route }: any) {
       navigation.navigate('Login');
       return;
     }
-
+  
     if (!newComment.trim()) return;
-
+  
     const formData = new FormData();
     formData.append('projectId', projectId.toString());
     formData.append('content', newComment);
-
+  
     try {
-      await axios.post(
+      const res = await axios.post(
         'https://marvelous-gentleness-production.up.railway.app/api/Comment/project',
         formData,
         {
@@ -119,21 +125,26 @@ export default function GetComments({ navigation, route }: any) {
           },
         }
       );
-
+  
+      if (res.data['status-code'] === 403) {
+        Alert.alert('Warning', res.data?.message || 'You are not allowed to comment.');
+        return;
+      }
+  
       setNewComment('');
       Keyboard.dismiss();
       await fetchComments();
-
+  
       setTimeout(() => {
         if (flatListRef.current) {
           flatListRef.current.scrollToEnd({ animated: true });
         }
       }, 300);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error submitting comment:', err);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
-
   
 
   const renderComment = (item: any, level = 0) => {
