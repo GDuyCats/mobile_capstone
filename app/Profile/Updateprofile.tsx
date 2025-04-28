@@ -16,12 +16,13 @@ import {
 import axios from 'axios';
 import { AuthContext } from '../../context/authContext';
 import * as ImagePicker from 'expo-image-picker';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function Updateprofile({ navigation }: any) {
   const { user, updateUser } = useContext(AuthContext);
   const [isUploading, setIsUploading] = useState(false);
   const [isAvatarChanged, setIsAvatarChanged] = useState(false);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState('');
   const [paymentAccount, setPaymentAccount] = useState('');
@@ -29,7 +30,6 @@ export default function Updateprofile({ navigation }: any) {
   const [phone, setPhone] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUri, setAvatarUri] = useState<string | null>(user?.avatar || null);
-
   useEffect(() => {
     if (user) {
       setFullname(user.fullName || '');
@@ -54,6 +54,7 @@ export default function Updateprofile({ navigation }: any) {
   };
 
   const uploadAvatar = async () => {
+    setIsAvatarChanged(false)
     if (!avatarUri) {
       Alert.alert('Please choose an Avatar');
       return;
@@ -91,12 +92,15 @@ export default function Updateprofile({ navigation }: any) {
       if (imageUrl) {
         setAvatarUri(imageUrl);
         updateUser({ avatar: imageUrl });
-        Alert.alert('Avatar change successful!');
+        Alert.alert('Success', 'Avatar change successful!');
+        setIsAvatarChanged(false)
       } else {
         throw new Error('Upload failed: no image URL returned.');
+        setIsAvatarChanged(false)
       }
     } catch (error: any) {
       console.error('Upload Avatar Error:', error.message);
+      setIsAvatarChanged(false)
       Alert.alert('Failed to upload avatar', error.message || 'Unknown error');
     } finally {
       setIsUploading(false);
@@ -134,7 +138,7 @@ export default function Updateprofile({ navigation }: any) {
         paymentAccount,
       });
 
-      Alert.alert('Update successfully');
+      Alert.alert('Success', 'Update successfully');
       navigation.goBack();
     } catch (error: any) {
       console.log('Error while update', error);
@@ -150,20 +154,13 @@ export default function Updateprofile({ navigation }: any) {
       <ScrollView style={styles.container}>
         <View style={{ height: 120, backgroundColor: '#0C1C33' }} />
         {/* IMPORTANT*/}
+
         <View style={styles.avatarWrapper}>
-          {avatarUri && avatarUri.startsWith('http') ? (
-            <Image
-              source={{ uri: avatarUri }}
-              style={styles.avatar}
-              onError={(e) => {
-                console.log('Error loading avatar:', e.nativeEvent.error);
-                setAvatarUri(null);
-              }}
-            />
-          ) : (
-            <MaterialIcons name="account-circle" size={120} color="black" />
+          {avatarUri ? (<Image source={{ uri: avatarUri }} style={styles.avatar} />) : (
+            <MaterialIcons style={{}} name="account-circle" size={120} color="black" />
           )}
         </View>
+
         {/* IMPORTANT*/}
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={{ paddingHorizontal: 20, paddingTop: 80 }}>
@@ -180,8 +177,8 @@ export default function Updateprofile({ navigation }: any) {
             <TextInput value={fullname} onChangeText={setFullname} style={styles.input} />
             <Text style={styles.label}>Email</Text>
             <TextInput value={email} onChangeText={setEmail} style={styles.input} />
-            <Text style={styles.label}>Password</Text>
-            <TextInput value={password} onChangeText={setPassword} style={styles.input} secureTextEntry />
+            {/* <Text style={styles.label}>Password</Text>
+            <TextInput value={password} onChangeText={setPassword} style={styles.input} secureTextEntry /> */}
             <Text style={styles.label}>Telephone number</Text>
             <TextInput value={phone} onChangeText={setPhone} style={styles.input} />
             <Text style={styles.label}>Payment account</Text>
@@ -192,17 +189,57 @@ export default function Updateprofile({ navigation }: any) {
             {isUploading && (
               <View style={{ marginVertical: 10 }}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Loading...</Text>
               </View>
             )}
-            <View>
 
+            <View style={{ paddingVertical: 20, gap: 20 }}>
+              <TouchableOpacity
+                disabled={isButtonDisabled}
+                onPress={async () => {
+                  setIsButtonDisabled(true); // disable tất cả nút
+                  await handleUpdate();
+                  setIsButtonDisabled(false); // enable lại sau khi xong
+                }}
+                style={{ borderBottomWidth: 1, paddingBottom: 10 }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={{ color: 'black', borderRadius: 30 }}>Update information</Text>
+                  <AntDesign name="right" size={24} color="black" />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={isButtonDisabled}
+                onPress={async () => {
+                  setIsButtonDisabled(true);
+                  navigation.navigate('ForgotPassword');
+                  setIsButtonDisabled(false);
+                }}
+                style={{ borderBottomWidth: 1, paddingBottom: 10 }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={{ color: 'black', borderRadius: 30 }}>Change Password</Text>
+                  <AntDesign name="right" size={24} color="black" />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={isButtonDisabled}
+                onPress={async () => {
+                  setIsButtonDisabled(true);
+                  navigation.goBack();
+                  setIsButtonDisabled(false);
+                }}
+                style={{ borderBottomWidth: 1, paddingBottom: 10 }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={{ color: 'black', borderRadius: 30 }}>Go Back</Text>
+                  <AntDesign name="right" size={24} color="black" />
+                </View>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={handleUpdate}
-              style={{ marginTop: 12, backgroundColor: '#5998f0', padding: 15, borderRadius: 50 }}>
-              <Text style={{ marginHorizontal: 'auto', fontWeight: '900', color: 'white', borderRadius: 30 }}>Update information</Text>
-            </TouchableOpacity>
+
+
           </View>
         </ScrollView>
       </ScrollView >

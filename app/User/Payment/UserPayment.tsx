@@ -1,14 +1,15 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, Alert, ActivityIndicator, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native'
-import { useFocusEffect } from '@react-navigation/native'
+import { View, Text, Alert, ActivityIndicator, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { WebView } from 'react-native-webview'
 import axios from 'axios'
 import { AuthContext } from '../../../context/authContext'
 
 function UserPayment({ route, navigation }: any) {
   const { user } = useContext(AuthContext)
-  const { projectId } = route.params
-  const [amount, setAmount] = useState('')
+  const { projectId, amount: amountFromReward } = route.params || {}
+
+  const [amount, setAmount] = useState(amountFromReward ? amountFromReward.toString() : '')
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -51,12 +52,11 @@ function UserPayment({ route, navigation }: any) {
     }, [user])
   );
 
-
   const createPayment = async () => {
     const parsedAmount = parseFloat(amount)
 
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      Alert.alert('Error', 'Please inser right value !')
+      Alert.alert('Error', 'Please insert right value!')
       return
     }
 
@@ -76,11 +76,11 @@ function UserPayment({ route, navigation }: any) {
       if (url) {
         setPaymentUrl(url)
       } else {
-        Alert.alert('Error', 'Can not get the payment url !')
+        Alert.alert('Error', 'Cannot get the payment URL!')
       }
     } catch (error: any) {
       console.log('Payment error:', error.response?.data || error.message)
-      Alert.alert('Error', error.response?.data?.message || 'Can not make a payment')
+      Alert.alert('Error', error.response?.data?.message || 'Cannot make a payment')
     } finally {
       setLoading(false)
     }
@@ -100,10 +100,10 @@ function UserPayment({ route, navigation }: any) {
       )
 
       if (res.data?.success) {
-        Alert.alert('✅ Success', res.data.message || 'Payment Success !')
+        Alert.alert('✅ Success', res.data.message || 'Payment Success!')
         navigation.navigate('PaymentSuccess')
       } else {
-        Alert.alert('❌ Fail', res.data.message || 'Payment Fail !')
+        Alert.alert('❌ Fail', res.data.message || 'Payment Fail!')
         navigation.navigate('PaymentFailed')
       }
     } catch (error: any) {
@@ -118,7 +118,6 @@ function UserPayment({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text>Loading ...</Text>
       </View>
     )
   }
@@ -134,7 +133,6 @@ function UserPayment({ route, navigation }: any) {
             const paymentId = params.get('paymentId')
             const token = params.get('token')
             const PayerID = params.get('PayerID')
-
             if (paymentId && token && PayerID) {
               setPaymentUrl(null)
               executePayment(paymentId, token, PayerID)
@@ -164,6 +162,12 @@ function UserPayment({ route, navigation }: any) {
       <TouchableOpacity style={styles.sendButton} onPress={createPayment}>
         <Text style={styles.sendButtonText}>Send Money</Text>
       </TouchableOpacity>
+
+      {amountFromReward === undefined && (
+        <View style={{ marginTop: 10 }}>
+          <Text>No reward, just support the project</Text>
+        </View>
+      )}
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.backText}>Go back</Text>

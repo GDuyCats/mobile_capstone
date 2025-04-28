@@ -41,7 +41,7 @@ export default function Profile({ navigation }: any) {
         role: profileData.role,
       });
     } catch (error) {
-      console.log('❌ Lỗi khi fetch user:', error);
+      console.log('Error while getting user information', error);
     } finally {
       setIsUploading(false);
     }
@@ -63,7 +63,6 @@ export default function Profile({ navigation }: any) {
       {isUploading ? (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#8e44ad" />
-          <Text>Đang tải thông tin lên ...</Text>
         </View>
       ) : (
         profile && (

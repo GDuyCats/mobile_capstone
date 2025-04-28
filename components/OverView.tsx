@@ -8,6 +8,7 @@ import {
     ScrollView,
     useWindowDimensions,
     TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native';
 
 export default function OverView({ project }: any) {
@@ -16,7 +17,7 @@ export default function OverView({ project }: any) {
     if (!project) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Đang tải dữ liệu...</Text>
+                    <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }
@@ -87,7 +88,7 @@ export default function OverView({ project }: any) {
                     </View>
                 </View>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('GetProjectComment', { projectId: project['project-id'] })}
+                    onPress={() => navigation.navigate('GetProjectComment', { projectId: project['project-id']})}
                     style={{
                         marginVertical: 15,
                         borderBottomWidth: 1,
@@ -96,19 +97,6 @@ export default function OverView({ project }: any) {
                     }}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Text style={{ fontSize: 15 }}>Comments</Text>
-                        <AntDesign name="right" size={15} color="black" />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('GetProjectComment', { projectId: project['project-id'] })}
-                    style={{
-                        marginBottom: 15,
-                        borderBottomWidth: 1,
-                        borderBlockColor: '#AAAAAB',
-                        paddingVertical: 10
-                    }}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={{ fontSize: 15 }}>Report this project to GAMEMKT</Text>
                         <AntDesign name="right" size={15} color="black" />
                     </View>
                 </TouchableOpacity>

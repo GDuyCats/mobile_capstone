@@ -32,7 +32,7 @@ function MoneyHistory({ navigation, route }: any) {
           );
           setMoney(res.data.data || []);
         } catch (error) {
-          console.log('Lỗi khi lấy dữ liệu giao dịch:', error);
+          console.log('Error', error);
         } finally {
           setIsLoading(false)
         }
@@ -54,7 +54,6 @@ function MoneyHistory({ navigation, route }: any) {
         {isLoading ? (
           <View style={{ alignItems: 'center', marginVertical: 20 }}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={{ marginTop: 10 }}>Loading...</Text>
           </View>
         ) : money.length > 0 ? (
           money.map((item: any, index: number) => (
@@ -95,7 +94,9 @@ function MoneyHistory({ navigation, route }: any) {
             </View>
           ))
         ) : (
-          <Text style={styles.noData}>There is no backer history</Text>
+          <View style={{ marginTop: 50, alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no backer history</Text>
+          </View>
         )}
       </View>
     </ScrollView>

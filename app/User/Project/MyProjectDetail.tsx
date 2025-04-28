@@ -43,7 +43,7 @@ function MyProjectDetail({ route, navigation }: any) {
     return (
       <View >
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading...</Text>
+
       </View>
     );
   }

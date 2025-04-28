@@ -15,7 +15,7 @@ import RenderHTML from 'react-native-render-html';
 import { AuthContext } from '../../../context/authContext';
 export default function ProjectDetail({ route, navigation }: any) {
   const { projectId } = route.params;
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
@@ -38,14 +38,14 @@ export default function ProjectDetail({ route, navigation }: any) {
                 {
                   headers: {
                     Authorization: `Bearer ${user.token}`,
-                },
+                  },
                 }
               );
-              alert('Xoá project thành công!');
+              alert('Can not delete the project !');
               navigation.navigate('StaffProject', { refresh: true });
             } catch (error) {
-              console.error('Lỗi khi xoá project:', error);
-              alert('Xoá project thất bại!');
+              console.error('Error while delete the project ', error);
+              alert('Project delete fail !');
             }
           }
         }
@@ -61,7 +61,7 @@ export default function ProjectDetail({ route, navigation }: any) {
         );
         setProject(res.data.data);
       } catch (error) {
-        console.log('Lỗi khi fetch chi tiết project:', error);
+        console.log('Error while getting project detail', error);
       } finally {
         setLoading(false);
       }
@@ -74,24 +74,22 @@ export default function ProjectDetail({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Đang tải thông tin...</Text>
       </View>
     );
   }
 
   if (!project) {
     return (
-      <View style={styles.center}>
-        <Text>Không tìm thấy project.</Text>
+      <View style={{ marginTop: 50, alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no project</Text>
       </View>
     );
   }
 
   return (
     <ScrollView style={styles.container}>
-      {/* Nút Quay Lại */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backText}>Quay lại</Text>
+        <Text style={styles.backText}>Go Back</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleDelete} style={styles.backButton}>

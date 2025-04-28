@@ -25,7 +25,7 @@ export default function RewardDetail({ navigation, route }: any) {
         );
         setReward(res.data.data);
       } catch (error) {
-        console.log('Lỗi khi fetch reward:', error);
+        console.log('Error while getting reward', error);
       } finally {
         setLoading(false);
       }

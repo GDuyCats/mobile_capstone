@@ -50,7 +50,7 @@ function Profile({ route, navigation }: any) {
             {isUploading ? (
                 <View style={styles.loading}>
                     <ActivityIndicator size="large" color="#8e44ad" />
-                    <Text>Loading ....</Text>
+
                 </View>
             ) : (
                 profile && (

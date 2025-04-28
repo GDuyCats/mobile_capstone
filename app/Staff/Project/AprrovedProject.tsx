@@ -87,10 +87,10 @@ export default function ApproveProject({ route, navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Trạng thái hiện tại:</Text>
+      <Text style={styles.label}>Current Status :</Text>
       <Text>{project.status}</Text>
 
-      <Text style={styles.label}>Chọn trạng thái mới:</Text>
+      <Text style={styles.label}>New Status:</Text>
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={status}
@@ -104,13 +104,13 @@ export default function ApproveProject({ route, navigation }: any) {
 
       <Text style={styles.label}>Lý do:</Text>
       <TextInput
-        placeholder="Nhập lý do (nếu có)..."
+        placeholder="Reason"
         value={reason}
         onChangeText={setReason}
         style={styles.input}
       />
 
-      <Button title="Cập nhật trạng thái" onPress={handleApprove} disabled={loading} />
+      <Button title="Update status" onPress={handleApprove} disabled={loading} />
     </View>
   );
 }

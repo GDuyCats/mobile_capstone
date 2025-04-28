@@ -33,7 +33,6 @@ export default function Home({ navigation, route }: any) {
         { params }
       );
       setProjects(res.data.data);
-      console.log(res.data.data)
     } catch (error) {
       console.log('Error while getting project', error.response?.data || error.message);
     } finally {
@@ -118,8 +117,6 @@ export default function Home({ navigation, route }: any) {
         {isUploading && (
           <View style={{ marginVertical: 10, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={{ fontSize: 10 }}>Please wait</Text>
-            <Text style={{ fontSize: 15 }}>Loading...</Text>
           </View>
         )}
 

@@ -14,7 +14,7 @@ export default function UpdateReward({ navigation, route }: any) {
 
   const handleUpdate = async () => {
     if (!amount || !details) {
-      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin!');
+      Alert.alert('Error', 'Please fill in enough information !');
       return;
     }
 
@@ -37,7 +37,7 @@ export default function UpdateReward({ navigation, route }: any) {
         }
       );
 
-      Alert.alert('Thành công', 'Cập nhật reward thành công!');
+      Alert.alert('Success', 'Reward update successfully !');
       navigation.goBack();
     } catch (error) {
       console.log('Lỗi khi cập nhật reward:', error);

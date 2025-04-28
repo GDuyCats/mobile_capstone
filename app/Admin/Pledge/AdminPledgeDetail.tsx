@@ -40,15 +40,14 @@ function AdminPledgeDetail({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading....</Text>
       </View>
     );
   }
 
   if (!pledge) {
     return (
-      <View style={styles.center}>
-        <Text>There is no pledge</Text>
+      <View style={{ marginTop: 50, alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no pledge</Text>
       </View>
     );
   }

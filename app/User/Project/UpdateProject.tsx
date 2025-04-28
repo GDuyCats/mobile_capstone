@@ -51,8 +51,8 @@ export default function UpdateProject({ route, navigation }: any) {
         setEndDate(new Date(data['end-datetime']));
         setStory(data.story || '');
       } catch (err) {
-        console.log('Lỗi load project:', err);
-        Alert.alert('Lỗi', 'Không lấy được thông tin dự án.');
+        console.log('Error', err);
+        Alert.alert('Error', 'Can not get the project information');
       } finally {
         setLoading(false);
       }
@@ -64,7 +64,7 @@ export default function UpdateProject({ route, navigation }: any) {
   const handleUpdate = async () => {
     setIsDisabled(true)
     if (!name || !description || !minimumAmount) {
-      return Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin');
+      return Alert.alert('Error', 'Please fill enough information');
     }
 
     const formData = new FormData();
@@ -147,7 +147,6 @@ export default function UpdateProject({ route, navigation }: any) {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 16, marginBottom: 12 }}>Loading ...</Text>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -224,7 +223,7 @@ export default function UpdateProject({ route, navigation }: any) {
                     borderRadius: 6,
                   }}
                 >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đổi ảnh</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Change Thumbnail</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setImage(null)}
@@ -235,7 +234,7 @@ export default function UpdateProject({ route, navigation }: any) {
                     borderRadius: 6,
                   }}
                 >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Huỷ chọn ảnh</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel choose Thumbnail</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -257,7 +256,6 @@ export default function UpdateProject({ route, navigation }: any) {
           <Text style={{ fontWeight: '900', color: 'white' }}>Update Project</Text>
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 }

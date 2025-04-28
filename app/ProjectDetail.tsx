@@ -38,8 +38,6 @@ export default function ProjectDetail({ route, navigation }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={{ fontSize: 10 }}>Please wait</Text>
-        <Text style={{ fontSize: 20 }}>Loading...</Text>
       </View>
     );
   }
@@ -47,7 +45,7 @@ export default function ProjectDetail({ route, navigation }: any) {
   if (!project) {
     return (
       <View style={styles.center}>
-        <Text>Không tìm thấy project.</Text>
+        <Text>Can not see the project</Text>
       </View>
     );
   }

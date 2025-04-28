@@ -39,13 +39,13 @@ function MyPledge({ navigation }: any) {
                                 );
                                 return {
                                     ...pledgeItem,
-                                    projectTitle: projectRes.data?.data?.title || 'Không rõ'
+                                    projectTitle: projectRes.data?.data?.title || 'Unknown'
                                 };
                             } catch (error) {
-                                console.log('Lỗi khi fetch project:', error);
+                                console.log('Error why getting the project ', error);
                                 return {
                                     ...pledgeItem,
-                                    projectTitle: 'Lỗi tải tên project'
+                                    projectTitle: 'Error while getting project name '
                                 };
                             }
                         })
@@ -69,7 +69,7 @@ function MyPledge({ navigation }: any) {
             {loading ? (
                 <View style={{ marginVertical: 10 }}>
                     <ActivityIndicator size="large" color="#0000ff" />
-                    <Text>Loading ...</Text>
+
                 </View>
             ) : (
                 <View style={{ padding: 20 }}>
@@ -107,7 +107,9 @@ function MyPledge({ navigation }: any) {
                             </TouchableOpacity>
                         ))
                     ) : (
-                        <Text>Không có pledge nào.</Text>
+                        <View style={{ marginTop: 50, alignItems: 'center' }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no pledge</Text>
+                        </View>
                     )}
                 </View>
             )}

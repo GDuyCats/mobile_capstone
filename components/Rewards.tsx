@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../context/authContext';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native'; 
 
 export default function Reward() {
   const route = useRoute<any>();
+  const navigation = useNavigation<any>(); 
   const { projectId } = route.params;
   const { user } = useContext(AuthContext);
   const [rewards, setRewards] = useState([]);
@@ -23,15 +24,15 @@ export default function Reward() {
             },
           }
         );
-        const sortedRewards = (res.data.data || []).sort((a, b) => a.amount - b.amount);; // 👈 Sắp xếp giảm dần
+        const sortedRewards = (res.data.data || []).sort((a, b) => a.amount - b.amount);
         setRewards(sortedRewards);
       } catch (err) {
-        console.log('Lỗi khi lấy reward:', err);
+        console.log('Error', err);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchRewards();
   }, [projectId]);
 
@@ -39,15 +40,14 @@ export default function Reward() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text>Đang tải rewards...</Text>
       </View>
     );
   }
 
   if (rewards.length === 0) {
     return (
-      <View style={styles.center}>
-        <Text>Chưa có reward nào.</Text>
+      <View style={{ marginTop: 50, alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no Reward</Text>
       </View>
     );
   }
@@ -59,10 +59,14 @@ export default function Reward() {
         data={rewards}
         keyExtractor={(item) => item['reward-id'].toString()}
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.amount}>{item.amount}$</Text>
-            <Text style={styles.details}>{item.details}</Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('UserPayment', { projectId, amount: item.amount })}
+          >
+            <View style={styles.item}>
+              <Text style={styles.amount}>{item.amount}$</Text>
+              <Text style={styles.details}>{item.details}</Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
