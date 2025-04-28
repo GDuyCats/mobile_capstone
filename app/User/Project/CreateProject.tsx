@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ActivityIndicator,
   StyleSheet,
   Alert,
   Keyboard,
@@ -32,46 +33,46 @@ export default function CreateProject({ navigation }: any) {
   const [endDate, setEndDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState<'start' | 'end' | null>(null);
   const [image, setImage] = useState<any>(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  
   useFocusEffect(
-      React.useCallback(() => {
-        if (!user?.token) {
-          Alert.alert(
-            'You are not log in!',
-            'Please sign in to continue!',
-            [
-              {
-                text: 'OK',
-                onPress: () =>
-                  navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                  }),
-              },
-            ]
-          );
-          return;
-        }
-  
-        if (user.role !== 'CUSTOMER') {
-          Alert.alert(
-            'Access denied!',
-            'Your account does not have access to create project!',
-            [
-              {
-                text: 'OK',
-                onPress: () =>
-                  navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Home' }],
-                  }),
-              },
-            ]
-          );
-        }
-      }, [user])
-    );
+    React.useCallback(() => {
+      if (!user?.token) {
+        Alert.alert(
+          'You are not log in!',
+          'Please sign in to continue!',
+          [
+            {
+              text: 'OK',
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                }),
+            },
+          ]
+        );
+        return;
+      }
+
+      if (user.role !== 'CUSTOMER') {
+        Alert.alert(
+          'Access denied!',
+          'Your account does not have access to create project!',
+          [
+            {
+              text: 'OK',
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Home' }],
+                }),
+            },
+          ]
+        );
+      }
+    }, [user])
+  );
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -152,8 +153,14 @@ export default function CreateProject({ navigation }: any) {
       }
     } catch (err) {
       console.log(err);
-      setDisable(false)
-      Alert.alert('Error', `You need to update your phone number and your payment account`);
+      setDisable(false);
+
+      let errorMessage = 'Something went wrong';
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message;
+      }
+
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false)
     }
@@ -170,7 +177,7 @@ export default function CreateProject({ navigation }: any) {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <HeaderLayout title={'Create Project'} onBackPress={() => navigation.goBack()} />
         <View style={styles.container}>
           <ScrollView
@@ -203,7 +210,16 @@ export default function CreateProject({ navigation }: any) {
               <Text style={styles.label}>Thumbnail (Optional):</Text>
 
               {!image ? (
-                <TouchableOpacity onPress={pickImage} style={styles.dateButton}>
+                <TouchableOpacity
+                  onPress={async () => {
+                    if (disable) return; 
+                    setDisable(true);    
+                    await pickImage();  
+                    setDisable(false);    
+                  }}
+                  disabled={disable}
+                  style={[styles.dateButton, disable && { opacity: 0.5 }]} 
+                >
                   <Text>Choose a picture from a library</Text>
                 </TouchableOpacity>
               ) : (
@@ -214,25 +230,40 @@ export default function CreateProject({ navigation }: any) {
                   />
                   <View style={{ flexDirection: 'row', marginTop: 10, gap: 10 }}>
                     <TouchableOpacity
-                      onPress={pickImage}
+                      onPress={async () => {
+                        if (disable) return;
+                        setDisable(true);
+                        await pickImage();
+                        setDisable(false);
+                      }}
+                      disabled={disable}
                       style={{
                         flex: 0.4,
                         backgroundColor: '#4089ff',
                         alignItems: 'center',
                         padding: 10,
                         borderRadius: 20,
+                        opacity: disable ? 0.5 : 1,
                       }}
                     >
                       <Text style={{ color: '#fff', fontWeight: 'bold' }}>Change</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity
-                      onPress={() => setImage(null)}
+                      onPress={() => {
+                        if (disable) return;
+                        setDisable(true);
+                        setImage(null);
+                        setDisable(false);
+                      }}
+                      disabled={disable}
                       style={{
                         flex: 0.6,
                         alignItems: 'center',
                         backgroundColor: '#FF6B6B',
                         padding: 10,
                         borderRadius: 20,
+                        opacity: disable ? 0.5 : 1,
                       }}
                     >
                       <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel</Text>
@@ -253,14 +284,19 @@ export default function CreateProject({ navigation }: any) {
             <TouchableOpacity
               style={[styles.createProjectButton, disable && { opacity: 0.5 }]}
               disabled={disable}
-              onPress={handleCreate} >
-              <Text
-                style={{ color: 'white', fontWeight: 'bold' }}>Create Project</Text>
+              onPress={async () => {
+                setDisable(true);
+                await handleCreate();
+                setDisable(false);
+              }}
+            >
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>Create Project</Text>
             </TouchableOpacity>
 
+
             {isLoading && (
-              <View>
-                <Text>Loading...</Text>
+              <View style={{ marginVertical: 10, alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#0000ff" />
               </View>
 
             )}

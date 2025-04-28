@@ -222,7 +222,6 @@ export default function GetComments({ navigation, route }: any) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text>Loading comments...</Text>
       </View>
     );
   }

@@ -20,7 +20,7 @@ const StaffReward = ({navigation}: any) => {
                 }))
                 setRewards(cleaned)
             } catch (error) {
-                console.error('Lỗi khi gọi API:', error)
+                console.error('Error while calling API', error)
             } finally {
 
             }
@@ -37,7 +37,6 @@ const StaffReward = ({navigation}: any) => {
             {isloading && (
                 <View style={{ marginVertical: 10 }}>
                     <ActivityIndicator size="large" color="#0000ff" />
-                    <Text>Đang tải thông tin lên ...</Text>
                 </View>
             )}
             {rewards.map(item => (

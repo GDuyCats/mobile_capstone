@@ -20,7 +20,7 @@ export default function Register({ navigation }: any) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegister = async () => {
     if (isSubmitting) return;
@@ -74,7 +74,15 @@ export default function Register({ navigation }: any) {
         end={{ x: 1, y: 0 }}
         style={style.container}
       >
-        <Text style={style.title}>Create your account</Text>
+        <View style={{
+          flex: 0.3, 
+          paddingTop: 20,
+          paddingLeft: 20,
+          marginBottom: 50,
+        }}>
+          <Text style={style.title}>Create your account</Text>
+        </View>
+
         <View style={style.form}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', marginBottom: 20 }}>
             <Text style={style.label}> Fullname </Text>
@@ -169,16 +177,13 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 30,
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   title: {
-    flex: 0.3,
     color: 'white',
     fontSize: 40,
     fontWeight: 'bold',
-    paddingTop: 20,
-    paddingLeft: 20,
-    marginBottom: 24,
   },
   form: {
     flex: 0.7,

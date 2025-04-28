@@ -27,7 +27,7 @@ function StaffProjectApprove({ navigation }: any) {
             setProjects(res.data.data || []);
           }
         } catch (error) {
-          console.log('Lỗi khi lấy danh sách project:', error);
+          console.log('Error while getting project information', error);
         } finally {
           if (isActive) {
             setLoading(false);
@@ -50,7 +50,7 @@ function StaffProjectApprove({ navigation }: any) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {projects.length === 0 ? (
-        <Text style={styles.emptyText}>Không có dự án nào.</Text>
+        <Text style={styles.emptyText}>There is no project</Text>
       ) : (
         projects.map((project) => (
           <TouchableOpacity
@@ -66,10 +66,10 @@ function StaffProjectApprove({ navigation }: any) {
             {project.thumbnail && project.thumbnail !== 'null' ? (
               <Image source={{ uri: project.thumbnail }} style={styles.image} />
             ) : (
-              <Text style={{ color: 'gray' }}>Không có ảnh</Text>
+              <Text style={{ color: 'gray' }}>No thumbnail</Text>
             )}
             <Text style={styles.desc}>{project.description}</Text>
-            <Text style={styles.status}>Trạng thái: {project.status}</Text>
+            <Text style={styles.status}>Status: {project.status}</Text>
           </TouchableOpacity>
         ))
       )}

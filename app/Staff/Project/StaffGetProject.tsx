@@ -23,7 +23,7 @@ function StaffGetProject({ navigation }: any) {
       );
       setProjects(res.data?.data || []);
     } catch (error) {
-      console.log('Lỗi khi load project:', error);
+      console.log('Error while getting project information', error);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +42,9 @@ function StaffGetProject({ navigation }: any) {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : projects.length === 0 ? (
-        <Text style={styles.projectTitle}>There is no project</Text>
+        <View style={{ marginTop: 50, alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no project</Text>
+        </View>
       ) : (
         projects.map((project: any) => (
           <TouchableOpacity

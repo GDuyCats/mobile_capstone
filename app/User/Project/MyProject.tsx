@@ -37,7 +37,6 @@ function MyProject({ navigation }: any) {
         return (
             <View>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Loading...</Text>
             </View>
         );
     }
@@ -45,58 +44,69 @@ function MyProject({ navigation }: any) {
         <ScrollView style={style.container}>
             <HeaderLayout title={'My projects'} onBackPress={() => navigation.goBack()} />
             <View style={{ padding: 10 }}>
-                {project.map((project: any) => (
-                    <TouchableOpacity
-                        key={project['project-id']}
-                        style={style.card}
-                        onPress={() => {
-                            navigation.navigate('MyProjectDetail', { projectId: project["project-id"] })
-                        }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: 'black', fontWeight: '900', fontSize: 25 }}>You received</Text>
-                            <Text style={{ color: 'green', fontWeight: '900', fontSize: 25 }}> {project['total-amount']}$</Text>
-                        </View>
+                {project.length > 0 ? (
 
-                        <View>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20, marginVertical: 10 }}>{project.title}</Text>
-                        </View>
-                        {project.thumbnail ? (
-                            <Image
-                                source={{ uri: project.thumbnail }}
-                                style={{ width: '100%', height: 200, borderRadius: 10 }}
-                                resizeMode="cover"
-                            />
-                        ) : (
-                            null
-                        )}
+                    project.map((project: any) => (
+                        <TouchableOpacity
+                            key={project['project-id']}
+                            style={style.card}
+                            onPress={() => {
+                                navigation.navigate('MyProjectDetail', { projectId: project["project-id"] })
+                            }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{ color: 'black', fontWeight: '900', fontSize: 25 }}>You received</Text>
+                                <Text style={{ color: 'green', fontWeight: '900', fontSize: 25 }}> {project['total-amount']}$</Text>
+                            </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20 }}>
+                            <View>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20, marginVertical: 10 }}>{project.title}</Text>
+                            </View>
+                            {project.thumbnail ? (
+                                <Image
+                                    source={{ uri: project.thumbnail }}
+                                    style={{ width: '100%', height: 200, borderRadius: 10 }}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                null
+                            )}
 
-                            <Text
-                                style={{
-                                    fontSize: 20,
-                                    fontWeight: 900,
-                                    color:
-                                        project.status === 'DELETED' ? 'red'
-                                            : project.status === 'VISIBLE' ? 'green'
-                                                : 'black'
-                                }}>
-                                {project.status}
-                            </Text>
-                            {project.status === 'DELETED' ? (
-                                <AntDesign name="closecircle" size={24} color="black" />
-                            ) : project.status === 'VISIBLE' ? (
-                                <AntDesign name="checkcircleo" size={24} color="black" />
-                            ) :
-                                <MaterialIcons name="pending" size={24} color="black" />
-                            }
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20 }}>
+
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        fontWeight: 900,
+                                        color:
+                                            project.status === 'DELETED' ? 'red'
+                                                : project.status === 'VISIBLE' ? 'green'
+                                                    : 'black'
+                                    }}>
+                                    {project.status}
+                                </Text>
+                                {project.status === 'DELETED' ? (
+                                    <AntDesign name="closecircle" size={24} color="black" />
+                                ) : project.status === 'VISIBLE' ? (
+                                    <AntDesign name="checkcircleo" size={24} color="black" />
+                                ) :
+                                    <MaterialIcons name="pending" size={24} color="black" />
+                                }
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 20 }}>Transaction status</Text>
+                                <Text style={{ fontSize: 20, fontWeight: 900 }}>{project['transaction-status']}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                    )
+
+                )
+                    : (
+                        <View style={{ marginTop: 50, alignItems: 'center' }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no project</Text>
                         </View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={{fontSize: 20}}>Transaction status</Text>
-                            <Text style={{fontSize: 20, fontWeight: 900}}>{project['transaction-status']}</Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                    )}
+
             </View>
 
         </ScrollView>

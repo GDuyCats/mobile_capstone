@@ -31,7 +31,7 @@ export default function FAQ() {
         );
         setFaqList(res.data.data || []);
       } catch (err) {
-        console.log('Lỗi khi lấy FAQ:', err);
+        console.log('Error', err);
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,6 @@ export default function FAQ() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text>Loading FAQs...</Text>
       </View>
     );
   }

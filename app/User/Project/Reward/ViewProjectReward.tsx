@@ -48,8 +48,13 @@ function ViewProjectReward({ navigation, route }) {
                 onBackPress={() => navigation.goBack()}
             />
             <ScrollView style={styles.container}>
+                <TouchableOpacity 
+                style={{padding: 10, backgroundColor: '#43a9f5', borderRadius: 20, marginVertical: 20}}
+                onPress={() => navigation.navigate('AddReward', { projectId })}>
+                    <Text style={{color: 'white', fontWeight: 900, alignSelf: 'center', }}>Add Reward</Text>
+                </TouchableOpacity>
                 {rewards.length > 0 ? (
-                    rewards.map((reward, index) => (
+                    rewards.map((reward, key) => (
                         <TouchableOpacity onPress={() => navigation.navigate('RewardDetail', { rewardId: reward['reward-id'] })}>
                             <View key={reward['reward-id']} style={styles.rewardCard}>
                                 <Text style={styles.rewardAmount}>Amount: ${reward.amount}</Text>

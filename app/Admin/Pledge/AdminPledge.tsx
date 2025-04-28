@@ -43,13 +43,15 @@ function AdminPledge({ navigation }: any) {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : pledge.length === 0 ? (
-        <Text>There is no pledge</Text>
+        <View style={{ marginTop: 50, alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>There is no Pledge</Text>
+        </View>
       ) : (
         pledge.map((p: any, index: number) => (
-          <TouchableOpacity 
-          key={index} 
-          style={styles.card}
-          onPress={() => navigation.navigate('AdminPledgeDetail', { pledgeId: p['pledge-id'] })}>
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() => navigation.navigate('AdminPledgeDetail', { pledgeId: p['pledge-id'] })}>
             <Text style={styles.label}>Pledge ID: <Text style={styles.value}>{p['pledge-id']}</Text></Text>
             <Text style={styles.label}>User ID: <Text style={styles.value}>{p['user-id']}</Text></Text>
             <Text style={styles.label}>Project ID: <Text style={styles.value}>{p['project-id']}</Text></Text>
