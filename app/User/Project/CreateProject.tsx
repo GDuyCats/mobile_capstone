@@ -34,7 +34,7 @@ export default function CreateProject({ navigation }: any) {
   const [showPicker, setShowPicker] = useState<'start' | 'end' | null>(null);
   const [image, setImage] = useState<any>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const [inputHeight, setInputHeight] = useState(40);
   useFocusEffect(
     React.useCallback(() => {
       if (!user?.token) {
@@ -186,7 +186,16 @@ export default function CreateProject({ navigation }: any) {
             <TextInput style={styles.input} value={title} onChangeText={setTitle} />
 
             <Text style={styles.label}>Description:</Text>
-            <TextInput style={styles.input} value={description} onChangeText={setDescription} />
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              onContentSizeChange={(e) =>
+                setInputHeight(e.nativeEvent.contentSize.height)
+              }
+              style={[styles.input, { height: Math.max(40, inputHeight) }]}
+              placeholder="Enter description..."
+            />
 
             <Text style={styles.label}>Goal ($):</Text>
             <TextInput
@@ -212,13 +221,13 @@ export default function CreateProject({ navigation }: any) {
               {!image ? (
                 <TouchableOpacity
                   onPress={async () => {
-                    if (disable) return; 
-                    setDisable(true);    
-                    await pickImage();  
-                    setDisable(false);    
+                    if (disable) return;
+                    setDisable(true);
+                    await pickImage();
+                    setDisable(false);
                   }}
                   disabled={disable}
-                  style={[styles.dateButton, disable && { opacity: 0.5 }]} 
+                  style={[styles.dateButton, disable && { opacity: 0.5 }]}
                 >
                   <Text>Choose a picture from a library</Text>
                 </TouchableOpacity>
@@ -320,9 +329,11 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 8,
+    padding: 10,
     borderRadius: 6,
-    marginBottom: 10,
+    fontSize: 15,
+    textAlignVertical: 'top',
+    backgroundColor: '#fff',
   },
   dateButton: {
     padding: 10,
