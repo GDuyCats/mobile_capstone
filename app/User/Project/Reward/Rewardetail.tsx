@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Button, Alert } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../../../context/authContext';
 import HeaderLayout from '../../../../components/HeaderLayout';
@@ -35,7 +35,7 @@ export default function RewardDetail({ navigation, route }: any) {
   }, [rewardId]);
 
   const handleDelete = async () => {
-    Alert.alert('Confirm', 'Do you really want to delete this reward', [
+    Alert.alert('Confirm', 'Do you really want to delete this reward?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -52,11 +52,11 @@ export default function RewardDetail({ navigation, route }: any) {
                 },
               }
             );
-            Alert.alert('Success', 'Reward have been deleted !');
+            Alert.alert('Success', 'Reward has been deleted!');
             navigation.goBack();
           } catch (error) {
-            console.log('Error while delete Reward:', error);
-            Alert.alert('Error', 'Can not delete the reward !');
+            console.log('Error while deleting reward:', error);
+            Alert.alert('Error', 'Cannot delete the reward!');
           } finally {
             setDeleting(false);
           }
@@ -74,13 +74,13 @@ export default function RewardDetail({ navigation, route }: any) {
   };
 
   if (loading) {
-    return <ActivityIndicator style={{ marginTop: 50 }} />;
+    return <ActivityIndicator style={{ marginTop: 50 }} size="large" color="#4da6ff" />;
   }
 
   if (!reward) {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>This project have no reward</Text>
+        <Text>This project has no reward</Text>
       </View>
     );
   }
@@ -89,19 +89,39 @@ export default function RewardDetail({ navigation, route }: any) {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <HeaderLayout title={'Reward Detail'} onBackPress={() => navigation.goBack()} />
       <View style={styles.container}>
-        <Text style={styles.text}>ID: {reward['reward-id']}</Text>
-        <Text style={styles.text}>Project ID: {reward['project-id']}</Text>
-        <Text style={styles.text}>Amount: ${reward.amount}</Text>
-        <Text style={styles.text}>Details: {reward.details}</Text>
-        <Text style={styles.text}>Created Date: {reward['created-datetime']}</Text>
+        <View style={styles.card}>
+          <Text style={styles.label}>ID:</Text>
+          <Text style={styles.value}>{reward['reward-id']}</Text>
+
+          <Text style={styles.label}>Project ID:</Text>
+          <Text style={styles.value}>{reward['project-id']}</Text>
+
+          <Text style={styles.label}>Amount:</Text>
+          <Text style={styles.value}>${reward.amount}</Text>
+
+          <Text style={styles.label}>Details:</Text>
+          <Text style={styles.value}>{reward.details}</Text>
+
+          <Text style={styles.label}>Created Date:</Text>
+          <Text style={styles.value}>{reward['created-datetime']}</Text>
+        </View>
 
         <View style={styles.buttonGroup}>
-          <View style={styles.button}>
-            <Button title="Update" onPress={handleNavigateUpdate} color="#007AFF" />
-          </View>
-          <View style={styles.button}>
-            <Button title={deleting ? 'Deleting...' : 'Delete'} onPress={handleDelete} color="#FF3B30" />
-          </View>
+          <TouchableOpacity
+            style={[styles.button, styles.updateButton]}
+            onPress={handleNavigateUpdate}
+            disabled={deleting}
+          >
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.deleteButton, deleting && { opacity: 0.6 }]}
+            onPress={handleDelete}
+            disabled={deleting}
+          >
+            <Text style={styles.buttonText}>{deleting ? 'Deleting...' : 'Delete'}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -111,18 +131,50 @@ export default function RewardDetail({ navigation, route }: any) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f8f8f8',
+    flexGrow: 1,
   },
-  text: {
-    fontSize: 16,
-    marginBottom: 5,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  label: {
+    fontWeight: '600',
+    fontSize: 15,
+    color: '#444',
+    marginTop: 10,
+  },
+  value: {
+    fontSize: 15,
+    color: '#333',
+    marginTop: 2,
   },
   buttonGroup: {
     flexDirection: 'row',
-    marginTop: 20,
+    gap: 10,
     justifyContent: 'space-between',
   },
   button: {
     flex: 1,
-    marginHorizontal: 5,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  updateButton: {
+    backgroundColor: '#4da6ff',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });

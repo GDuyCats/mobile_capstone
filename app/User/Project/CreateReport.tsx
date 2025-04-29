@@ -8,8 +8,8 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import HeaderLayout from '../../components/HeaderLayout';
-import { AuthContext } from '../../context/authContext';
+import HeaderLayout from '../../../components/HeaderLayout';
+import { AuthContext } from '../../../context/authContext';
 import axios from 'axios';
 
 export default function CreateReport({ navigation }: any) {

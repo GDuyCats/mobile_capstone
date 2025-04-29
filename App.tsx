@@ -29,9 +29,12 @@ import AddReward from './app/User/Project/Reward/AddReward';
 import ViewProjectReward from './app/User/Project/Reward/ViewProjectReward';
 import Rewardetail from './app/User/Project/Reward/Rewardetail';
 import RewardUpdate from './app/User/Project/Reward/UpdateReward'
-import CreateReport from './app/User/CreateReport';
+import CreateReport from './app/User/Project/CreateReport';
 import AddPlatform from './app/User/Project/AddPlatform';
 import AddCategory from './app/User/Project/AddCategory';
+import AddFAQs from './app/User/FAQ/AddFAQs';
+import ViewFAQs from './app/User/FAQ/ViewFAQs';
+import UpdateFAQ from './app/User/FAQ/UpdateFAQ';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -89,7 +92,10 @@ export type RootStackParamList = {
   RewardUpdate: undefined;
   CreateReport: undefined
   AddPlatform: undefined;
-  AddCategory: undefined
+  AddCategory: undefined;
+  AddFAQs: undefined;
+  ViewFAQs: undefined;
+  UpdateFAQs: undefined;
 
   Profile: undefined;
   UserPayment: undefined;
@@ -148,7 +154,9 @@ function MainNavigator() {
       <Stack.Screen name="RewardUpdate" component={RewardUpdate} options={{ headerShown: false }} />
       <Stack.Screen name="AddPlatform" component={AddPlatform} options={{ headerShown: false }} />
       <Stack.Screen name="AddCategory" component={AddCategory} options={{ headerShown: false }} />
-      
+      <Stack.Screen name="AddFAQs" component={AddFAQs} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewFAQs" component={ViewFAQs} options={{ headerShown: false }} />
+      <Stack.Screen name="UpdateFAQs" component={UpdateFAQ} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
