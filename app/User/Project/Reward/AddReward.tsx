@@ -1,97 +1,154 @@
-import React, { useState } from 'react'
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import axios from 'axios'
-import { useFocusEffect } from '@react-navigation/native'
-import HeaderLayout from '../../../../components/HeaderLayout'
+import React, { useState, useContext } from 'react';
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
+import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
+import HeaderLayout from '../../../../components/HeaderLayout';
+import { AuthContext } from '../../../../context/authContext';
+
 function AddReward({ navigation, route }: any) {
-    const [amount, setAmount] = useState('');
-    const [details, setDetails] = useState('');
-    const [isLoading, setIsLoading] = useState(false)
-    const { projectId } = route.params
+  const [amount, setAmount] = useState('');
+  const [details, setDetails] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { projectId } = route.params;
+  const { user } = useContext(AuthContext); // ✅ Gắn token
 
-    useFocusEffect(
-        React.useCallback(() => {
-            console.log(projectId)
-        }, [])
-    )
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('Project ID:', projectId);
+    }, [])
+  );
 
-    const handleAddReward = async () => {
-        if (!amount || !details) {
-            Alert.alert('Error', 'Please enter both amounts and details');
-            return;
-        }
-        setIsLoading(true)
-        try {
-            const res = await axios.post('https://marvelous-gentleness-production.up.railway.app/api/Reward/AddReward',
-                {
-                    'project-id': projectId,
-                    amount: parseInt(amount),
-                    details,
-
-                }
-            )
-            Alert.alert('Success', 'Reward added successfully!');
-            navigation.goBack();
-        } catch (error) {
-            console.log(error);
-            Alert.alert('Error', 'Failed to add reward');
-        } finally {
-            setIsLoading(false)
-        }
+  const handleAddReward = async () => {
+    if (!amount || !details) {
+      Alert.alert('Error', 'Please enter both amount and details');
+      return;
     }
 
+    setIsLoading(true);
+    try {
+      const res = await axios.post(
+        'https://marvelous-gentleness-production.up.railway.app/api/Reward/AddReward',
+        {
+          'project-id': projectId,
+          amount: parseInt(amount),
+          details,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`, // ✅ Gắn token ở đây
+          },
+        }
+      );
 
+      Alert.alert('Success', 'Reward added successfully!');
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', 'Failed to add reward');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
-            <HeaderLayout title={'Add Reward'} onBackPress={() => navigation.goBack()} />
-            <View style={{ padding: 20 }}>
-                <View style={{
-                    borderBottomColor: '#d0d4d9',
-                    flexDirection: 'row', 
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: 20
-                    }}>
-                    <TextInput
-                        style={{fontSize: 20, fontWeight: 500}}
-                        value={amount}
-                        onChangeText={setAmount}
-                        keyboardType="numeric"
-                        placeholder='Enter amount'
-                    />
-                    <Text style={{fontSize: 20}}>$</Text>
-                </View>
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <HeaderLayout title="Add Reward" onBackPress={() => navigation.goBack()} />
+      <View style={styles.container}>
+        {/* Amount input */}
+        <View style={styles.amountRow}>
+          <TextInput
+            style={styles.amountInput}
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+            placeholder="Enter amount"
+            placeholderTextColor="#aaa"
+          />
+          <Text style={styles.dollar}>$</Text>
+        </View>
 
-                <TextInput
-                    value={details}
-                    style={{fontSize: 20, fontWeight: 500}}
-                    onChangeText={setDetails}
-                    multiline
-                    placeholder='Reward Details'
-                />
-                <TouchableOpacity
-                    onPress={handleAddReward}
-                    disabled={isLoading}
-                    style={{
-                        backgroundColor: '#E8D480',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        paddingVertical: 20,
-                        paddingHorizontal: 40,
-                        borderRadius: 50,
-                        marginTop: 20
-                    }}
-                >
-                    <Text style={{
-                        fontWeight: 900,
-                        fontSize: 20
-                    }}>Add Reward</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+        {/* Details input */}
+        <TextInput
+          value={details}
+          onChangeText={setDetails}
+          multiline
+          placeholder="Reward Details"
+          placeholderTextColor="#aaa"
+          style={styles.detailsInput}
+        />
 
-    )
+        {/* Submit button */}
+        <TouchableOpacity
+          onPress={handleAddReward}
+          disabled={isLoading}
+          style={[styles.button, isLoading && { opacity: 0.6 }]}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#000" />
+          ) : (
+            <Text style={styles.buttonText}>Add Reward</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
 }
 
-export default AddReward
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  amountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1.5,
+    borderColor: '#d0d4d9',
+    paddingBottom: 8,
+    marginBottom: 20,
+    justifyContent: 'space-between',
+  },
+  amountInput: {
+    fontSize: 20,
+    fontWeight: '500',
+    flex: 1,
+    marginRight: 10,
+  },
+  dollar: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  detailsInput: {
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#d0d4d9',
+    borderRadius: 8,
+    padding: 12,
+    height: 120,
+    textAlignVertical: 'top',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#E8D480',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderRadius: 50,
+  },
+  buttonText: {
+    fontWeight: '900',
+    fontSize: 18,
+  },
+});
+
+export default AddReward;

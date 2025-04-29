@@ -10,35 +10,39 @@ import {
 import axios from 'axios';
 import { AuthContext } from '../../../../context/authContext';
 import HeaderLayout from '../../../../components/HeaderLayout';
+import { Feather } from '@expo/vector-icons'; // icon nút cộng
+import { useFocusEffect } from '@react-navigation/native';
 
-function ViewProjectReward({ navigation, route }) {
+export default function ViewProjectReward({ navigation, route }) {
   const { projectId } = route.params;
   const { user } = useContext(AuthContext);
 
   const [rewards, setRewards] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRewards = async () => {
-      try {
-        const response = await axios.get(
-          `https://marvelous-gentleness-production.up.railway.app/api/Reward/GetRewardByProjectId?projectId=${projectId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        setRewards(response.data.data);
-      } catch (error) {
-        console.error('Failed to fetch rewards:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRewards();
-  }, [projectId, user.token]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRewards = async () => {
+        try {
+          const response = await axios.get(
+            `https://marvelous-gentleness-production.up.railway.app/api/Reward/GetRewardByProjectId?projectId=${projectId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+          setRewards(response.data.data);
+        } catch (error) {
+          console.error('Failed to fetch rewards:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchRewards();
+    }, [projectId, user.token])
+  );
 
   if (loading) {
     return (
@@ -53,22 +57,19 @@ function ViewProjectReward({ navigation, route }) {
       <HeaderLayout title="Project Rewards" onBackPress={() => navigation.goBack()} />
 
       <ScrollView style={styles.container}>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate('AddReward', { projectId })}
-        >
-          <Text style={styles.addButtonText}>Add Reward</Text>
-        </TouchableOpacity>
-
         {rewards.length > 0 ? (
           rewards.map((reward) => (
             <TouchableOpacity
               key={reward['reward-id']}
-              onPress={() => navigation.navigate('RewardDetail', { rewardId: reward['reward-id'] })}
+              onPress={() =>
+                navigation.navigate('RewardDetail', {
+                  rewardId: reward['reward-id'],
+                })
+              }
             >
               <View style={styles.rewardCard}>
-                <Text style={styles.rewardAmount}>Amount: ${reward.amount}</Text>
-                <Text style={styles.rewardDetail}>Details: {reward.details}</Text>
+                <Text style={styles.rewardAmount}>💰 Amount: ${reward.amount}</Text>
+                <Text style={styles.rewardDetail}>🎁 {reward.details}</Text>
               </View>
             </TouchableOpacity>
           ))
@@ -76,6 +77,13 @@ function ViewProjectReward({ navigation, route }) {
           <Text style={styles.noRewardsText}>No rewards found.</Text>
         )}
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles.floatingAddButton}
+        onPress={() => navigation.navigate('AddReward', { projectId })}
+      >
+        <Feather name="plus" size={28} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -83,7 +91,7 @@ function ViewProjectReward({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingBottom: 100,
     backgroundColor: '#f8f8f8',
   },
   loadingContainer: {
@@ -93,8 +101,8 @@ const styles = StyleSheet.create({
   },
   rewardCard: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: 12,
+    padding: 18,
     marginVertical: 8,
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -104,7 +112,7 @@ const styles = StyleSheet.create({
   rewardAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#2e7d32',
   },
   rewardDetail: {
     fontSize: 14,
@@ -117,18 +125,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: '#888',
   },
-  addButton: {
-    marginHorizontal: 0,
-    padding: 12,
+  floatingAddButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 30,
     backgroundColor: '#43a9f5',
-    borderRadius: 20,
-    marginVertical: 20,
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    borderRadius: 50,
+    padding: 16,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
   },
 });
-
-export default ViewProjectReward;
