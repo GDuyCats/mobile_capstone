@@ -40,8 +40,8 @@ export default function UpdateReward({ navigation, route }: any) {
       Alert.alert('Success', 'Reward update successfully !');
       navigation.goBack();
     } catch (error) {
-      console.log('Lỗi khi cập nhật reward:', error);
-      Alert.alert('Lỗi', 'Không thể cập nhật reward!');
+      console.log('Error', error);
+      Alert.alert('Error', 'Error while update reward:');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export default function UpdateReward({ navigation, route }: any) {
           onChangeText={setDetails}
         />
         <Button
-          title={loading ? 'Đang cập nhật...' : 'Cập nhật reward'}
+          title={loading ? 'Updating' : 'Update Reward'}
           onPress={handleUpdate}
           disabled={loading}
         />

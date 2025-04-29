@@ -250,11 +250,12 @@ function MyProjectDetail({ route, navigation }: any) {
             disabled={isDisabledUpDate}
             onPress={() => {
               setIsDisabledUpdate(true)
-              navigation.navigate('AddPlatform', { projectId: project["project-id"] , projectPlatforms: project.platforms,})
+              navigation.navigate('AddPlatform', { projectId: project["project-id"], projectPlatforms: project.platforms, })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>Add Platform</Text>
             <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
+
           <TouchableOpacity
             style={{
               paddingVertical: 10,
@@ -274,6 +275,27 @@ function MyProjectDetail({ route, navigation }: any) {
             <Text style={{ color: 'black', fontSize: 15 }}>Add Category</Text>
             <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledUpdate(true)
+              navigation.navigate('ViewFAQs', { projectId: project["project-id"], projectPlatforms: project.platforms, })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>View FAQs</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={{
               paddingVertical: 10,
