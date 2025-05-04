@@ -100,10 +100,8 @@ function UserPayment({ route, navigation }: any) {
       )
 
       if (res.data?.success) {
-        Alert.alert('✅ Success', res.data.message || 'Payment Success!')
         navigation.navigate('PaymentSuccess')
       } else {
-        Alert.alert('❌ Fail', res.data.message || 'Payment Fail!')
         navigation.navigate('PaymentFailed')
       }
     } catch (error: any) {

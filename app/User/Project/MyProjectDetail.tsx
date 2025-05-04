@@ -97,9 +97,9 @@ function MyProjectDetail({ route, navigation }: any) {
     );
   };
   return (
-    <ScrollView>
+    <View style={{flex: 1}}>
       <HeaderLayout title={'My Project Detail'} onBackPress={() => navigation.goBack()} />
-      <View style={{ padding: 20, backgroundColor: 'white' }}>
+      <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
         <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#00246B' }}>{project.title}</Text>
         {project.thumbnail ? (
           <Image
@@ -345,7 +345,7 @@ function MyProjectDetail({ route, navigation }: any) {
               flex: 0.48,
               borderBottomWidth: 1,
               borderBottomColor: '#AAAAAB',
-              marginBottom: 10
+              marginBottom: 50
             }}
             disabled={isDisabledDelete}
             onPress={handleDeleteProject}>
@@ -353,10 +353,8 @@ function MyProjectDetail({ route, navigation }: any) {
             <AntDesign style={{ opacity: 0.5 }} name="right" size={24} color="black" />
           </TouchableOpacity>
         </View>
-
-      </View>
-
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
