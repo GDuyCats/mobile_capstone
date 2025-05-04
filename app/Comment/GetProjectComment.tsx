@@ -2,39 +2,37 @@ import React, { useEffect, useState, useContext, useRef } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Image,
-  TouchableOpacity,
   TextInput,
-  Alert,
+  TouchableOpacity,
   Keyboard,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../context/authContext';
-import { formatDistanceToNow } from 'date-fns';
+import { MaterialIcons } from '@expo/vector-icons';
 import HeaderLayout from '../../components/HeaderLayout';
-import { Feather } from '@expo/vector-icons';
 
-export default function GetComments({ navigation, route }: any) {
+export default function GetCommentProjectScreen({ route, navigation }: any) {
   const { projectId } = route.params;
   const { user } = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedComments, setExpandedComments] = useState<number[]>([]);
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any>(null);
   const [replyContent, setReplyContent] = useState('');
-  const [newComment, setNewComment] = useState('');
-
-  const flatListRef = useRef<any>(null);
+  const [highlightedCommentId, setHighlightedCommentId] = useState<string | null>(null);
+  const scrollRef = useRef<any>();
+  const commentRefs = useRef<Record<string, any>>({});
 
   const fetchComments = async () => {
     try {
       const res = await axios.get(
-        `https://marvelous-gentleness-production.up.railway.app/api/Comment/GetCommentsByProjectId`,
+        `https://marvelous-gentleness-production.up.railway.app/api/Comment/GetCommentsByProjectId?projectId=${projectId}`,
         {
-          params: { projectId },
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
@@ -42,304 +40,287 @@ export default function GetComments({ navigation, route }: any) {
       );
       setComments(res.data.data || []);
     } catch (err) {
-      console.error('Error fetching comments:', err);
+      console.error('Failed to fetch comments:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchComments();
-  }, [projectId]);
-
-  const toggleReplies = (commentId: number) => {
-    setExpandedComments((prev) =>
-      prev.includes(commentId)
-        ? prev.filter((id) => id !== commentId)
-        : [...prev, commentId]
-    );
+  const scrollToAndHighlight = (commentId: number) => {
+    setTimeout(() => {
+      const target = commentRefs.current[commentId];
+      target?.measureLayout?.(scrollRef.current, (x, y) => {
+        scrollRef.current?.scrollTo({ y, animated: true });
+      });
+      setHighlightedCommentId(String(commentId));
+      setTimeout(() => setHighlightedCommentId(null), 2000);
+    }, 100);
   };
 
-  const handleReplySubmit = async () => {
-    if (!user || !user.token) {
-      Alert.alert('Warning', 'You have to login to comment');
-      navigation.navigate('Login');
+  const renderReplyButton = (comment: any) => (
+    <TouchableOpacity
+      onPress={() => {
+        if (!user?.token) {
+          alert('Bạn phải đăng nhập để trả lời bình luận!');
+          return;
+        }
+        if (replyingTo?.['comment-id'] === comment['comment-id']) {
+          setReplyingTo(null);
+        } else {
+          setReplyingTo(comment);
+          scrollToAndHighlight(comment['comment-id']);
+        }
+      }}
+    >
+      <Text style={[styles.replyButton, { marginLeft: 50 }]}>Reply</Text>
+    </TouchableOpacity>
+  );
+  const handleSendComment = async () => {
+    if (!replyContent.trim()) return;
+
+    if (!user?.token) {
+      alert('You have to sign in to comment !');
       return;
     }
-  
-    if (!replyContent.trim()) return;
-  
-    const formData = new FormData();
-    formData.append('projectId', projectId.toString());
-    formData.append('parentCommentId', replyingTo?.toString() || '');
-    formData.append('content', replyContent);
-  
+
     try {
-      const res = await axios.post(
-        'https://marvelous-gentleness-production.up.railway.app/api/Comment/project',
+      const formData = new FormData();
+      formData.append('ProjectId', String(projectId));
+      formData.append('Content', replyContent);
+      if (replyingTo) {
+        formData.append('ParentCommentId', String(replyingTo['comment-id']));
+      }
+
+      await axios.post(
+        `https://marvelous-gentleness-production.up.railway.app/api/Comment/project`,
         formData,
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
             'Content-Type': 'multipart/form-data',
           },
         }
       );
-  
-      if (res.data['status-code'] === 403) {
-        Alert.alert('Warning', res.data?.message || 'You are not allowed to comment.');
-        return;
-      }
-  
+
       setReplyContent('');
       setReplyingTo(null);
       Keyboard.dismiss();
-      await fetchComments();
-    } catch (err: any) {
-      console.error('Error submitting reply:', err);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      fetchComments();
+    } catch (err) {
+      console.error('Comment failed:', err);
+      alert('Gửi bình luận thất bại. Vui lòng thử lại.');
     }
   };
 
-  const handleRootCommentSubmit = async () => {
-    if (!user || !user.token) {
-      Alert.alert('Warning', 'You have to login to comment');
-      navigation.navigate('Login');
-      return;
-    }
-  
-    if (!newComment.trim()) return;
-  
-    const formData = new FormData();
-    formData.append('projectId', projectId.toString());
-    formData.append('content', newComment);
-  
-    try {
-      const res = await axios.post(
-        'https://marvelous-gentleness-production.up.railway.app/api/Comment/project',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-  
-      if (res.data['status-code'] === 403) {
-        Alert.alert('Warning', res.data?.message || 'You are not allowed to comment.');
-        return;
-      }
-  
-      setNewComment('');
-      Keyboard.dismiss();
-      await fetchComments();
-  
-      setTimeout(() => {
-        if (flatListRef.current) {
-          flatListRef.current.scrollToEnd({ animated: true });
-        }
-      }, 300);
-    } catch (err: any) {
-      console.error('Error submitting comment:', err);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
-    }
-  };
-  
 
-  const renderComment = (item: any, level = 0) => {
-    const isExpanded = expandedComments.includes(item['comment-id']);
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
-    return (
-      <View key={item['comment-id']} style={{ marginLeft: level * 20, borderBottomWidth: level === 0 ? 1 : 0, borderColor: '#AAAAAB' }}>
-        <View style={styles.commentBox}>
-          <TouchableOpacity
-            style={styles.userRow}
-            onPress={() => navigation.navigate('OtherUserProfile', { userId: item['user-id'] })}
-          >
-            <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
-            <View>
-              <Text style={styles.username}>{item.user.fullname}</Text>
-              <Text style={styles.time}>
-                {formatDistanceToNow(new Date(item['created-datetime']), { addSuffix: true })}
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <Text style={styles.content}>{item.content}</Text>
-
-          <TouchableOpacity
-            onPress={() => {
-              if (!user || !user.token) {
-                Alert.alert('Warning', 'You have to login to comment');
-                navigation.navigate('Login');
-                return;
-              }
-              setReplyingTo(item['comment-id']);
-              const flatIndex = comments.findIndex((c) => c['comment-id'] === item['comment-id']);
-              if (flatListRef.current && flatIndex !== -1) {
-                flatListRef.current.scrollToIndex({ index: flatIndex, animated: true });
-              }
-            }}
-          >
-            <Text style={styles.replyText}>Reply</Text>
-          </TouchableOpacity>
-
-          {replyingTo === item['comment-id'] && (
-            <View style={styles.replyInputBox}>
-              <TextInput
-                placeholder="Write your reply..."
-                value={replyContent}
-                onChangeText={setReplyContent}
-                style={styles.replyInput}
-              />
-              <TouchableOpacity
-                onPress={handleReplySubmit}
-                style={[styles.replyButton, !replyContent.trim() && { backgroundColor: '#ccc' }]}
-                disabled={!replyContent.trim()}
-              >
-                <Feather name="send" size={20} color="white" />
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {item.comments && item.comments.length > 0 && (
-            <>
-              {!isExpanded && (
-                <TouchableOpacity onPress={() => toggleReplies(item['comment-id'])}>
-                  <Text style={styles.replyText}>
-                    View {item.comments.length} repl{item.comments.length > 1 ? 'ies' : 'y'}
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={80}
+    >
+      <HeaderLayout title={'Project comment'} onBackPress={() => navigation.goBack()}/>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.commentHeader}>Comments</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#00246B" />
+        ) : (
+          comments.map((comment: any) => (
+            <View
+              key={comment['comment-id']}
+              ref={(el) => {
+                if (el) commentRefs.current[comment['comment-id']] = el;
+              }}
+              style={[
+                styles.commentCard,
+                highlightedCommentId === String(comment['comment-id']) && styles.highlighted,
+              ]}
+            >
+              {/* Comment cha */}
+              <View style={{ flexDirection: 'row' }}>
+                {comment.user?.avatar ? (
+                  <Image
+                    source={{ uri: comment.user.avatar.replace('http://', 'https://') }}
+                    style={{ width: 40, height: 40, borderRadius: 30, marginTop: 10 }}
+                  />
+                ) : (
+                  <MaterialIcons name="account-circle" size={60} color="black" />
+                )}
+                <View style={{ marginTop: 10, marginLeft: 10 }}>
+                  <Text style={styles.author}>{comment.user?.fullname || 'Unknown user'}</Text>
+                  <Text style={styles.commentTime}>
+                    {new Date(comment['created-datetime']).toLocaleString('vi-VN', {
+                      timeZone: 'Asia/Ho_Chi_Minh',
+                      hour12: false,
+                    })}
                   </Text>
-                </TouchableOpacity>
-              )}
-              {isExpanded && (
-                <>
-                  <TouchableOpacity onPress={() => toggleReplies(item['comment-id'])}>
-                    <Text style={styles.replyText}>Hide replies</Text>
-                  </TouchableOpacity>
-                  {item.comments.map((child: any) => renderComment(child, level + 1))}
-                </>
-              )}
-            </>
+                </View>
+              </View>
+              <Text style={[styles.commentContent, { marginLeft: 50, marginTop: 5 }]}>
+                {comment.content}
+              </Text>
+
+              {renderReplyButton(comment)}
+
+              {/* Comment con (reply) */}
+              {comment.comments?.map((child: any) => (
+                <View
+                  key={child['comment-id']}
+                  ref={(el) => {
+                    if (el) commentRefs.current[child['comment-id']] = el;
+                  }}
+                  style={[
+                    styles.commentCard,
+                    styles.childComment,
+                    highlightedCommentId === String(child['comment-id']) && styles.highlighted,
+                  ]}
+                >
+                  <View style={{ flexDirection: 'row' }}>
+                    {child.user?.avatar ? (
+                      <Image
+                        source={{ uri: child.user.avatar.replace('http://', 'https://') }}
+                        style={{ width: 40, height: 40, borderRadius: 30, marginTop: 10 }}
+                      />
+                    ) : (
+                      <MaterialIcons name="account-circle" size={60} color="black" />
+                    )}
+                    <View style={{ marginTop: 10, marginLeft: 10 }}>
+                      <Text style={styles.author}>{child.user?.fullname || 'Unknown user'}</Text>
+                      <Text style={styles.commentTime}>
+                        {new Date(child['created-datetime']).toLocaleString('vi-VN', {
+                          timeZone: 'Asia/Ho_Chi_Minh',
+                          hour12: false,
+                        })}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text style={[styles.commentContent, { marginLeft: 5, marginTop: 5 }]}>
+                    {child.content}
+                  </Text>
+                  {renderReplyButton(comment)}
+                </View>
+              ))}
+            </View>
+          ))
+        )}
+      </ScrollView>
+
+      {/* Ô nhập bình luận */}
+      <View style={styles.replyBox}>
+        {replyingTo && (
+          <>
+            <Text style={styles.replyLabel}>
+              Replying to <Text style={{ fontWeight: 'bold' }}>{replyingTo?.user?.fullname}</Text>
+            </Text>
+            <Text
+              numberOfLines={1}
+              style={{ fontSize: 13, color: '#666', marginTop: 2, fontStyle: 'italic' }}
+            >
+              “{replyingTo?.content?.slice(0, 100)}”
+            </Text>
+          </>
+        )}
+
+        <TextInput
+          value={replyContent}
+          onChangeText={setReplyContent}
+          placeholder="Write a comment..."
+          style={styles.replyInput}
+          multiline
+        />
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <TouchableOpacity style={[styles.sendButton, { flex: 1 }]} onPress={handleSendComment}>
+            <Text style={styles.sendText}>Send</Text>
+          </TouchableOpacity>
+          {replyingTo && (
+            <TouchableOpacity
+              style={[styles.sendButton, { flex: 1, backgroundColor: '#ccc' }]}
+              onPress={() => {
+                setReplyingTo(null);
+                setReplyContent('');
+              }}
+            >
+              <Text style={[styles.sendText, { color: '#000' }]}>Cancel</Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
-    );
-  };
-
-  const renderItem = ({ item }: any) => renderComment(item);
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  return (
-    <View style={{ flex: 1 }}>
-      <HeaderLayout title={'Comment'} onBackPress={() => navigation.goBack()} />
-      <FlatList
-        ref={flatListRef}
-        data={comments}
-        keyExtractor={(item) => item['comment-id'].toString()}
-        renderItem={renderItem}
-        extraData={{ replyingTo, replyContent, expandedComments }}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 100 }}
-        getItemLayout={(data, index) => ({
-          length: 150,
-          offset: 150 * index,
-          index,
-        })}
-      />
-      <View style={styles.rootInputWrapper}>
-        <TextInput
-          placeholder="Write a comment..."
-          value={newComment}
-          onChangeText={setNewComment}
-          style={styles.replyInput}
-        />
-        <TouchableOpacity
-          onPress={handleRootCommentSubmit}
-          style={[styles.replyButton, !newComment.trim() && { backgroundColor: '#ccc' }]}
-          disabled={!newComment.trim()}
-        >
-          <Feather name="send" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
+
 }
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  commentBox: {
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-  },
-  userRow: {
-    width: '50%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 10,
-  },
-  username: {
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  content: {
+  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  content: { padding: 16 },
+  commentHeader: { fontSize: 20, fontWeight: '600', color: '#00246B', marginBottom: 10 },
+  commentCard: {
+    backgroundColor: '#fff',
+    padding: 12,
     borderRadius: 10,
-    fontSize: 14,
-    color: 'black',
-    padding: 5,
-    marginBottom: 4,
+    marginTop: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  time: {
-    fontSize: 12,
-    color: '#888',
+  childComment: {
+    marginTop: 10,
+    marginLeft: 40,
+    backgroundColor: '#f3f4f6',
   },
-  replyText: {
-    color: '#007BFF',
+  author: { fontWeight: '600', color: '#00246B', marginBottom: 4 },
+  commentContent: { fontSize: 15, color: '#333', marginBottom: 4 },
+  commentTime: { fontSize: 12, color: '#888', textAlign: 'right' },
+  replyButton: {
     marginTop: 4,
-    fontSize: 14,
+    color: '#007AFF',
+    fontSize: 13,
   },
-  replyInputBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  replyInput: {
-    flex: 1,
+  replyBox: {
+    marginTop: 20,
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
+  },
+  replyInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
     borderRadius: 6,
     padding: 8,
-    marginRight: 8,
+    minHeight: 60,
+    textAlignVertical: 'top',
+    backgroundColor: '#fafafa',
   },
-  replyButton: {
-    backgroundColor: '#007BFF',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  sendButton: {
+    backgroundColor: '#00246B',
+    paddingVertical: 10,
     borderRadius: 6,
+    marginTop: 10,
   },
-  rootInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderTopWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+  sendText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  replyLabel: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 6,
+  },
+  highlighted: {
+    backgroundColor: '#FFF9C4',
   },
 });

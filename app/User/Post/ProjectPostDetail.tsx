@@ -14,7 +14,8 @@ import {
 import axios from 'axios';
 import { AuthContext } from '../../../context/authContext';
 import { MaterialIcons } from '@expo/vector-icons';
-export default function PostDetailScreen({ route }: any) {
+import HeaderLayout from '../../../components/HeaderLayout';
+export default function PostDetailScreen({ route, navigation }: any) {
   const { postId } = route.params;
   const { user } = useContext(AuthContext);
   const [post, setPost] = useState<any>(null);
@@ -170,6 +171,7 @@ export default function PostDetailScreen({ route }: any) {
       keyboardVerticalOffset={80}
     >
       <View style={{ flex: 1 }}>
+        <HeaderLayout title={'Project Post'} onBackPress={() => navigation.goBack()} />
         <ScrollView
           ref={scrollRef}
           style={styles.container}
@@ -214,7 +216,10 @@ export default function PostDetailScreen({ route }: any) {
                   <View style={{ marginTop: 10, marginLeft: 10 }}>
                     <Text style={styles.author}>{comment.user?.fullname || 'Unknown user'}</Text>
                     <Text style={styles.commentTime}>
-                      {new Date(comment['created-datetime']).toLocaleString()}
+                      {new Date(comment['created-datetime']).toLocaleString('vi-VN', {
+                        timeZone: 'Asia/Ho_Chi_Minh',
+                        hour12: false, 
+                      })}
                     </Text>
                   </View>
 
@@ -261,15 +266,18 @@ export default function PostDetailScreen({ route }: any) {
                         <View style={{ marginTop: 10, marginLeft: 10 }}>
                           <Text style={styles.author}>{comment.user?.fullname || 'Unknown user'}</Text>
                           <Text style={styles.commentTime}>
-                            {new Date(comment['created-datetime']).toLocaleString()}
+                            {new Date(comment['created-datetime']).toLocaleString('vi-VN', {
+                              timeZone: 'Asia/Ho_Chi_Minh',
+                              hour12: false,
+                            })}
                           </Text>
                         </View>
 
                       </View>
-                      <Text style={[styles.commentContent,{marginLeft: 5, marginTop: 5}]}>{child.content}</Text>
-                      <Text style={styles.commentTime}>
+                      <Text style={[styles.commentContent, { marginLeft: 5, marginTop: 5 }]}>{child.content}</Text>
+                      {/* <Text style={styles.commentTime}>
                         {new Date(child['created-datetime']).toLocaleString()}
-                      </Text>
+                      </Text> */}
                       <TouchableOpacity
                         onPress={() => {
                           const root = findRootComment(child['comment-id'], comments);
@@ -283,7 +291,7 @@ export default function PostDetailScreen({ route }: any) {
                           }
                         }}
                       >
-                        <Text style={styles.replyButton}>Reply</Text>
+                        <Text style={[styles.replyButton,{ marginLeft: 5}]}>Reply</Text>
                       </TouchableOpacity>
                     </View>
                   ))}
@@ -421,6 +429,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   highlighted: {
-    backgroundColor: '#FFF9C4', // vàng nhạt
+    backgroundColor: '#FFF9C4',
   },
 });
