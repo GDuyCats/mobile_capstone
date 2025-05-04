@@ -19,7 +19,7 @@ export default function PaymentSuccess({ navigation }: any) {
           }}>Hey there. We try to charge your card but something went wrong.
           Please update your payment method below to continue.
         </Text>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
           <TouchableOpacity
             style={{
               marginVertical: 10,
@@ -37,6 +37,10 @@ export default function PaymentSuccess({ navigation }: any) {
                 Update Payment Method
               </Text>
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Home')}>
+            <Text style={{fontWeight: 800, fontSize: 15}}>Home</Text>
           </TouchableOpacity>
         </View>
       </View>

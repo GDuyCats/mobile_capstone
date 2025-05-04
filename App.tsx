@@ -145,7 +145,7 @@ function MainNavigator() {
       <Stack.Screen name="CreateProject" component={CreateProject} options={{ headerShown: false }}/>
       <Stack.Screen name="UserPayment" component={UserPayment} options={{ headerShown: false }} />
       <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} options={{ headerShown: false }}/>
-      <Stack.Screen name="PaymentFailed" component={PaymentFailed} />
+      <Stack.Screen name="PaymentFailed" component={PaymentFailed} options={{ headerShown: false }}/>
       <Stack.Screen name="MyPledge" component={MyPledge} options={{ headerShown: false }}/>
       <Stack.Screen name="MyProject" component={MyProject} options={{ headerShown: false }}/>
       <Stack.Screen name="MyProjectDetail" component={MyProjectDetail} options={{ headerShown: false }}/>
