@@ -35,6 +35,8 @@ import AddCategory from './app/User/Project/AddCategory';
 import AddFAQs from './app/User/FAQ/AddFAQs';
 import ViewFAQs from './app/User/FAQ/ViewFAQs';
 import UpdateFAQ from './app/User/FAQ/UpdateFAQ';
+import ProjectPost from './app/User/Post/ProjectPost';
+import ProjectPostDetail from './app/User/Post/ProjectPostDetail';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -96,6 +98,8 @@ export type RootStackParamList = {
   AddFAQs: undefined;
   ViewFAQs: undefined;
   UpdateFAQs: undefined;
+  ProjectPost: undefined
+  ProjectPostDetail: undefined
 
   Profile: undefined;
   UserPayment: undefined;
@@ -157,6 +161,8 @@ function MainNavigator() {
       <Stack.Screen name="AddFAQs" component={AddFAQs} options={{ headerShown: false }} />
       <Stack.Screen name="ViewFAQs" component={ViewFAQs} options={{ headerShown: false }} />
       <Stack.Screen name="UpdateFAQs" component={UpdateFAQ} options={{ headerShown: false }} />
+      <Stack.Screen name="ProjectPost" component={ProjectPost} options={{ headerShown: false }} />
+      <Stack.Screen name="ProjectPostDetail" component={ProjectPostDetail} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />

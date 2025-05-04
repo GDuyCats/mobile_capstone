@@ -30,6 +30,36 @@ export default function Updateprofile({ navigation }: any) {
   const [phone, setPhone] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUri, setAvatarUri] = useState<string | null>(user?.avatar || null);
+
+  const fetchUserInfo = async () => {
+    try {
+      const res = await axios.get(
+        'https://marvelous-gentleness-production.up.railway.app/api/User/GetUserById',
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+  
+      const data = res.data.data;
+  
+      setFullname(data['full-name'] || '');
+      setEmail(data.email || '');
+      setPhone(data.phone || '');
+      setBio(data.bio || '');
+      setPaymentAccount(data['payment-account'] || '');
+      setAvatarUri(data.avatar || null);
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+      Alert.alert('Error', 'Failed to load user info');
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
   useEffect(() => {
     if (user) {
       setFullname(user.fullName || '');
@@ -177,8 +207,6 @@ export default function Updateprofile({ navigation }: any) {
             <TextInput value={fullname} onChangeText={setFullname} style={styles.input} />
             <Text style={styles.label}>Email</Text>
             <TextInput value={email} onChangeText={setEmail} style={styles.input} />
-            {/* <Text style={styles.label}>Password</Text>
-            <TextInput value={password} onChangeText={setPassword} style={styles.input} secureTextEntry /> */}
             <Text style={styles.label}>Telephone number</Text>
             <TextInput value={phone} onChangeText={setPhone} style={styles.input} />
             <Text style={styles.label}>Payment account</Text>

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   ScrollView, View, Text, Image, StyleSheet, Animated,
   ActivityIndicator, TouchableOpacity, TextInput, Keyboard,
+  RefreshControl,
   FlatList
 } from 'react-native';
 import NavbarLayout from '../components/NavbarLayout';
@@ -18,7 +19,7 @@ export default function Home({ navigation, route }: any) {
   const [isSearching, setIsSearching] = useState(false)
   const [platforms, setPlatforms] = useState([]);
   const [categories, setCategories] = useState([]);
-
+  const [refreshing, setRefreshing] = useState(false);
   const inputOpacity = useRef(new Animated.Value(0)).current;
   const inputTranslateY = useRef(new Animated.Value(-20)).current;
   const fetchProjects = async (title = '', selectedStatus = '') => {
@@ -45,6 +46,12 @@ export default function Home({ navigation, route }: any) {
       fetchProjects();
     }, [])
   );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProjects();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (route.params?.startSearch) {
@@ -90,7 +97,11 @@ export default function Home({ navigation, route }: any) {
 
   return (
     <AppLayout navigation={navigation}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {isSearching && (
           <Animated.View
             style={{

@@ -100,6 +100,19 @@ export default function OverView({ project }: any) {
                         <AntDesign name="right" size={15} color="black" />
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('ProjectPost', { projectId: project['project-id']})}
+                    style={{
+                        marginVertical: 15,
+                        borderBottomWidth: 1,
+                        borderBlockColor: '#AAAAAB',
+                        paddingVertical: 10
+                    }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{ fontSize: 15 }}>Post</Text>
+                        <AntDesign name="right" size={15} color="black" />
+                    </View>
+                </TouchableOpacity>
             </ScrollView>
         </View>
     );
