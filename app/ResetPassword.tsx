@@ -27,15 +27,12 @@ export default function ResetPasswordWebView({ navigation, route }: any) {
         }
       );
 
-      // API trả về HTTP 200 nhưng có thể success: false
       const { success, message } = res.data;
       if (!success) {
-        // Hiển thị đúng message từ server (ví dụ: password phải thỏa regex)
         Alert.alert('Error', message);
         return;
       }
 
-      // Nếu thành công
       Alert.alert('Success', 'Password reset successfully');
       navigation.navigate('Login');
     } catch (err: any) {
