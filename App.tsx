@@ -12,6 +12,7 @@ import Setting from './app/Setting';
 import ForgetPassword from './app/ForgetPassword';
 import ResetPassword from './app/ResetPassword';
 import GetProjectComment from './app/Comment/GetProjectComment';
+import AddProjectPost from './app/User/Post/AddProjectPost';
 
 import UserPayment from './app/User/Payment/UserPayment';
 import MyProject from './app/User/Project/MyProject';
@@ -37,6 +38,7 @@ import ViewFAQs from './app/User/FAQ/ViewFAQs';
 import UpdateFAQ from './app/User/FAQ/UpdateFAQ';
 import ProjectPost from './app/User/Post/ProjectPost';
 import ProjectPostDetail from './app/User/Post/ProjectPostDetail';
+import ViewMyProjectPost from './app/User/Post/ViewMyProjectPost';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -100,6 +102,8 @@ export type RootStackParamList = {
   UpdateFAQs: undefined;
   ProjectPost: undefined
   ProjectPostDetail: undefined
+  AddProjectPost: undefined
+  ViewMyProjectPost: undefined
 
   Profile: undefined;
   UserPayment: undefined;
@@ -162,7 +166,9 @@ function MainNavigator() {
       <Stack.Screen name="ViewFAQs" component={ViewFAQs} options={{ headerShown: false }} />
       <Stack.Screen name="UpdateFAQs" component={UpdateFAQ} options={{ headerShown: false }} />
       <Stack.Screen name="ProjectPost" component={ProjectPost} options={{ headerShown: false }} />
+      <Stack.Screen name="AddProjectPost" component={AddProjectPost} options={{ headerShown: false }} />
       <Stack.Screen name="ProjectPostDetail" component={ProjectPostDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewMyProjectPost" component={ViewMyProjectPost} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />

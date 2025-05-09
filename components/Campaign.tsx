@@ -8,7 +8,7 @@ export default function Campaign({ project }: any) {
   if (!project) {
     return (
       <View style={styles.center}>
-        <Text>Đang tải dữ liệu...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
@@ -17,7 +17,7 @@ export default function Campaign({ project }: any) {
     <ScrollView style={styles.container}>
       <RenderHTML
         contentWidth={width}
-        source={{ html: project.story || '<p>Không có nội dung</p>' }}
+        source={{ html: project.story || '<p>There is no story</p>' }}
         renderersProps={{
           img: {
             enableExperimentalPercentWidth: true,
@@ -25,8 +25,10 @@ export default function Campaign({ project }: any) {
         }}
         tagsStyles={{
           img: {
-            maxWidth: '100%',
-            height: 'auto',
+            width: width * 0.9,
+            height: undefined,
+            aspectRatio: 1.5,
+
           },
           p: {
             marginBottom: 10,

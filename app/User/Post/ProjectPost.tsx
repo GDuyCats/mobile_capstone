@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../../context/authContext';
 import moment from 'moment';
@@ -8,18 +8,19 @@ import HeaderLayout from '../../../components/HeaderLayout';
 export default function ProjectPost({ navigation, route }: any) {
   const { projectId } = route.params;
   const { user } = useContext(AuthContext);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const extractImageUrl = (html: string) => {
+    const match = html.match(/<img[^>]+src="([^">]+)"/);
+    return match ? match[1] : null;
+  };
 
   const fetchPosts = async () => {
     try {
       const res = await axios.get(
         `https://marvelous-gentleness-production.up.railway.app/api/Post/project?projectId=${projectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setPosts(res.data.data);
     } catch (err) {
@@ -29,24 +30,42 @@ export default function ProjectPost({ navigation, route }: any) {
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  useEffect(() => { fetchPosts(); }, []);
 
-  const renderItem = ({ item }: any) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ProjectPostDetail', { postId: item['post-id'] })}>
-      <View style={styles.card}>
-        <Text style={styles.title}>{item['title']}</Text>
-        <Text style={styles.description}>
-          {item['description'].replace(/<[^>]*>?/gm, '')}
-        </Text>
-        <View style={styles.meta}>
-          <Text style={styles.author}>By: {item.user.fullname}</Text>
-          <Text style={styles.date}>{moment(item['created-datetime']).format('DD/MM/YYYY')}</Text>
+  const renderItem = ({ item }: any) => {
+
+    const imageUrl = item['image-url'] || extractImageUrl(item.description);
+
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ProjectPostDetail', { postId: item['post-id'] })}
+      >
+        <View style={styles.card}>
+          {imageUrl && (
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.postImage}
+              resizeMode="cover"
+            />
+          )}
+          <Text style={styles.title}>{item.title}</Text>
+          <Text
+            style={styles.description}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+          >
+            {item.description.replace(/<[^>]*>?/gm, '')}
+          </Text>
+          <View style={styles.meta}>
+            <Text style={styles.author}>By: {item.user.fullname}</Text>
+            <Text style={styles.date}>
+              {moment(item['created-datetime']).format('DD/MM/YYYY')}
+            </Text>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
@@ -94,6 +113,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  postImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
   title: {
     fontSize: 18,
     fontWeight: '600',
@@ -104,6 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     marginBottom: 10,
+    lineHeight: 20,
   },
   meta: {
     flexDirection: 'row',
