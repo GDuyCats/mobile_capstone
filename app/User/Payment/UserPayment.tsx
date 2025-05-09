@@ -125,16 +125,28 @@ function UserPayment({ route, navigation }: any) {
       <WebView
         source={{ uri: paymentUrl }}
         onNavigationStateChange={(navState) => {
-          const { url } = navState
+          const { url } = navState;
+          console.log('Navigated to:', url);
+
           if (url.includes('/payment/result')) {
-            const params = new URLSearchParams(url.split('?')[1])
-            const paymentId = params.get('paymentId')
-            const token = params.get('token')
-            const PayerID = params.get('PayerID')
+            const params = new URLSearchParams(url.split('?')[1]);
+            const paymentId = params.get('paymentId');
+            const token = params.get('token');
+            const PayerID = params.get('PayerID');
+
             if (paymentId && token && PayerID) {
-              setPaymentUrl(null)
-              executePayment(paymentId, token, PayerID)
+              setPaymentUrl(null);
+              executePayment(paymentId, token, PayerID);
+            } else {
+              setPaymentUrl(null);
+              navigation.navigate('PaymentFailed');
             }
+          }
+          
+          if (url.includes('/user/cart')) {
+            console.log('User canceled payment');
+            setPaymentUrl(null);
+            navigation.navigate('PaymentFailed');
           }
         }}
       />

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Alert, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Alert, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Image, ScrollView, useWindowDimensions } from 'react-native';
 import axios from 'axios';
+import RenderHTML from 'react-native-render-html';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { AuthContext } from '../../../context/authContext';
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,6 +10,7 @@ import FooterLayout from '../../../components/NavbarLayout';
 function MyProjectDetail({ route, navigation }: any) {
   const { user } = useContext(AuthContext);
   const { projectId } = route.params;
+  const { width } = useWindowDimensions();
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDisabledUpDate, setIsDisabledUpdate] = useState(false);
@@ -97,7 +99,7 @@ function MyProjectDetail({ route, navigation }: any) {
     );
   };
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <HeaderLayout title={'My Project Detail'} onBackPress={() => navigation.goBack()} />
       <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
         <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#00246B' }}>{project.title}</Text>
@@ -121,7 +123,17 @@ function MyProjectDetail({ route, navigation }: any) {
 
         <View style={{ backgroundColor: '#F2F2F2', padding: 10, borderRadius: 10, marginTop: 10 }}>
           <Text style={{ fontWeight: '900', fontSize: 18 }}>Story</Text>
-          <Text>{project.story}</Text>
+          <RenderHTML
+            contentWidth={width - 32}       
+            source={{ html: project.story }} 
+            baseStyle={styles.storyText}
+            tagsStyles={{
+              p : { marginVertical: 6, lineHeight: 20 },
+              strong: { fontWeight: '700' },
+              em: { fontStyle: 'italic' },
+       
+            }}
+          />
         </View>
         <View style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 10 }}>
           <View style={{ height: 5, backgroundColor: '#ddd', borderRadius: 5, marginBottom: 8 }}>
@@ -290,6 +302,26 @@ function MyProjectDetail({ route, navigation }: any) {
             disabled={isDisabledUpDate}
             onPress={() => {
               setIsDisabledUpdate(true)
+              navigation.navigate('AddProjectPost', { projectId: project["project-id"], projectCategories: project.categories, })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>Add Post</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledUpdate(true)
               navigation.navigate('ViewFAQs', { projectId: project["project-id"], projectPlatforms: project.platforms, })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>View FAQs</Text>
@@ -313,6 +345,26 @@ function MyProjectDetail({ route, navigation }: any) {
               navigation.navigate('ViewProjectReward', { projectId: project["project-id"] })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>View Reward</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledReward(true)
+              navigation.navigate('ViewMyProjectPost', { projectId: project["project-id"] })
+            }}>
+            <Text style={{ color: 'black', fontSize: 15 }}>View Project Post</Text>
             <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
           </TouchableOpacity>
 
@@ -365,6 +417,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: '400',
     fontSize: 15,
+    color: '#333',
+  },
+  storyText: {
+    fontSize: 13,
     color: '#333',
   },
   error: {

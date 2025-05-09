@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import {
   View,
+  useWindowDimensions,
   Text,
   StyleSheet,
   Image,
@@ -12,6 +13,7 @@ import {
   KeyboardAvoidingView, Platform
 } from 'react-native';
 import axios from 'axios';
+import RenderHtml from 'react-native-render-html';
 import { AuthContext } from '../../../context/authContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import HeaderLayout from '../../../components/HeaderLayout';
@@ -28,7 +30,7 @@ export default function PostDetailScreen({ route, navigation }: any) {
   const [highlightedCommentId, setHighlightedCommentId] = useState<string | null>(null);
   const scrollRef = useRef<any>();
   const commentRefs = useRef<Record<string, any>>({});
-
+  const { width } = useWindowDimensions();
   useEffect(() => {
     fetchPost();
     fetchComments();
@@ -150,6 +152,8 @@ export default function PostDetailScreen({ route, navigation }: any) {
       console.error('Comment failed:', err);
       if (err?.response?.status === 403) {
         alert('You have to be a backer to comment on this post!');
+      } else if (err?.response?.status === 401) {
+        alert('You have to sign in to comment on this post');
       } else {
         alert('Failed to send comment.');
       }
@@ -184,7 +188,18 @@ export default function PostDetailScreen({ route, navigation }: any) {
             Created at: {new Date(post['created-datetime']).toLocaleString()}
           </Text>
           <View style={styles.body}>
-            <Text style={styles.desc}>{post.description.replace(/<[^>]+>/g, '')}</Text>
+            <RenderHtml
+              contentWidth={width}
+              source={{ html: post.description }}
+              tagsStyles={{
+                img: {
+                  width: width * 0.9,
+                  height: undefined,
+                  aspectRatio: 1.5,
+          
+                }
+              }}
+            />
           </View>
 
           {/* Comments */}
@@ -218,7 +233,7 @@ export default function PostDetailScreen({ route, navigation }: any) {
                     <Text style={styles.commentTime}>
                       {new Date(comment['created-datetime']).toLocaleString('vi-VN', {
                         timeZone: 'Asia/Ho_Chi_Minh',
-                        hour12: false, 
+                        hour12: false,
                       })}
                     </Text>
                   </View>
@@ -291,7 +306,7 @@ export default function PostDetailScreen({ route, navigation }: any) {
                           }
                         }}
                       >
-                        <Text style={[styles.replyButton,{ marginLeft: 5}]}>Reply</Text>
+                        <Text style={[styles.replyButton, { marginLeft: 5 }]}>Reply</Text>
                       </TouchableOpacity>
                     </View>
                   ))}

@@ -61,7 +61,7 @@ export default function GetCommentProjectScreen({ route, navigation }: any) {
     <TouchableOpacity
       onPress={() => {
         if (!user?.token) {
-          alert('Bạn phải đăng nhập để trả lời bình luận!');
+          alert('You have to login to comment !');
           return;
         }
         if (replyingTo?.['comment-id'] === comment['comment-id']) {
@@ -108,7 +108,15 @@ export default function GetCommentProjectScreen({ route, navigation }: any) {
       fetchComments();
     } catch (err) {
       console.error('Comment failed:', err);
-      alert('Gửi bình luận thất bại. Vui lòng thử lại.');
+      if (err?.response?.status === 403) {
+        alert('You have to be a backer to comment on this project!');
+      } 
+      else if (err?.response?.status === 401 ) {
+        alert('You have to sign in to comment on this project');
+      }
+      else {
+        alert('Failed to send comment.');
+      }
     }
   };
 
@@ -145,7 +153,6 @@ export default function GetCommentProjectScreen({ route, navigation }: any) {
                 highlightedCommentId === String(comment['comment-id']) && styles.highlighted,
               ]}
             >
-              {/* Comment cha */}
               <View style={{ flexDirection: 'row' }}>
                 {comment.user?.avatar ? (
                   <Image
@@ -171,7 +178,6 @@ export default function GetCommentProjectScreen({ route, navigation }: any) {
 
               {renderReplyButton(comment)}
 
-              {/* Comment con (reply) */}
               {comment.comments?.map((child: any) => (
                 <View
                   key={child['comment-id']}
@@ -213,8 +219,7 @@ export default function GetCommentProjectScreen({ route, navigation }: any) {
           ))
         )}
       </ScrollView>
-
-      {/* Ô nhập bình luận */}
+      
       <View style={styles.replyBox}>
         {replyingTo && (
           <>

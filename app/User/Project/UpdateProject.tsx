@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import RenderHtml from 'react-native-render-html';
 import {
   View,
   ScrollView,
@@ -17,6 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { AuthContext } from '../../../context/authContext';
 import HeaderLayout from '../../../components/HeaderLayout';
+import { useWindowDimensions } from 'react-native';
 
 export default function UpdateProject({ route, navigation }: any) {
   const { projectId } = route.params;
@@ -33,6 +35,7 @@ export default function UpdateProject({ route, navigation }: any) {
   const [showPicker, setShowPicker] = useState<'start' | 'end' | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPicking, setIsPicking] = useState(false);
+  const { width } = useWindowDimensions();
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -186,17 +189,26 @@ export default function UpdateProject({ route, navigation }: any) {
             multiline={true}
             textAlignVertical="top" />
 
-          <Text style={styles.label}>Story (Game's story)</Text>
+          <Text style={styles.label}>Game Story (HTML)</Text>
           <TextInput
             value={story}
             onChangeText={setStory}
             multiline
-            onContentSizeChange={(e) =>
+            placeholder="<p><strong>Your HTML story here</strong></p>"
+            onContentSizeChange={e =>
               setStoryHeight(e.nativeEvent.contentSize.height)
             }
             style={[styles.input, { height: Math.max(80, storyHeight) }]}
-            placeholder="Enter game story..."
           />
+
+          {/* Live Preview */}
+          <Text style={[styles.label, { marginTop: 12 }]}>Preview</Text>
+          <View style={styles.preview}>
+            <RenderHtml
+              contentWidth={width - 32}
+              source={{ html: story }}
+            />
+          </View>
 
           <Text style={styles.label}>Goal ($):</Text>
           <TextInput
@@ -287,7 +299,7 @@ export default function UpdateProject({ route, navigation }: any) {
                   >
                     <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel Choose</Text>
                   </TouchableOpacity>
-                  
+
                 </View>
               </View>
             )}
@@ -320,8 +332,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   label: {
-    fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 6,
   },
   input: {
     borderWidth: 1,
@@ -339,5 +352,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 10,
     backgroundColor: '#f2f2f2',
+  },
+  preview: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 6,
+    padding: 12,
+    backgroundColor: '#fff',
+    minHeight: 80,
   },
 });

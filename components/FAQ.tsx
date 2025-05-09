@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, useWindowDimensions, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
 import axios from 'axios';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { AuthContext } from '../context/authContext';
 import { useRoute } from '@react-navigation/native';
-
+import RenderHtml from 'react-native-render-html';
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -16,7 +16,7 @@ export default function FAQ() {
   const [faqList, setFaqList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
-
+  const { width } = useWindowDimensions();
   useEffect(() => {
     const fetchFAQ = async () => {
       try {
@@ -58,7 +58,7 @@ export default function FAQ() {
   if (faqList.length === 0) {
     return (
       <View style={styles.center}>
-        <Text>Chưa có câu hỏi nào.</Text>
+        <Text>There is no FAQ.</Text>
       </View>
     );
   }
@@ -86,7 +86,10 @@ export default function FAQ() {
               </TouchableOpacity>
               {isExpanded && (
                 <View style={styles.answerContainer}>
-                  <Text style={styles.answer}>{item.answer}</Text>
+                  <RenderHtml
+                    contentWidth={width}
+                    source={{ html: item.answer }}
+                  />
                 </View>
               )}
             </View>
