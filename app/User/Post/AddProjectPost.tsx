@@ -70,12 +70,12 @@ export default function AddProjectPost({ route, navigation }) {
             <HeaderLayout title={"Create project post"} onBackPress={() => navigation.goBack()}/>
             <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
                 <View style={styles.card}>
-                    <Text style={styles.label}>Project ID</Text>
+                    {/* <Text style={styles.label}>Project ID</Text>
                     <TextInput
                         style={[styles.input, styles.disabledInput]}
                         value={String(projectId)}
                         editable={false}
-                    />
+                    /> */}
 
                     <Text style={styles.label}>Title</Text>
                     <TextInput
