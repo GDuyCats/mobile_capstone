@@ -12,7 +12,7 @@ import Setting from './app/Setting';
 import ForgetPassword from './app/ForgetPassword';
 import ResetPassword from './app/ResetPassword';
 import GetProjectComment from './app/Comment/GetProjectComment';
-import AddProjectPost from './app/User/Post/AddProjectPost';
+import AddProjectPost from './app/User/Post/ProjectPost/AddProjectPost';
 
 import UserPayment from './app/User/Payment/UserPayment';
 import MyProject from './app/User/Project/MyProject';
@@ -39,6 +39,8 @@ import UpdateFAQ from './app/User/FAQ/UpdateFAQ';
 import ProjectPost from './app/User/Post/ProjectPost';
 import ProjectPostDetail from './app/User/Post/ProjectPostDetail';
 import ViewMyProjectPost from './app/User/Post/ViewMyProjectPost';
+import ViewProjectPostDetail from './app/User/Post/ProjectPost/ViewProjectPostDetail';
+import UpdateProjectPost from './app/User/Post/ProjectPost/UpdateProjectPost';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -104,6 +106,8 @@ export type RootStackParamList = {
   ProjectPostDetail: undefined
   AddProjectPost: undefined
   ViewMyProjectPost: undefined
+  UpdateProjectPost: undefined
+  ViewProjectPostDetail: undefined
 
   Profile: undefined;
   UserPayment: undefined;
@@ -169,6 +173,8 @@ function MainNavigator() {
       <Stack.Screen name="AddProjectPost" component={AddProjectPost} options={{ headerShown: false }} />
       <Stack.Screen name="ProjectPostDetail" component={ProjectPostDetail} options={{ headerShown: false }} />
       <Stack.Screen name="ViewMyProjectPost" component={ViewMyProjectPost} options={{ headerShown: false }} />
+      <Stack.Screen name="ViewProjectPostDetail" component={ViewProjectPostDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="UpdateProjectPost" component={UpdateProjectPost} options={{ headerShown: false }} />
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />

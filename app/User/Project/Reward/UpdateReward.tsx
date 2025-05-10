@@ -22,7 +22,6 @@ export default function UpdateReward({ navigation, route }: any) {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append('rewardId', rewardId.toString());
       formData.append('amount', parseFloat(amount).toString());
       formData.append('details', details);
 
@@ -33,6 +32,9 @@ export default function UpdateReward({ navigation, route }: any) {
           headers: {
             Authorization: `Bearer ${user.token}`,
             'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            rewardId: rewardId,
           },
         }
       );
@@ -60,7 +62,7 @@ export default function UpdateReward({ navigation, route }: any) {
         />
         <Text style={styles.label}>Details</Text>
         <TextInput
-          style={[styles.input, { height: 100 }]}
+          style={[styles.input, { height: 100, marginBottom: 10 }]}
           multiline
           value={details}
           onChangeText={setDetails}

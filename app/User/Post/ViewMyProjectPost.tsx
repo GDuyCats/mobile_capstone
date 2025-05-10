@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Image,
+  TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
 import axios from 'axios';
@@ -45,37 +46,44 @@ export default function ViewMyProjectPost({ route, navigation }: any) {
   );
 
   const renderItem = ({ item }: any) => {
-    // trừ padding (16px list + 16px card mỗi bên) tổng 64
     const contentWidth = width - 64;
-
+  
     return (
-      <View style={styles.card}>
-        <Text style={styles.title}>{item.title}</Text>
-
-        <View style={styles.meta}>
-          {item.user?.avatar && (
-            <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
-          )}
-          <View style={{ flex: 1 }}>
-            <Text style={styles.fullname}>{item.user?.fullname || 'Unknown'}</Text>
-            <Text style={styles.date}>
-              {new Date(item['created-datetime']).toLocaleString()}
-            </Text>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() =>
+          navigation.navigate('ViewProjectPostDetail', { postId: item['post-id'] })
+        }
+      >
+        <View style={styles.card}>
+          <Text style={styles.title}>{item.title}</Text>
+  
+          <View style={styles.meta}>
+            {item.user?.avatar && (
+              <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+            )}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.fullname}>{item.user?.fullname || 'Unknown'}</Text>
+              <Text style={styles.date}>
+                {new Date(item['created-datetime']).toLocaleString()}
+              </Text>
+            </View>
           </View>
+  
+          <RenderHTML
+            contentWidth={contentWidth}
+            source={{ html: item.description }}
+            baseStyle={styles.description}
+            tagsStyles={{
+              p: { marginVertical: 6, lineHeight: 20 },
+              strong: { fontWeight: '700', color: '#222' },
+            }}
+          />
         </View>
-
-        <RenderHTML
-          contentWidth={contentWidth}
-          source={{ html: item.description }}
-          baseStyle={styles.description}
-          tagsStyles={{
-            p: { marginVertical: 6, lineHeight: 20 },
-            strong: { fontWeight: '700', color: '#222' },
-          }}
-        />
-      </View>
+      </TouchableOpacity>
     );
   };
+  
 
   return (
     <View style={styles.container}>
