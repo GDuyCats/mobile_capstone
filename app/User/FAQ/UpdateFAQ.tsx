@@ -13,34 +13,42 @@ export default function UpdateFAQ({ route, navigation }: any) {
 
     const handleUpdate = async () => {
         if (!question.trim() || !answer.trim()) {
-            Alert.alert('Warning', 'Please fill in both fields.');
-            return;
+          Alert.alert('Warning', 'Please fill in both fields.');
+          return;
         }
-
+      
         setLoading(true);
         try {
-            await axios.put(
-                `https://marvelous-gentleness-production.up.railway.app/api/Faq/UpdateFaq?projectId=${projectId}&oldQuestion=${encodeURIComponent(oldQuestion)}`,
-                {
-                    Question: question,
-                    Answer: answer,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${user.token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            );
-            Alert.alert('Success', 'FAQ updated successfully!');
-            navigation.goBack();
+          const formData = new FormData();
+          formData.append('Question', question);
+          formData.append('Answer', answer);
+      
+          await axios.put(
+            `https://marvelous-gentleness-production.up.railway.app/api/Faq/UpdateFaq`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+                'Content-Type': 'multipart/form-data',
+              },
+              params: {
+                projectId,
+                oldQuestion: oldQuestion,
+              },
+            }
+          );
+      
+          Alert.alert('Success', 'FAQ updated successfully!');
+          navigation.goBack();
         } catch (err) {
-            console.log(err.response?.data || err.message);
-            Alert.alert('Error', 'Failed to update FAQ.');
+          console.log(err.response?.data || err.message);
+          Alert.alert('Error', 'Failed to update FAQ.');
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
+    
+    console.log(oldQuestion)
 
     const handleDelete = async () => {
         Alert.alert('Confirm Delete', 'Are you sure you want to delete this FAQ?', [

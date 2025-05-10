@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../../../context/authContext';
 import HeaderLayout from '../../../../components/HeaderLayout';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function RewardDetail({ navigation, route }: any) {
   const { rewardId } = route.params;
@@ -11,28 +12,31 @@ export default function RewardDetail({ navigation, route }: any) {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    const fetchReward = async () => {
-      try {
-        const res = await axios.get(
-          `https://marvelous-gentleness-production.up.railway.app/api/Reward/GetRewardById`,
-          {
-            params: { rewardId },
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        setReward(res.data.data);
-      } catch (error) {
-        console.log('Error while getting reward', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchReward();
-  }, [rewardId]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchReward = async () => {
+        try {
+          const res = await axios.get(
+            `https://marvelous-gentleness-production.up.railway.app/api/Reward/GetRewardById`,
+            {
+              params: { rewardId },
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+          setReward(res.data.data);
+        } catch (error) {
+          console.log('Error while getting reward', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchReward();
+    }, [rewardId, user.token])
+  );
+  
 
   const handleDelete = async () => {
     Alert.alert('Confirm', 'Do you really want to delete this reward?', [
@@ -52,8 +56,17 @@ export default function RewardDetail({ navigation, route }: any) {
                 },
               }
             );
-            Alert.alert('Success', 'Reward has been deleted!');
-            navigation.goBack();
+            Alert.alert(
+              'Success',
+              'Reward has been deleted!',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => navigation.goBack()
+                }
+              ],
+              { cancelable: false }
+            );
           } catch (error) {
             console.log('Error while deleting reward:', error);
             Alert.alert('Error', 'Cannot delete the reward!');
@@ -90,11 +103,6 @@ export default function RewardDetail({ navigation, route }: any) {
       <HeaderLayout title={'Reward Detail'} onBackPress={() => navigation.goBack()} />
       <View style={styles.container}>
         <View style={styles.card}>
-          <Text style={styles.label}>ID:</Text>
-          <Text style={styles.value}>{reward['reward-id']}</Text>
-
-          <Text style={styles.label}>Project ID:</Text>
-          <Text style={styles.value}>{reward['project-id']}</Text>
 
           <Text style={styles.label}>Amount:</Text>
           <Text style={styles.value}>${reward.amount}</Text>

@@ -22,7 +22,6 @@ export default function UpdateReward({ navigation, route }: any) {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append('rewardId', rewardId.toString());
       formData.append('amount', parseFloat(amount).toString());
       formData.append('details', details);
 
@@ -34,15 +33,31 @@ export default function UpdateReward({ navigation, route }: any) {
             Authorization: `Bearer ${user.token}`,
             'Content-Type': 'multipart/form-data',
           },
+          params: {
+            rewardId: rewardId,
+          },
         }
       );
 
       Alert.alert('Success', 'Reward update successfully !');
       navigation.goBack();
-    } catch (error) {
-      console.log('Error', error);
-      Alert.alert('Error', 'Error while update reward:');
-    } finally {
+    } catch (error: any) {
+      console.log('Error updating reward:', error?.response?.data || error);
+    
+      const response = error?.response?.data;
+    
+      if (response?.errors) {
+        const errorMessages = Object.values(response.errors)
+          .flat()
+          .join('\n');
+        Alert.alert('Validation Error', errorMessages);
+      } else if (response?.title) {
+        Alert.alert('Error', response.title);
+      } else {
+        Alert.alert('Error', 'Unexpected error while updating reward.');
+      }
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -60,7 +75,7 @@ export default function UpdateReward({ navigation, route }: any) {
         />
         <Text style={styles.label}>Details</Text>
         <TextInput
-          style={[styles.input, { height: 100 }]}
+          style={[styles.input, { height: 100, marginBottom: 10 }]}
           multiline
           value={details}
           onChangeText={setDetails}

@@ -11,10 +11,10 @@ import {
     useWindowDimensions
 } from 'react-native';
 import axios from 'axios';
-import { AuthContext } from '../../../context/authContext';
+import { AuthContext } from '../../../../context/authContext';
 import { Picker } from '@react-native-picker/picker';
 import RenderHtml from 'react-native-render-html';
-import HeaderLayout from '../../../components/HeaderLayout';
+import HeaderLayout from '../../../../components/HeaderLayout';
 
 export default function AddProjectPost({ route, navigation }) {
     const { user } = useContext(AuthContext);
@@ -70,12 +70,6 @@ export default function AddProjectPost({ route, navigation }) {
             <HeaderLayout title={"Create project post"} onBackPress={() => navigation.goBack()}/>
             <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
                 <View style={styles.card}>
-                    <Text style={styles.label}>Project ID</Text>
-                    <TextInput
-                        style={[styles.input, styles.disabledInput]}
-                        value={String(projectId)}
-                        editable={false}
-                    />
 
                     <Text style={styles.label}>Title</Text>
                     <TextInput

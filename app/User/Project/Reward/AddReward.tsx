@@ -19,7 +19,7 @@ function AddReward({ navigation, route }: any) {
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { projectId } = route.params;
-  const { user } = useContext(AuthContext); // ✅ Gắn token
+  const { user } = useContext(AuthContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,16 +44,29 @@ function AddReward({ navigation, route }: any) {
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`, // ✅ Gắn token ở đây
+            Authorization: `Bearer ${user.token}`,
           },
         }
       );
 
       Alert.alert('Success', 'Reward added successfully!');
       navigation.goBack();
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', 'Failed to add reward');
+    } catch (error: any) {
+      console.log('Add reward error:', error?.response?.data || error);
+
+      const responseData = error?.response?.data;
+
+      if (responseData?.errors) {
+        const errorMessages = Object.values(responseData.errors)
+          .flat()
+          .join('\n');
+
+        Alert.alert('Validation Error', errorMessages);
+      } else if (responseData?.title) {
+        Alert.alert('Error', responseData.title);
+      } else {
+        Alert.alert('Error', 'Failed to add reward');
+      }
     } finally {
       setIsLoading(false);
     }
