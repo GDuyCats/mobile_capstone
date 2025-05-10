@@ -63,8 +63,8 @@ export default function FAQList({ route, navigation }: any) {
           source={{ html: item.answer }}
           baseStyle={styles.answerText}
           tagsStyles={{
-            h1: { fontSize: 20, fontWeight: '700', marginVertical: 6, color: '#333' },
-            p: { marginVertical: 4, lineHeight: 20 },
+            h1: { fontSize: 20, fontWeight: '700', color: '#333' },
+            p: { lineHeight: 20 },
             strong: { fontWeight: '700', color: '#222' },
           }}
         />
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   answerContainer: {
     flexDirection: 'row',
     justifyContent:'center',
-    alignItems: 'flex-start',
+    alignItems: 'baseline',
   },
   answerPrefix: {
     fontSize: 18,
