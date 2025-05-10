@@ -41,10 +41,23 @@ export default function UpdateReward({ navigation, route }: any) {
 
       Alert.alert('Success', 'Reward update successfully !');
       navigation.goBack();
-    } catch (error) {
-      console.log('Error', error);
-      Alert.alert('Error', 'Error while update reward:');
-    } finally {
+    } catch (error: any) {
+      console.log('Error updating reward:', error?.response?.data || error);
+    
+      const response = error?.response?.data;
+    
+      if (response?.errors) {
+        const errorMessages = Object.values(response.errors)
+          .flat()
+          .join('\n');
+        Alert.alert('Validation Error', errorMessages);
+      } else if (response?.title) {
+        Alert.alert('Error', response.title);
+      } else {
+        Alert.alert('Error', 'Unexpected error while updating reward.');
+      }
+    }
+    finally {
       setLoading(false);
     }
   };

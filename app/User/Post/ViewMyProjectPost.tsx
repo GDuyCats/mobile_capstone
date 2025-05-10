@@ -45,8 +45,13 @@ export default function ViewMyProjectPost({ route, navigation }: any) {
     }, [])
   );
 
+  const getPlainTextFromHTML = (html: string) => {
+    return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  };
+  
   const renderItem = ({ item }: any) => {
-    const contentWidth = width - 64;
+    const plainText = getPlainTextFromHTML(item.description);
+    const previewText = plainText.length > 120 ? plainText.slice(0, 120) + '...' : plainText;
   
     return (
       <TouchableOpacity
@@ -70,19 +75,12 @@ export default function ViewMyProjectPost({ route, navigation }: any) {
             </View>
           </View>
   
-          <RenderHTML
-            contentWidth={contentWidth}
-            source={{ html: item.description }}
-            baseStyle={styles.description}
-            tagsStyles={{
-              p: { marginVertical: 6, lineHeight: 20 },
-              strong: { fontWeight: '700', color: '#222' },
-            }}
-          />
+          <Text style={styles.preview}>{previewText}</Text>
         </View>
       </TouchableOpacity>
     );
   };
+  
   
 
   return (
@@ -127,7 +125,13 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
-
+  preview: {
+    fontSize: 15,
+    color: '#4a4a4a',
+    lineHeight: 20,
+    marginTop: 4,
+  },
+  
   title: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginBottom: 8 },
 
   meta: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
