@@ -41,6 +41,7 @@ import ProjectPostDetail from './app/User/Post/ProjectPostDetail';
 import ViewMyProjectPost from './app/User/Post/ViewMyProjectPost';
 import ViewProjectPostDetail from './app/User/Post/ProjectPost/ViewProjectPostDetail';
 import UpdateProjectPost from './app/User/Post/ProjectPost/UpdateProjectPost';
+import SubmitProject from './app/User/Project/SubmitProject';
 
 import Admin from './app/Admin/Admin';
 import AdminUser from './app/Admin/User/AdminUser';
@@ -122,6 +123,7 @@ export type RootStackParamList = {
   MyUpdateProject: undefined;
   MyReceivedPledge: undefined;
   MoneyHistory: undefined
+  SubmitProject: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -175,6 +177,7 @@ function MainNavigator() {
       <Stack.Screen name="ViewMyProjectPost" component={ViewMyProjectPost} options={{ headerShown: false }} />
       <Stack.Screen name="ViewProjectPostDetail" component={ViewProjectPostDetail} options={{ headerShown: false }} />
       <Stack.Screen name="UpdateProjectPost" component={UpdateProjectPost} options={{ headerShown: false }} />
+      <Stack.Screen name="SubmitProject" component={SubmitProject} options={{headerShown: false}}/>
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />

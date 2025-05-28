@@ -157,10 +157,11 @@ export default function CreateProject({ navigation }: any) {
 
       let errorMessage = 'Something went wrong';
       if (err.response && err.response.data && err.response.data.message) {
-        errorMessage = err.response.data.message;
+        errorMessage = err.response.message;
       }
 
       Alert.alert('Error', errorMessage);
+      // console.log(err.response)
     } finally {
       setIsLoading(false)
     }

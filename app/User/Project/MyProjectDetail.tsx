@@ -243,6 +243,25 @@ function MyProjectDetail({ route, navigation }: any) {
             disabled={isDisabledUpDate}
             onPress={() => {
               setIsDisabledUpdate(true)
+              navigation.navigate('SubmitProject', { projectId: project["project-id"] })
+            }}>
+            <Text style={{ color: 'green', fontSize: 15, fontWeight: 800 }}>Submit Project</Text>
+            <AntDesign name="right" style={{ opacity: 0.5 }} size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 0.48,
+              borderBottomWidth: 1,
+              borderBottomColor: '#AAAAAB',
+              marginBottom: 10
+            }}
+            disabled={isDisabledUpDate}
+            onPress={() => {
+              setIsDisabledUpdate(true)
               navigation.navigate('MyUpdateProject', { projectId: project["project-id"] })
             }}>
             <Text style={{ color: 'black', fontSize: 15 }}>Update Project</Text>
