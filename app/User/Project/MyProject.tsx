@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react'
 import axios from 'axios'
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Entypo from '@expo/vector-icons/Entypo';
 import { AuthContext } from '../../../context/authContext'
 import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import HeaderLayout from '../../../components/HeaderLayout'
 function MyProject({ navigation }: any) {
     const { user } = useContext(AuthContext)
@@ -84,18 +86,34 @@ function MyProject({ navigation }: any) {
                                     }}>
                                     {project.status}
                                 </Text>
-                                {project.status === 'DELETED' ? (
-                                    <AntDesign name="closecircle" size={24} color="black" />
-                                ) : project.status === 'VISIBLE' ? (
-                                    <AntDesign name="checkcircleo" size={24} color="black" />
-                                ) :
+                                {project.status === 'CREATED' ? (
+                                    <MaterialCommunityIcons name="progress-check" size={24} color="black" />
+                                ) : project.status === 'APPROVED' ? (
+                                    <AntDesign name="checkcircle" size={24} color="black" />
+                                ) : project.status === 'REJECTED' ? (
+                                    <FontAwesome name="exclamation-circle" size={24} color="black" />
+                                ) : project.status === 'ONGOING' ? (
+                                   <Entypo name="progress-two" size={24} color="black" />
+                                ) : project.status === 'SUCCESSFUL' ? (
+                                    <Entypo name="progress-full" size={24} color="black" />
+                                ) : project.status === 'TRANSFERRED' ? (
+                                    <MaterialCommunityIcons name="transfer-left" size={24} color="black" />
+                                ) : project.status === 'INSUFFICIENT' ? (
+                                    <Entypo name="progress-empty" size={24} color="black" />
+                                ) : project.status === 'REFUNDED' ? (
+                                    <MaterialCommunityIcons name="cancel" size={24} color="black" />
+                                ) : project.status === 'DELETED' ? (
+                                    <MaterialCommunityIcons name="progress-close" size={24} color="black" />
+                                )
+
+                                    :
                                     <MaterialIcons name="pending" size={24} color="black" />
                                 }
                             </View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Text style={{ fontSize: 20 }}>Transaction status</Text>
                                 <Text style={{ fontSize: 20, fontWeight: 900 }}>{project['transaction-status']}</Text>
-                            </View>
+                            </View> */}
                         </TouchableOpacity>
                     )
                     )
